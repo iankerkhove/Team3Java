@@ -1,1 +1,2 @@
-# Team3Java
+# Software Project - TEAM 3
+Java applicatie
