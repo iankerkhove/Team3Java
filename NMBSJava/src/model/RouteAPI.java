@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
-public class Route {
+public class RouteAPI {
 	private String departure;
 	private String arrival;
 	private String line;
 	private boolean cancelled;
-	private ArrayList<Train> trains = new ArrayList<Train>();
-	private ArrayList<Transferstation> transferstations = new ArrayList<Transferstation>();
+	private ArrayList<TrainAPI> trains = new ArrayList<TrainAPI>();
+	private ArrayList<TransferstationAPI> transferstations = new ArrayList<TransferstationAPI>();
 
-	public Route(JSONObject json) {
+	public RouteAPI(JSONObject json) {
 		this.departure = json.getString("Departure");
 		this.arrival = json.getString("Arrival");
 		if (!json.get("Line").equals(null)) {
@@ -21,11 +21,11 @@ public class Route {
 			this.line = "";
 		this.cancelled = json.getBoolean("Cancelled");
 		for (int i = 0; i < json.getJSONArray("Trains").length(); i++) {
-			Train t = new Train(json.getJSONArray("Trains").getJSONObject(i));
+			TrainAPI t = new TrainAPI(json.getJSONArray("Trains").getJSONObject(i));
 			trains.add(t);
 		}
 		for (int i = 0; i < json.getJSONArray("TransferStations").length(); i++) {
-			Transferstation t = new Transferstation(json.getJSONArray("TransferStations").getJSONObject(i));
+			TransferstationAPI t = new TransferstationAPI(json.getJSONArray("TransferStations").getJSONObject(i));
 			transferstations.add(t);
 		}
 	}
@@ -62,19 +62,19 @@ public class Route {
 		this.cancelled = cancelled;
 	}
 
-	public ArrayList<Train> getTrains() {
+	public ArrayList<TrainAPI> getTrains() {
 		return trains;
 	}
 
-	public void setTrains(ArrayList<Train> trains) {
+	public void setTrains(ArrayList<TrainAPI> trains) {
 		this.trains = trains;
 	}
 
-	public ArrayList<Transferstation> getTransferstations() {
+	public ArrayList<TransferstationAPI> getTransferstations() {
 		return transferstations;
 	}
 
-	public void setTransferstations(ArrayList<Transferstation> transferstations) {
+	public void setTransferstations(ArrayList<TransferstationAPI> transferstations) {
 		this.transferstations = transferstations;
 	}
 }
