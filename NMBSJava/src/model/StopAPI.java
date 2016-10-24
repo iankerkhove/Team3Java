@@ -4,23 +4,23 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
-public class Stop {
-	private ArrayList<Station> stations = new ArrayList<Station>();
+public class StopAPI {
+	private ArrayList<StationAPI> stations = new ArrayList<StationAPI>();
 	private int count;
 
-	public Stop(JSONObject json) {
+	public StopAPI(JSONObject json) {
 		for (int i = 0; i < json.getJSONArray("Stations").length(); i++) {
-			Station s = new Station(json.getJSONArray("Stations").getJSONObject(i));
+			StationAPI s = new StationAPI(json.getJSONArray("Stations").getJSONObject(i));
 			stations.add(s);
 		}
 		this.count = json.getInt("Count");
 	}
 
-	public ArrayList<Station> getStations() {
+	public ArrayList<StationAPI> getStations() {
 		return stations;
 	}
 
-	public void setStations(ArrayList<Station> stations) {
+	public void setStations(ArrayList<StationAPI> stations) {
 		this.stations = stations;
 	}
 
