@@ -27,6 +27,20 @@ public class Routeberekening {
 			e.printStackTrace();
 		}
 	}
+	
+	public Routeberekening(String van, String naar, String tijd) {
+		try {
+			json = new JSONObject(readUrl("https://traintracks.online/api/Route/" + van + "/" + naar + "/" + tijd));
+			this.stepOn = json.getString("StepOn");
+			this.stepOff = json.getString("StepOff");
+			for (int i = 0; i < json.getJSONArray("Routes").length(); i++) {
+				Route r = new Route(json.getJSONArray("Routes").getJSONObject(i));
+				routes.add(r);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public String getStepOn() {
 		return stepOn;
