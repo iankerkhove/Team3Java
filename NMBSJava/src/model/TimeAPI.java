@@ -2,7 +2,7 @@ package model;
 
 import org.json.JSONObject;
 
-public class Time {
+public class TimeAPI {
 	private String date;
 	private String duration;
 	private String arrival;
@@ -10,7 +10,7 @@ public class Time {
 	private String departure;
 	private String actualDeparture;
 
-	public Time(JSONObject json) {
+	public TimeAPI(JSONObject json) {
 		this.date = json.getString("Date");
 		this.duration = json.getString("Duration");
 		this.arrival = json.getString("Arrival");

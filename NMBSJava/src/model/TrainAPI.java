@@ -2,20 +2,20 @@ package model;
 
 import org.json.JSONObject;
 
-public class Train {
+public class TrainAPI {
 	private JSONObject json;
 	private int number;
 	private int traintype;
 	private String fullId;
 	private String departureStation;
 	private String terminusStation;
-	private Stop stop;
+	private StopAPI stop;
 	private boolean cancelled;
-	private Time time;
+	private TimeAPI time;
 	private String Jid;
 	private String Cid;
 
-	public Train(JSONObject json) {
+	public TrainAPI(JSONObject json) {
 		if (!json.get("Number").equals(null)) {
 			this.number = json.getInt("Number");
 		} else
@@ -24,9 +24,9 @@ public class Train {
 		this.fullId = json.getString("FullId");
 		this.departureStation = json.getString("DepartureStation");
 		this.terminusStation = json.getString("TerminusStation");
-		this.stop = new Stop(json.getJSONObject("Stops"));
+		this.stop = new StopAPI(json.getJSONObject("Stops"));
 		this.cancelled = json.getBoolean("Cancelled");
-		this.time = new Time(json.getJSONObject("Time"));
+		this.time = new TimeAPI(json.getJSONObject("Time"));
 		if (!json.get("Jid").equals(null)) {
 			this.Jid = (String)json.get("Jid");
 		} else
@@ -37,9 +37,9 @@ public class Train {
 			this.Cid = "";
 	}
 	
-	public Train(String trein) {
+	public TrainAPI(String trein) {
 		try {
-			json = new JSONObject(Routeberekening.readUrl("https://traintracks.online/api/Train/" + trein));
+			json = new JSONObject(RouteberekeningAPI.readUrl("https://traintracks.online/api/Train/" + trein));
 			if (!json.get("Number").equals(null)) {
 				this.number = json.getInt("Number");
 			} else
@@ -48,9 +48,9 @@ public class Train {
 			this.fullId = json.getString("FullId");
 			this.departureStation = json.getString("DepartureStation");
 			this.terminusStation = json.getString("TerminusStation");
-			this.stop = new Stop(json.getJSONObject("Stops"));
+			this.stop = new StopAPI(json.getJSONObject("Stops"));
 			this.cancelled = json.getBoolean("Cancelled");
-			this.time = new Time(json.getJSONObject("Time"));
+			this.time = new TimeAPI(json.getJSONObject("Time"));
 			if (!json.get("Jid").equals(null)) {
 				this.Jid = (String)json.get("Jid");
 			} else
@@ -104,11 +104,11 @@ public class Train {
 		this.terminusStation = terminusStation;
 	}
 
-	public Stop getStop() {
+	public StopAPI getStop() {
 		return stop;
 	}
 
-	public void setStop(Stop stop) {
+	public void setStop(StopAPI stop) {
 		this.stop = stop;
 	}
 
@@ -120,11 +120,11 @@ public class Train {
 		this.cancelled = cancelled;
 	}
 
-	public Time getTime() {
+	public TimeAPI getTime() {
 		return time;
 	}
 
-	public void setTime(Time time) {
+	public void setTime(TimeAPI time) {
 		this.time = time;
 	}
 
