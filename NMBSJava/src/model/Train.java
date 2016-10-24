@@ -3,6 +3,7 @@ package model;
 import org.json.JSONObject;
 
 public class Train {
+	private JSONObject json;
 	private int number;
 	private int traintype;
 	private String fullId;
@@ -11,8 +12,8 @@ public class Train {
 	private Stop stop;
 	private boolean cancelled;
 	private Time time;
-	private int Jid;
-	private int Cid;
+	private String Jid;
+	private String Cid;
 
 	public Train(JSONObject json) {
 		if (!json.get("Number").equals(null)) {
@@ -27,13 +28,40 @@ public class Train {
 		this.cancelled = json.getBoolean("Cancelled");
 		this.time = new Time(json.getJSONObject("Time"));
 		if (!json.get("Jid").equals(null)) {
-			this.Jid = json.getInt("Jid");
+			this.Jid = (String)json.get("Jid");
 		} else
-			this.Jid = 0;
+			this.Jid = "";
 		if (!json.get("Cid").equals(null)) {
-			this.Cid = json.getInt("Cid");
+			this.Cid = (String)json.get("Cid");
 		} else
-			this.Cid = 0;
+			this.Cid = "";
+	}
+	
+	public Train(String trein) {
+		try {
+			json = new JSONObject(Routeberekening.readUrl("https://traintracks.online/api/Train/" + trein));
+			if (!json.get("Number").equals(null)) {
+				this.number = json.getInt("Number");
+			} else
+				this.number = 0;
+			this.traintype = json.getInt("TrainType");
+			this.fullId = json.getString("FullId");
+			this.departureStation = json.getString("DepartureStation");
+			this.terminusStation = json.getString("TerminusStation");
+			this.stop = new Stop(json.getJSONObject("Stops"));
+			this.cancelled = json.getBoolean("Cancelled");
+			this.time = new Time(json.getJSONObject("Time"));
+			if (!json.get("Jid").equals(null)) {
+				this.Jid = (String)json.get("Jid");
+			} else
+				this.Jid = "";
+			if (!json.get("Cid").equals(null)) {
+				this.Cid = (String)json.get("Cid");
+			} else
+				this.Cid = "";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public int getNumber() {
@@ -100,19 +128,19 @@ public class Train {
 		this.time = time;
 	}
 
-	public int getJid() {
+	public String getJid() {
 		return Jid;
 	}
 
-	public void setJid(int jid) {
+	public void setJid(String jid) {
 		Jid = jid;
 	}
 
-	public int getCid() {
+	public String getCid() {
 		return Cid;
 	}
 
-	public void setCid(int cid) {
+	public void setCid(String cid) {
 		Cid = cid;
 	}
 }
