@@ -3,7 +3,7 @@ package model;
 import java.util.Date;
 
 public class Ticket {
-	
+	// members
 	private int routeID;
 	private Date date;
 	private double price;
@@ -14,6 +14,7 @@ public class Ticket {
 	}
 	private ComfortClass comfortClass;
 	
+	//getters en setters
 	private int ticketID;
 	public int getTicketID() {
 		return ticketID;
