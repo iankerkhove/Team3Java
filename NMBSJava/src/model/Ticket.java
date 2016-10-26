@@ -9,6 +9,7 @@ public class Ticket {
 	private double price;
 	private Date validFrom;
 	private Date validUntil;
+	// enumeratie
 	public enum ComfortClass{
 		First, Second
 	}
@@ -58,6 +59,18 @@ public class Ticket {
 	public void setComfortClass(ComfortClass comfortClass) {
 		this.comfortClass = comfortClass;
 	}
+	public Ticket(int routeID, Date date, double price, Date validFrom, Date validUntil, ComfortClass comfortClass,
+			int ticketID) {
+		super();
+		this.routeID = routeID;
+		this.date = date;
+		this.price = price;
+		this.validFrom = validFrom;
+		this.validUntil = validUntil;
+		this.comfortClass = comfortClass;
+		this.ticketID = ticketID;
+	}
 	
+	//functies en methoden
 	
 }
