@@ -19,6 +19,16 @@ public class TimeAPI {
 		this.actualDeparture = json.getString("ActualDeparture");
 	}
 
+	public TimeAPI() {
+		super();
+		this.date = "1970-01-01T00:00:00";
+		this.duration = "0";
+		this.arrival = "1970-01-01T00:00:00";
+		this.actualArrival = "1970-01-01T00:00:00";
+		this.departure = "1970-01-01T00:00:00";
+		this.actualDeparture = "1970-01-01T00:00:00";
+	}
+
 	public String getDate() {
 		return date;
 	}

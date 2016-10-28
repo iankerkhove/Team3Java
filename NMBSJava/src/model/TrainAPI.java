@@ -22,21 +22,24 @@ public class TrainAPI {
 			this.number = 0;
 		this.traintype = json.getInt("TrainType");
 		this.fullId = json.getString("FullId");
-		this.departureStation = json.getString("DepartureStation");
+		if (!json.get("DepartureStation").equals(null)) {
+			this.departureStation = json.getString("DepartureStation");
+		} else
+			this.departureStation = "";
 		this.terminusStation = json.getString("TerminusStation");
 		this.stop = new StopAPI(json.getJSONObject("Stops"));
 		this.cancelled = json.getBoolean("Cancelled");
 		this.time = new TimeAPI(json.getJSONObject("Time"));
 		if (!json.get("Jid").equals(null)) {
-			this.Jid = (String)json.get("Jid");
+			this.Jid = (String) json.get("Jid");
 		} else
 			this.Jid = "";
 		if (!json.get("Cid").equals(null)) {
-			this.Cid = (String)json.get("Cid");
+			this.Cid = (String) json.get("Cid");
 		} else
 			this.Cid = "";
 	}
-	
+
 	public TrainAPI(String trein) {
 		try {
 			json = new JSONObject(RouteberekeningAPI.readUrl("https://traintracks.online/api/Train/" + trein));
@@ -52,11 +55,11 @@ public class TrainAPI {
 			this.cancelled = json.getBoolean("Cancelled");
 			this.time = new TimeAPI(json.getJSONObject("Time"));
 			if (!json.get("Jid").equals(null)) {
-				this.Jid = (String)json.get("Jid");
+				this.Jid = (String) json.get("Jid");
 			} else
 				this.Jid = "";
 			if (!json.get("Cid").equals(null)) {
-				this.Cid = (String)json.get("Cid");
+				this.Cid = (String) json.get("Cid");
 			} else
 				this.Cid = "";
 		} catch (Exception e) {

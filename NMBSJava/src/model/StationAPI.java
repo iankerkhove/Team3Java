@@ -21,7 +21,9 @@ public class StationAPI {
 			this.departurePlatform = json.getString("DeparturePlatform");
 		} else
 			this.departurePlatform = "Niet gekend";
-		this.time = new TimeAPI(json.getJSONObject("Time"));
+		if (!json.get("Time").equals(null)) {
+			this.time = new TimeAPI(json.getJSONObject("Time"));
+		} else this.time = new TimeAPI();
 		if (!json.get("Platform").equals(null)) {
 			this.platform = json.getString("Platform");
 		} else
