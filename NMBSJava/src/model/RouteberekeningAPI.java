@@ -8,19 +8,33 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
-public class Routeberekening {
+public class RouteberekeningAPI {
 	JSONObject json = null;
 	private String stepOn;
 	private String stepOff;
-	private ArrayList<Route> routes = new ArrayList<Route>();
+	private ArrayList<RouteAPI> routes = new ArrayList<RouteAPI>();
 
-	public Routeberekening(String van, String naar) {
+	public RouteberekeningAPI(String van, String naar) {
 		try {
 			json = new JSONObject(readUrl("https://traintracks.online/api/Route/" + van + "/" + naar));
 			this.stepOn = json.getString("StepOn");
 			this.stepOff = json.getString("StepOff");
 			for (int i = 0; i < json.getJSONArray("Routes").length(); i++) {
-				Route r = new Route(json.getJSONArray("Routes").getJSONObject(i));
+				RouteAPI r = new RouteAPI(json.getJSONArray("Routes").getJSONObject(i));
+				routes.add(r);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public RouteberekeningAPI(String van, String naar, String tijd) {
+		try {
+			json = new JSONObject(readUrl("https://traintracks.online/api/Route/" + van + "/" + naar + "/" + tijd));
+			this.stepOn = json.getString("StepOn");
+			this.stepOff = json.getString("StepOff");
+			for (int i = 0; i < json.getJSONArray("Routes").length(); i++) {
+				RouteAPI r = new RouteAPI(json.getJSONArray("Routes").getJSONObject(i));
 				routes.add(r);
 			}
 		} catch (Exception e) {
@@ -44,11 +58,11 @@ public class Routeberekening {
 		this.stepOff = stepOff;
 	}
 
-	public ArrayList<Route> getRoutes() {
+	public ArrayList<RouteAPI> getRoutes() {
 		return routes;
 	}
 
-	public void setRoutes(ArrayList<Route> routes) {
+	public void setRoutes(ArrayList<RouteAPI> routes) {
 		this.routes = routes;
 	}
 

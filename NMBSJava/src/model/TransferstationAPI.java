@@ -2,7 +2,7 @@ package model;
 
 import org.json.JSONObject;
 
-public class Transferstation {
+public class TransferstationAPI {
 	private String fullId;
 	private String terminusstation;
 	private String transferAt;
@@ -12,7 +12,7 @@ public class Transferstation {
 	private String departureTime;
 	private String stepOverTime;
 
-	public Transferstation(JSONObject json) {
+	public TransferstationAPI(JSONObject json) {
 		this.fullId = json.getString("FullId");
 		this.terminusstation = json.getString("TerminusStation");
 		if (!json.get("TransferAt").equals(null)) {

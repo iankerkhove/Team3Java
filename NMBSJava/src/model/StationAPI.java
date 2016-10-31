@@ -2,15 +2,15 @@ package model;
 
 import org.json.JSONObject;
 
-public class Station {
+public class StationAPI {
 	private String name;
 	private String coordinates;
 	private String arrivalPlatform;
 	private String departurePlatform;
-	private Time time;
+	private TimeAPI time;
 	private String platform;
 
-	public Station(JSONObject json) {
+	public StationAPI(JSONObject json) {
 		this.name = json.getString("Name");
 		this.coordinates = json.getString("Coordinates");
 		if (!json.get("ArrivalPlatform").equals(null)) {
@@ -21,7 +21,7 @@ public class Station {
 			this.departurePlatform = json.getString("DeparturePlatform");
 		} else
 			this.departurePlatform = "Niet gekend";
-		this.time = new Time(json.getJSONObject("Time"));
+		this.time = new TimeAPI(json.getJSONObject("Time"));
 		if (!json.get("Platform").equals(null)) {
 			this.platform = json.getString("Platform");
 		} else
@@ -60,11 +60,11 @@ public class Station {
 		this.departurePlatform = departurePlatform;
 	}
 
-	public Time getTime() {
+	public TimeAPI getTime() {
 		return time;
 	}
 
-	public void setTime(Time time) {
+	public void setTime(TimeAPI time) {
 		this.time = time;
 	}
 
