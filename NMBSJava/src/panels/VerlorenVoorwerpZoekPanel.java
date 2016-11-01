@@ -17,6 +17,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 	private JLabel lblMerk;
 	private JLabel lblKleur;
 	private JLabel lblDatum;
+	private JLabel lblResultat;
 
 	private JTextField txtTreinNummer;
 	private JTextField txtDatum;
@@ -25,7 +26,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 	private JTextField txtKleur;
 
 	public VerlorenVoorwerpZoekPanel() {
-		setLayout(new GridLayout(7, 2,20,10));
+		setLayout(new GridLayout(8, 2,20,10));
 
 		btnToonAlles = new JButton();
 		btnToonAlles.setText("Toon alles");
@@ -81,11 +82,18 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		txtKleur.setColumns(1);
 		this.add(txtKleur);
 			
+		this.add(new JLabel(" "));
+		
+		lblResultat = new JLabel();
+		lblResultat.setText("  ");
+		lblResultat.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		this.add(lblResultat);
+		
 		btnZoek = new JButton();
 		btnZoek.setText("Zoek");
 		btnZoek.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		this.add(btnZoek);
-		
+
 		btnTerug = new JButton();
 		btnTerug.setText("Terug");
 		btnTerug.setFont(new Font("Tahoma", Font.PLAIN, 15));
