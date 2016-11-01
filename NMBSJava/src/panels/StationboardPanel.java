@@ -1,7 +1,8 @@
-package gui;
+package panels;
 
 import java.awt.Font;
 import java.awt.GridLayout;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -9,20 +10,20 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
-public class TreinopzoekingPanel extends JPanel {
+public class StationboardPanel extends JPanel {
 	
 	private JPanel searchPanel;
 	private JPanel resultPanel;
 
 	private JLabel lblTitle;
-	private JLabel lblTrein;
+	private JLabel lblStation;
 	private JLabel lblResult;
 
-	private JTextField txtTrein;
+	private JTextField txtStation;
 
 	private JButton btnZoek;
 
-	public TreinopzoekingPanel() {
+	public StationboardPanel() {
 		initSearchPanel();
 		initResultPanel();
 		initializeCompletePanel();
@@ -44,7 +45,7 @@ public class TreinopzoekingPanel extends JPanel {
 		resultPanel.setLayout(new GridLayout(1, 1, 5, 5));
 
 		/* Create all components */
-		lblResult = new JLabel("Druk op zoeken om een trein weer te geven.");
+		lblResult = new JLabel("Druk op zoeken om een stationsbord weer te geven.");
 		lblResult.setHorizontalAlignment(SwingConstants.LEFT);
 		lblResult.setVerticalAlignment(SwingConstants.TOP);
 
@@ -59,19 +60,19 @@ public class TreinopzoekingPanel extends JPanel {
 		searchPanel.setLayout(new GridLayout(4, 2, 5, 5));
 
 		/* Create all components */
-		lblTitle = new JLabel("Trein opzoeken");
+		lblTitle = new JLabel("Stationsbord");
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
-		lblTrein = new JLabel("Trein: ");
-		txtTrein = new JTextField("trein");
+		lblStation = new JLabel("Station: ");
+		txtStation = new JTextField("station");
 
 		btnZoek = new JButton("Zoek");
 
 		/* Add all components */
 		searchPanel.add(lblTitle);
 		searchPanel.add(new JLabel());
-		searchPanel.add(lblTrein);
-		searchPanel.add(txtTrein);
+		searchPanel.add(lblStation);
+		searchPanel.add(txtStation);
 		searchPanel.add(new JLabel());
 		searchPanel.add(btnZoek);
 		searchPanel.add(new JLabel());

@@ -1,4 +1,4 @@
-package gui;
+package panels;
 
 import java.awt.GridLayout;
 import java.util.Properties;
@@ -12,6 +12,8 @@ import javax.swing.SwingConstants;
 import org.jdatepicker.impl.*;
 
 import com.github.lgooddatepicker.components.TimePicker;
+
+import gui.GUIDateFormat;
 
 import java.awt.Font;
 
