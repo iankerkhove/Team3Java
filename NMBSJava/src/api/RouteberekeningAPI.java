@@ -1,4 +1,4 @@
-package model;
+package api;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -39,6 +39,7 @@ public class RouteberekeningAPI {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("joj");
 		}
 	}
 
