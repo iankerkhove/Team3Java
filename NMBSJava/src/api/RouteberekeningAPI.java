@@ -96,8 +96,34 @@ public class RouteberekeningAPI {
 	}
 	public String toString(){
 		String ss = "";
-		ss += "Van: " + this.stepOn + "\nNaar: " + this.stepOff + "\n";
-		ss += "";
+		ss += "Treinen van " + stepOn + " naar " + stepOff + ":\n\n";
+		for (int i = 0; i < routes.size() - 1; i++) {
+			for (int k = 0; k < routes.get(i).getTrains().get(0).getStop().getStations().size(); k++) {
+				if (routes.get(i).getTrains().get(0).getStop().getStations().get(k).getName().equals(stepOn)) {
+					String dep = routes.get(i).getTrains().get(0).getStop().getStations().get(k).getTime()
+							.getDeparture();
+					ss += dep.substring(11, 16) + " - ";
+				}
+			}
+			for (int k = 0; k < routes.get(i).getTrains().get(routes.get(i).getTrains().size() - 1).getStop()
+					.getStations().size(); k++) {
+				if (routes.get(i).getTrains().get(routes.get(i).getTrains().size() - 1).getStop().getStations().get(k)
+						.getName().equals(stepOff)) {
+					String arr = routes.get(i).getTrains().get(routes.get(i).getTrains().size() - 1).getStop()
+							.getStations().get(k).getTime().getArrival();
+					ss += arr.substring(11, 16) + " -> ";
+				}
+
+			}
+			for (int j = 0; j < routes.get(i).getTrains().size(); j++) {
+				if (j != 0) {
+					ss += ", ";
+				}
+				ss += routes.get(i).getTrains().get(j).getFullId();
+			}
+			ss += "\n";
+			ss += "\n";
+		}
 		return ss;
 	}
 }
