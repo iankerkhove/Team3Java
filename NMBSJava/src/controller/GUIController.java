@@ -37,6 +37,7 @@ public class GUIController {
 	private static void init() {
 		// fixed navbar
 		nav = new NavPanel();
+		startNavigationListeners();
 
 		// changing panels
 		route = new RouteberekeningPanel();
@@ -58,6 +59,7 @@ public class GUIController {
 						frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
 						frame.getContentPane().add(route);
 						frame.setContentPane(frame.getContentPane());
+						startRouteListener();
 					}
 				});
 
@@ -80,7 +82,7 @@ public class GUIController {
 		});
 	}
 
-	public static void startRouteListeners() {
+	public static void startRouteListener() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				route.getBtnZoek().addActionListener(new ActionListener() {
@@ -88,10 +90,12 @@ public class GUIController {
 						RouteberekeningAPI r;
 						String van = route.getTxtVan().getText();
 						String naar = route.getTxtNaar().getText();
-						//String datum = route.getDatePicker().getJFormattedTextField().getText();
-						//String tijd = route.getTimePicker().getText();
-						if (!van.equals("") && !naar.equals("")) {
-							r = new RouteberekeningAPI(van, naar);
+						String datum = route.getDatePicker().getJFormattedTextField().getText();
+						String tijd = route.getTimePicker().getText();
+						
+						if (!van.equals("") && !naar.equals("") && DateTimeConverter.checkTime(tijd) && DateTimeConverter.checkDate(datum)) {
+							
+							r = new RouteberekeningAPI(van, naar, DateTimeConverter.getEpoch(datum, tijd));
 							String ss = r.toString();
 							if (!ss.contains("null")) {
 								route.getLblResult().setText("<html>"
