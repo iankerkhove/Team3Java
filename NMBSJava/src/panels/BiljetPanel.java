@@ -7,8 +7,11 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import gui.GUIDateFormat;
+
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.util.Properties;
 
 
 public class BiljetPanel<add> extends JPanel {
@@ -41,9 +44,13 @@ public class BiljetPanel<add> extends JPanel {
 		txtNaar = new JTextField("naar");
 		vanNaarpanel.add(txtNaar);
 		
-		UtilDateModel model = new UtilDateModel();
-		JDatePanelImpl datePanel = new JDatePanelImpl(model, null);
-		dteDatum = new JDatePickerImpl(datePanel, null);
+		Properties properties = new Properties();
+		properties.put("text.today", "Today");
+		properties.put("text.month", "Month");
+		properties.put("text.year", "Year");
+		
+		JDatePanelImpl datePanel = new JDatePanelImpl(new UtilDateModel(), properties);
+		dteDatum = new JDatePickerImpl(datePanel,new GUIDateFormat());
 		
 		add(dteDatum);
 		
