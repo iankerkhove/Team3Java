@@ -39,7 +39,6 @@ public class RouteberekeningAPI {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("joj");
 		}
 	}
 
