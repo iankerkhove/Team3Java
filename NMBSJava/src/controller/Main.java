@@ -3,6 +3,8 @@ package controller;
 public class Main {
 
 	public static void main(String[] args) {
-		GUIController.startGUI();
+		GUIController.startInterface();
+		GUIController.startNavigationListeners();
+		GUIController.startRouteListeners();
 	}
 }
