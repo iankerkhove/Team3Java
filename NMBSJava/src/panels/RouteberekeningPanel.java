@@ -1,4 +1,4 @@
-package gui;
+package panels;
 
 import java.awt.GridLayout;
 import java.util.Properties;
@@ -12,6 +12,8 @@ import javax.swing.SwingConstants;
 import org.jdatepicker.impl.*;
 
 import com.github.lgooddatepicker.components.TimePicker;
+
+import gui.GUIDateFormat;
 
 import java.awt.Font;
 
@@ -85,7 +87,7 @@ public class RouteberekeningPanel extends JPanel {
 		{
 			timePanel = new JPanel();
 			timePanel.setLayout(new GridLayout(1, 2, 5, 5));
-			
+
 			Properties properties = new Properties();
 			properties.put("text.today", "Today");
 			properties.put("text.month", "Month");
@@ -95,7 +97,7 @@ public class RouteberekeningPanel extends JPanel {
 			datePicker.getJFormattedTextField().setText("01/11/2016");
 			timePicker = new TimePicker();
 			timePicker.setText("12:00");
-			
+
 			timePanel.add(datePicker);
 			timePanel.add(timePicker);
 		}
@@ -113,5 +115,57 @@ public class RouteberekeningPanel extends JPanel {
 		searchPanel.add(timePanel);
 		searchPanel.add(new JLabel());
 		searchPanel.add(btnZoek);
+	}
+
+	public JPanel getSearchPanel() {
+		return searchPanel;
+	}
+
+	public JPanel getTimePanel() {
+		return timePanel;
+	}
+
+	public JPanel getResultPanel() {
+		return resultPanel;
+	}
+
+	public JLabel getLblTitle() {
+		return lblTitle;
+	}
+
+	public JLabel getLblVan() {
+		return lblVan;
+	}
+
+	public JLabel getLblNaar() {
+		return lblNaar;
+	}
+
+	public JLabel getLblTijd() {
+		return lblTijd;
+	}
+
+	public JLabel getLblResult() {
+		return lblResult;
+	}
+
+	public JTextField getTxtVan() {
+		return txtVan;
+	}
+
+	public JTextField getTxtNaar() {
+		return txtNaar;
+	}
+
+	public JDatePickerImpl getDatePicker() {
+		return datePicker;
+	}
+
+	public TimePicker getTimePicker() {
+		return timePicker;
+	}
+
+	public JButton getBtnZoek() {
+		return btnZoek;
 	}
 }
