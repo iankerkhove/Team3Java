@@ -46,7 +46,6 @@ public class RouteberekeningPanel extends JPanel {
 	private void initializeCompletePanel() {
 		/* init pane */
 		this.setLayout(new GridLayout(2, 1, 5, 5));
-		this.setVisible(false);
 
 		/* Add all components */
 		this.add(searchPanel);
