@@ -10,7 +10,7 @@ import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class TreinopzoekingPanel extends JPanel {
-	
+
 	private JPanel searchPanel;
 	private JPanel resultPanel;
 
@@ -76,6 +76,34 @@ public class TreinopzoekingPanel extends JPanel {
 		searchPanel.add(btnZoek);
 		searchPanel.add(new JLabel());
 		searchPanel.add(new JLabel());
+	}
+
+	public JPanel getSearchPanel() {
+		return searchPanel;
+	}
+
+	public JPanel getResultPanel() {
+		return resultPanel;
+	}
+
+	public JLabel getLblTitle() {
+		return lblTitle;
+	}
+
+	public JLabel getLblTrein() {
+		return lblTrein;
+	}
+
+	public JLabel getLblResult() {
+		return lblResult;
+	}
+
+	public JTextField getTxtTrein() {
+		return txtTrein;
+	}
+
+	public JButton getBtnZoek() {
+		return btnZoek;
 	}
 
 }

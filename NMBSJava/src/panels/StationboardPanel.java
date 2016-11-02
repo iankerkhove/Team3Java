@@ -11,7 +11,7 @@ import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class StationboardPanel extends JPanel {
-	
+
 	private JPanel searchPanel;
 	private JPanel resultPanel;
 
@@ -77,6 +77,34 @@ public class StationboardPanel extends JPanel {
 		searchPanel.add(btnZoek);
 		searchPanel.add(new JLabel());
 		searchPanel.add(new JLabel());
+	}
+
+	public JPanel getSearchPanel() {
+		return searchPanel;
+	}
+
+	public JPanel getResultPanel() {
+		return resultPanel;
+	}
+
+	public JLabel getLblTitle() {
+		return lblTitle;
+	}
+
+	public JLabel getLblStation() {
+		return lblStation;
+	}
+
+	public JLabel getLblResult() {
+		return lblResult;
+	}
+
+	public JTextField getTxtStation() {
+		return txtStation;
+	}
+
+	public JButton getBtnZoek() {
+		return btnZoek;
 	}
 
 }
