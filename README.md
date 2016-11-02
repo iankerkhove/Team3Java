@@ -1,5 +1,4 @@
 # Software Project 2 - TEAM 3
-<br>
 <ul>
 <li>Jonas D.F.</li>
 <li>Ian K.</li>
