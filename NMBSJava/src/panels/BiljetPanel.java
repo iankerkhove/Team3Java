@@ -20,7 +20,7 @@ public class BiljetPanel extends JPanel {
 	private JTextField txtNaar;
 	private JDatePickerImpl dteGaanDatum;
 	private JDatePickerImpl dteTerugDatum;
-	private JComboBox cboBiljet;
+	private JComboBox<String> cboBiljet;
 	private JRadioButton rdbEnkel;
 	private JRadioButton rdbHeenTerug;
 	private JRadioButton rdbEersteKlasse;
@@ -53,13 +53,13 @@ public class BiljetPanel extends JPanel {
 		lblVan = new JLabel("Van: ");
 		vanNaarpanel.add(lblVan);
 		// textfieldVan
-		txtVan = new JTextField("van");
+		txtVan = new JTextField("");
 		vanNaarpanel.add(txtVan);
 		
 		lblNaar = new JLabel("Naar: ");
 		vanNaarpanel.add(lblNaar);
 		
-		txtNaar = new JTextField("naar");
+		txtNaar = new JTextField("");
 		vanNaarpanel.add(txtNaar);
 		//datepicker
 		Properties properties = new Properties();
@@ -69,25 +69,32 @@ public class BiljetPanel extends JPanel {
 		
 		JDatePanelImpl datePanel1 = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteGaanDatum = new JDatePickerImpl(datePanel1,new GUIDateFormat());
-		dteGaanDatum.getJFormattedTextField().setText("Begin datum");
+		dteGaanDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
 		
 		comboBoxpanel.setLayout(new GridLayout(2, 1, 5, 5));
 		String[] s = {"Standaardbiljet" , "GoPass 1" , "Weekendbiljet", "Seniorenbiljet", "Biljet Kind"};
-		cboBiljet = new JComboBox(s);
+		cboBiljet = new JComboBox<String>(s);
 	
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteTerugDatum = new JDatePickerImpl(datePanel2,new GUIDateFormat());
-		dteTerugDatum.getJFormattedTextField().setText("Eind datum");
+		dteTerugDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
 		
 		rdbEnkel = new JRadioButton("Enkel");
+		rdbEnkel.setMnemonic(1);
+		rdbEnkel.setSelected(true);
 		rdbHeenTerug = new JRadioButton("Heen en terug");
+		rdbHeenTerug.setMnemonic(2);
 		
 		typeTicketpanel.setLayout(new GridLayout(2, 2, 5, 5));
 		
 		klasseTicketpanel.setLayout(new GridLayout(3,2,5,5));
 		rdbEersteKlasse = new JRadioButton("1e klasse");
+		rdbEersteKlasse.setMnemonic(1);
 		rdbTweedeKlasse = new JRadioButton("2e klasse");
+		rdbTweedeKlasse.setMnemonic(2);
+		rdbTweedeKlasse.setSelected(true);
 		rdbKlasseVerhoging = new JRadioButton("Klasseverhoging");
+		rdbKlasseVerhoging.setMnemonic(3);
 		
 		grpHeenTerug = new ButtonGroup();
 		grpKlasseTicket = new ButtonGroup();
@@ -130,6 +137,54 @@ public class BiljetPanel extends JPanel {
 		add(klasseTicketpanel);
 		add(btnPrint);
 		add(lblPrijs);
+	}
+	public JLabel getLblVan() {
+		return lblVan;
+	}
+	public JTextField getTxtVan() {
+		return txtVan;
+	}
+	public JLabel getLblNaar() {
+		return lblNaar;
+	}
+	public JTextField getTxtNaar() {
+		return txtNaar;
+	}
+	public JDatePickerImpl getDteGaanDatum() {
+		return dteGaanDatum;
+	}
+	public JDatePickerImpl getDteTerugDatum() {
+		return dteTerugDatum;
+	}
+	public JComboBox<String> getCboBiljet() {
+		return cboBiljet;
+	}
+	public JRadioButton getRdbEnkel() {
+		return rdbEnkel;
+	}
+	public JRadioButton getRdbHeenTerug() {
+		return rdbHeenTerug;
+	}
+	public JRadioButton getRdbEersteKlasse() {
+		return rdbEersteKlasse;
+	}
+	public JRadioButton getRdbTweedeKlasse() {
+		return rdbTweedeKlasse;
+	}
+	public JRadioButton getRdbKlasseVerhoging() {
+		return rdbKlasseVerhoging;
+	}
+	public ButtonGroup getGrpHeenTerug() {
+		return grpHeenTerug;
+	}
+	public ButtonGroup getGrpKlasseTicket() {
+		return grpKlasseTicket;
+	}
+	public JButton getBtnPrint() {
+		return btnPrint;
+	}
+	public JLabel getLblPrijs() {
+		return lblPrijs;
 	}
 
 }
