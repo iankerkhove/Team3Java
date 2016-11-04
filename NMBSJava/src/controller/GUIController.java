@@ -85,9 +85,13 @@ public class GUIController {
 
 				nav.getBtnStationZoek().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						station = new StationboardPanel();
+						
 						frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
 						frame.getContentPane().add(station);
 						frame.setContentPane(frame.getContentPane());
+						
+						
 					}
 				});
 			}
