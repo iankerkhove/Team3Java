@@ -21,7 +21,7 @@ public class GUIController {
 	private static TreinopzoekingPanel trein;
 	private static StationboardPanel station;
 
-	public static void startInterface() {
+	public static void start() {
 		// Make frame after performing all other tasks
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
