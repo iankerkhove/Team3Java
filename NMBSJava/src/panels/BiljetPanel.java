@@ -80,14 +80,21 @@ public class BiljetPanel extends JPanel {
 		dteTerugDatum.getJFormattedTextField().setText("Eind datum");
 		
 		rdbEnkel = new JRadioButton("Enkel");
+		rdbEnkel.setMnemonic(1);
+		rdbEnkel.setSelected(true);
 		rdbHeenTerug = new JRadioButton("Heen en terug");
+		rdbHeenTerug.setMnemonic(2);
 		
 		typeTicketpanel.setLayout(new GridLayout(2, 2, 5, 5));
 		
 		klasseTicketpanel.setLayout(new GridLayout(3,2,5,5));
 		rdbEersteKlasse = new JRadioButton("1e klasse");
+		rdbEersteKlasse.setMnemonic(1);
 		rdbTweedeKlasse = new JRadioButton("2e klasse");
+		rdbTweedeKlasse.setMnemonic(2);
+		rdbTweedeKlasse.setSelected(true);
 		rdbKlasseVerhoging = new JRadioButton("Klasseverhoging");
+		rdbKlasseVerhoging.setMnemonic(3);
 		
 		grpHeenTerug = new ButtonGroup();
 		grpKlasseTicket = new ButtonGroup();
