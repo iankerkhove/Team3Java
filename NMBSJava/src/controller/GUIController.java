@@ -5,28 +5,31 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import gui.GUIFrame;
-import api.RouteberekeningAPI;
 import panels.*;
 
 public class GUIController {
 
+	// frame
 	private static GUIFrame frame;
+	// navbar
 	private static NavPanel nav;
+	// all panels
 	private static StartPanel start;
 	private static RouteberekeningPanel route;
 	private static TreinopzoekingPanel trein;
 	private static StationboardPanel station;
+	private static BiljetPanel biljet;
 
-	public static void startInterface() {
+	public static void start() {
+		// Make frame after performing all other tasks
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					frame = new GUIFrame();
 					frame.setVisible(true);
 					frame.setTitle("NMBSTeam - Start");
-
+					// initialize basic components on frame
 					init();
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -37,87 +40,78 @@ public class GUIController {
 	private static void init() {
 		// fixed navbar
 		nav = new NavPanel();
-		startNavigationListeners();
-
-		// changing panels
-		route = new RouteberekeningPanel();
-		station = new StationboardPanel();
-		trein = new TreinopzoekingPanel();
+		// startpanel
 		start = new StartPanel();
-
-		// startframe
+		// start listening for actions on navbar
+		startListeningOnNav();
+		// create startframe
 		frame.getContentPane().add(nav, BorderLayout.WEST);
 		frame.getContentPane().add(start, BorderLayout.CENTER);
-
 	}
 
-	public static void startNavigationListeners() {
+	public static void startListeningOnNav() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				nav.getBtnRouteZoek().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
-						frame.getContentPane().add(route);
-						frame.setContentPane(frame.getContentPane());
-						startRouteListener();
+						startRouteberekening();
 					}
 				});
 
 				nav.getBtnTreinZoek().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
-						frame.getContentPane().add(trein);
-						frame.setContentPane(frame.getContentPane());
+						startTreinopzoeking();
 					}
 				});
 
 				nav.getBtnStationZoek().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
-						frame.getContentPane().add(station);
-						frame.setContentPane(frame.getContentPane());
+						startStationsbord();
+					}
+				});
+				
+				nav.getBtnBiljetKoop().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startKoopBiljet();
 					}
 				});
 			}
 		});
 	}
 
-	public static void startRouteListener() {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				route.getBtnZoek().addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						RouteberekeningAPI r;
-						String van = route.getTxtVan().getText();
-						String naar = route.getTxtNaar().getText();
-						String datum = route.getDatePicker().getJFormattedTextField().getText();
-						String tijd = route.getTimePicker().getText();
-						
-						if (!van.equals("") && !naar.equals("") && DateTimeConverter.checkTime(tijd) && DateTimeConverter.checkDate(datum)) {
-							
-							r = new RouteberekeningAPI(van, naar, DateTimeConverter.getEpoch(datum, tijd));
-							String ss = r.toString();
-							if (!ss.contains("null")) {
-								route.getLblResult().setText("<html>"
-										+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
-										+ "</html>");
-							} else
-								route.getLblResult().setText("Dit verzoek kon niet verwerkt worden.");
-						} else {
-							route.getLblResult().setText("Formulier werd niet correct ingevuld.");
-						}
+	private static void startRouteberekening() {
+		route = new RouteberekeningPanel();
+		frame.setTitle("NMBSTeam - Bereken route");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(route);
+		frame.setContentPane(frame.getContentPane());
+		RouteberekeningController.startListening(route);
+	}
 
-					}
-				});
-			}
-		});
+	private static void startTreinopzoeking() {
+		trein = new TreinopzoekingPanel();
+		frame.setTitle("NMBSTeam - Zoek trein");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(trein);
+		frame.setContentPane(frame.getContentPane());
+		TreinopzoekingController.startListening(trein);
+	}
+
+	private static void startStationsbord() {
+		station = new StationboardPanel();
+		frame.setTitle("NMBSTeam - Bekijk het stationsbord");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(station);
+		frame.setContentPane(frame.getContentPane());
+		StationsbordController.startListening(station);
+	}
+	
+	private static void startKoopBiljet() {
+		biljet = new BiljetPanel();
+		frame.setTitle("NMBSTeam - Koop Biljet");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(biljet);
+		frame.setContentPane(frame.getContentPane());
+		KoopBiljetController.startListening(biljet);
 	}
 }
-
-// EventQueue.invokeLater(new Runnable() {
-// public void run() {
-// RouteberekeningAPI r = new RouteberekeningAPI("Geraardsbergen",
-// "Brussel-Zuid");
-// r.toString();
-// }
-// });
