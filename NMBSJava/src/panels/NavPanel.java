@@ -58,10 +58,10 @@ public class NavPanel extends JPanel {
 		this.add(btnRouteZoek);
 		this.add(btnTreinZoek);
 		this.add(btnStationZoek);
-		this.add(btnVerlorenVoorwerpenZoek);
-		this.add(btnbtnVerlorenVoorwerpenVoegToe);
 		this.add(btnBiljetKoop);
 		this.add(btnAbonnementKoop);
+		this.add(btnVerlorenVoorwerpenZoek);
+		this.add(btnbtnVerlorenVoorwerpenVoegToe);
 		this.add(btnPrijzenAanpassen);
 	}
 
