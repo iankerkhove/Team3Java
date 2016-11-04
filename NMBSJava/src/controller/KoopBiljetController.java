@@ -25,6 +25,9 @@ public class KoopBiljetController {
 								&& DateTimeConverter.checkDate(einddatum) && typeHeenTerugSelectedMnem != 0 
 								&& typeKlasseSelectedMnem != 0 && !soortBiljet.equals(null)) {
 							System.out.println("Juist biljet");
+							
+							// TODO TICKET AANMAKEN MET CORRECTE CONSTRUCTOR, KLASSE AANPASSEN
+							
 							// Ticket s = new Ticket(routeID, date, price, validFrom, validUntil, comfortClass, ticketID);
 							// van, naar, prijs, begindatum, einddatum, typeHeenTerugSelectedMnem, soortBiljet, typeKlasseSelectedMnem
 						} else {
