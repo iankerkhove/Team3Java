@@ -18,6 +18,7 @@ public class GUIController {
 	private static RouteberekeningPanel route;
 	private static TreinopzoekingPanel trein;
 	private static StationboardPanel station;
+	private static BiljetPanel biljet;
 
 	public static void start() {
 		// Make frame after performing all other tasks
@@ -68,6 +69,12 @@ public class GUIController {
 						startStationsbord();
 					}
 				});
+				
+				nav.getBtnBiljetKoop().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startKoopBiljet();
+					}
+				});
 			}
 		});
 	}
@@ -97,5 +104,14 @@ public class GUIController {
 		frame.getContentPane().add(station);
 		frame.setContentPane(frame.getContentPane());
 		StationsbordController.startListening(station);
+	}
+	
+	private static void startKoopBiljet() {
+		biljet = new BiljetPanel();
+		frame.setTitle("NMBSTeam - Koop Biljet");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(biljet);
+		frame.setContentPane(frame.getContentPane());
+		KoopBiljetController.startListening(biljet);
 	}
 }
