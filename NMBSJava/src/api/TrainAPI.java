@@ -67,6 +67,19 @@ public class TrainAPI {
 		}
 	}
 
+	public String toString() {
+		String ss = "";
+		ss += getFullId() + "\n\nVan: " + getStop().getStations().get(0).getName() + " ("
+				+ getStop().getStations().get(0).getTime().getDeparture().substring(0, 10) + " om "
+				+ getStop().getStations().get(0).getTime().getDeparture().substring(11, 16) + ")" + "\nNaar: "
+				+ getStop().getStations().get(getStop().getStations().size() - 1).getName() + " ("
+				+ getStop().getStations().get(getStop().getStations().size() - 1).getTime().getArrival().substring(0,10)
+				+ " om " + getStop().getStations().get(getStop().getStations().size() - 1).getTime().getArrival().substring(11, 16)
+				+ ")";
+
+		return ss;
+	}
+
 	public int getNumber() {
 		return number;
 	}
