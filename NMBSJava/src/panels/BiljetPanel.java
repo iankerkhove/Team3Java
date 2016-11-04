@@ -53,13 +53,13 @@ public class BiljetPanel extends JPanel {
 		lblVan = new JLabel("Van: ");
 		vanNaarpanel.add(lblVan);
 		// textfieldVan
-		txtVan = new JTextField("van");
+		txtVan = new JTextField("");
 		vanNaarpanel.add(txtVan);
 		
 		lblNaar = new JLabel("Naar: ");
 		vanNaarpanel.add(lblNaar);
 		
-		txtNaar = new JTextField("naar");
+		txtNaar = new JTextField("");
 		vanNaarpanel.add(txtNaar);
 		//datepicker
 		Properties properties = new Properties();
@@ -69,7 +69,7 @@ public class BiljetPanel extends JPanel {
 		
 		JDatePanelImpl datePanel1 = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteGaanDatum = new JDatePickerImpl(datePanel1,new GUIDateFormat());
-		dteGaanDatum.getJFormattedTextField().setText("Begin datum");
+		dteGaanDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
 		
 		comboBoxpanel.setLayout(new GridLayout(2, 1, 5, 5));
 		String[] s = {"Standaardbiljet" , "GoPass 1" , "Weekendbiljet", "Seniorenbiljet", "Biljet Kind"};
@@ -77,7 +77,7 @@ public class BiljetPanel extends JPanel {
 	
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteTerugDatum = new JDatePickerImpl(datePanel2,new GUIDateFormat());
-		dteTerugDatum.getJFormattedTextField().setText("Eind datum");
+		dteTerugDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
 		
 		rdbEnkel = new JRadioButton("Enkel");
 		rdbEnkel.setMnemonic(1);

@@ -63,7 +63,7 @@ public class StationboardPanel extends JPanel {
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		lblStation = new JLabel("Station: ");
-		txtStation = new JTextField("station");
+		txtStation = new JTextField("");
 
 		btnZoek = new JButton("Zoek");
 
