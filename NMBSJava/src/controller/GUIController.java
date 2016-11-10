@@ -28,8 +28,33 @@ public class GUIController {
 				try {
 					frame = new GUIFrame();
 					frame.setVisible(true);
+					frame.setTitle("NMBSTeam - Login");
+					login();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	public static void login() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				LoginPanel l = new LoginPanel();
+				frame.getContentPane().add(l, BorderLayout.CENTER);
+				frame.setContentPane(frame.getContentPane());
+				LoginController.login(l);
+			}
+		});
+	}
+
+	public static void showApp() {
+		// Make frame after performing all other tasks
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					frame.getContentPane().removeAll();
 					frame.setTitle("NMBSTeam - Start");
-					// initialize basic components on frame
 					init();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -48,6 +73,7 @@ public class GUIController {
 		// create startframe
 		frame.getContentPane().add(nav, BorderLayout.WEST);
 		frame.getContentPane().add(start, BorderLayout.CENTER);
+		frame.setContentPane(frame.getContentPane());
 	}
 
 	public static void startListeningOnNav() {
@@ -70,7 +96,7 @@ public class GUIController {
 						startStationsbord();
 					}
 				});
-				
+
 				nav.getBtnBiljetKoop().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						startKoopBiljet();
@@ -111,7 +137,7 @@ public class GUIController {
 		frame.setContentPane(frame.getContentPane());
 		StationsbordController.startListening(station);
 	}
-	
+
 	private static void startKoopBiljet() {
 		biljet = new BiljetPanel();
 		frame.setTitle("NMBSTeam - Koop Biljet");
@@ -120,7 +146,7 @@ public class GUIController {
 		frame.setContentPane(frame.getContentPane());
 		KoopBiljetController.startListening(biljet);
 	}
-	
+
 	private static void startKoopAbonnement() {
 		abonnement = new NieuwAbonnementPanel();
 		frame.setTitle("NMBSTeam - Koop Abonnement");
@@ -128,5 +154,9 @@ public class GUIController {
 		frame.getContentPane().add(abonnement);
 		frame.setContentPane(frame.getContentPane());
 		KoopAbonnementController.startListening(abonnement);
+	}
+
+	public static GUIFrame getFrame() {
+		return frame;
 	}
 }
