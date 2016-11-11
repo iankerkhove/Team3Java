@@ -10,7 +10,7 @@ public class LoginPanel extends JPanel {
 	private JLabel lblUsername;
 	private JTextField txtUsername;
 	private JLabel lblPassword;
-	private JTextField txtPassword;
+	private JPasswordField txtPassword;
 	private JCheckBox chAdmin;
 	private JButton btnLogin;
 	private JLabel lblResult;
@@ -28,7 +28,7 @@ public class LoginPanel extends JPanel {
 
 		JPanel usrp = new JPanel();
 		lblPassword = new JLabel("Password:");
-		txtPassword = new JTextField();
+		txtPassword = new JPasswordField();
 		txtPassword.setColumns(20);
 		usrp.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		usrp.add(lblPassword);
