@@ -20,7 +20,12 @@ public class RouteberekeningController {
 						
 						if (!van.equals("") && !naar.equals("") && DateTimeConverter.checkTime(tijd) && DateTimeConverter.checkDate(datum)) {
 							
-							r = new RouteberekeningAPI(van, naar, DateTimeConverter.getEpoch(datum, tijd) + 300);
+							int tempInt = Integer.parseInt(DateTimeConverter.getEpoch(datum, tijd));
+							tempInt += 300;
+							String tempString = "";
+							tempString += tempInt;
+							
+							r = new RouteberekeningAPI(van, naar, tempString);
 							String ss = r.toString();
 							if (!ss.contains("null")) {
 								route.getLblResult().setText("<html>"
