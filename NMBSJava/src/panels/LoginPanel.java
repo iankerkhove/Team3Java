@@ -1,57 +1,92 @@
 package panels;
 
 import javax.swing.*;
+import java.awt.GridLayout;
+import java.awt.FlowLayout;
 
 @SuppressWarnings("serial")
 public class LoginPanel extends JPanel {
 
 	private JLabel lblUsername;
-	private JLabel lblPassword;
-	private JLabel lblAdmin;
-	
-	private JRadioButton rbtnAdmin;
-	
-	private JButton btnLogin;
-	
 	private JTextField txtUsername;
-	private JTextField txtPassword;
-	
-	public LoginPanel(){
-		setLayout(null);
-		
-		lblUsername = new JLabel();
-		lblUsername.setBounds(97,100,60,20);
-		lblUsername.setText("Username:");
-		this.add(lblUsername);
-		
-		lblPassword = new JLabel();
-		lblPassword.setBounds(97,131,60,20);
-		lblPassword.setText("Password:");
-		this.add(lblPassword);
-		
-		lblAdmin = new JLabel();
-		lblAdmin.setBounds(190,162,60,20);
-		lblAdmin.setText("Admin");
-		this.add(lblAdmin);
-		
+	private JLabel lblPassword;
+	private JPasswordField txtPassword;
+	private JCheckBox chAdmin;
+	private JButton btnLogin;
+	private JLabel lblResult;
+
+	public LoginPanel() {
+		JPanel content = new JPanel();
+
+		JPanel usrn = new JPanel();
+		lblUsername = new JLabel("Username:");
 		txtUsername = new JTextField();
-		txtUsername.setBounds(167, 100, 102, 20);
-		this.add(txtUsername);
-		
-		txtPassword = new JTextField();
-		txtPassword.setBounds(167, 131, 102, 20);
-		this.add(txtPassword);
-		
-		rbtnAdmin = new JRadioButton();
-		rbtnAdmin.setLocation(167, 162);
-		rbtnAdmin.setSize(21, 20);
-		this.add(rbtnAdmin);
-		
-		btnLogin = new JButton();
-		btnLogin.setBounds(167, 193, 86, 20);
-		btnLogin.setText("Login");
-		this.add(btnLogin);
-		
+		txtUsername.setColumns(20);
+		usrn.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		usrn.add(lblUsername);
+		usrn.add(txtUsername);
+
+		JPanel usrp = new JPanel();
+		lblPassword = new JLabel("Password:");
+		txtPassword = new JPasswordField();
+		txtPassword.setColumns(20);
+		usrp.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		usrp.add(lblPassword);
+		usrp.add(txtPassword);
+
+		JPanel admin = new JPanel();
+		admin.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		chAdmin = new JCheckBox("Admin");
+		admin.add(chAdmin);
+
+		JPanel login = new JPanel();
+		login.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		btnLogin = new JButton("Login");
+		login.add(btnLogin);
+
+		lblResult = new JLabel();
+		lblResult.setHorizontalAlignment(SwingConstants.CENTER);
+
+		content.setLayout(new GridLayout(7, 1, 5, 5));
+
+		content.add(new JLabel());
+		content.add(new JLabel());
+		content.add(usrn);
+		content.add(usrp);
+		content.add(admin);
+		content.add(login);
+		content.add(lblResult);
+
+		this.add(content);
+
+	}
+
+	public JLabel getLblUsername() {
+		return lblUsername;
+	}
+
+	public JTextField getTxtUsername() {
+		return txtUsername;
+	}
+
+	public JLabel getLblPassword() {
+		return lblPassword;
+	}
+
+	public JTextField getTxtPassword() {
+		return txtPassword;
+	}
+
+	public JCheckBox getChAdmin() {
+		return chAdmin;
+	}
+
+	public JButton getBtnLogin() {
+		return btnLogin;
+	}
+
+	public JLabel getLblResult() {
+		return lblResult;
 	}
 
 }

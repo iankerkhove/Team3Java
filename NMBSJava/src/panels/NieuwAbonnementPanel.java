@@ -6,23 +6,16 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-
 import java.awt.Font;
-import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
-import java.awt.event.ActionListener;
-
 import javax.swing.JTextField;
-import java.util.Date;
 import java.util.Properties;
-import java.util.Calendar;
 import org.jdatepicker.impl.*;
-
 import gui.GUIDateFormat;
-import javax.swing.SwingConstants;
-import javax.swing.SpringLayout;
 
+@SuppressWarnings("serial")
 public class NieuwAbonnementPanel extends JPanel {
+	
 	private JLabel lblTitle;
 	private JLabel lblNaam;
 	private JLabel lblVoornaam;
@@ -66,9 +59,11 @@ public class NieuwAbonnementPanel extends JPanel {
 	private JDatePickerImpl geboorteDatum;
 	private JDatePickerImpl startDatum;
 
+	@SuppressWarnings("rawtypes")
 	private JComboBox cbxTreinkaart;
 
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public NieuwAbonnementPanel() {
 		this.setLayout(new GridLayout(21, 2, 1, 1));
 
