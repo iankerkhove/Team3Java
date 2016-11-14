@@ -32,7 +32,6 @@ public class StationboardPanel extends JPanel {
 	private void initializeCompletePanel() {
 		/* init pane */
 		this.setLayout(new GridLayout(2, 1, 5, 5));
-		this.setVisible(false);
 
 		/* Add all components */
 		this.add(searchPanel);
@@ -64,7 +63,7 @@ public class StationboardPanel extends JPanel {
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		lblStation = new JLabel("Station: ");
-		txtStation = new JTextField("station");
+		txtStation = new JTextField("");
 
 		btnZoek = new JButton("Zoek");
 

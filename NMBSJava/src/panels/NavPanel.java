@@ -1,17 +1,12 @@
 package panels;
 
-import java.awt.Font;
 import java.awt.GridLayout;
-
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class NavPanel extends JPanel {
-
-	private JLabel lblTitle;
 
 	private JButton btnRouteZoek;
 	private JButton btnTreinZoek;
@@ -29,13 +24,10 @@ public class NavPanel extends JPanel {
 	}
 
 	private void initialize() {
-		this.setLayout(new GridLayout(9, 1, 5, 5));
-		this.setVisible(false);
+		this.setLayout(new GridLayout(8, 1, 5, 5));
 	}
 
 	private void createComponents() {
-		lblTitle = new JLabel("Navigatie");
-		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		btnRouteZoek = new JButton("Zoek route");
 		btnRouteZoek.setHorizontalAlignment(SwingConstants.LEFT);
@@ -63,19 +55,14 @@ public class NavPanel extends JPanel {
 	}
 
 	private void addComponents() {
-		this.add(lblTitle);
 		this.add(btnRouteZoek);
 		this.add(btnTreinZoek);
 		this.add(btnStationZoek);
-		this.add(btnVerlorenVoorwerpenZoek);
-		this.add(btnbtnVerlorenVoorwerpenVoegToe);
 		this.add(btnBiljetKoop);
 		this.add(btnAbonnementKoop);
+		this.add(btnVerlorenVoorwerpenZoek);
+		this.add(btnbtnVerlorenVoorwerpenVoegToe);
 		this.add(btnPrijzenAanpassen);
-	}
-
-	public JLabel getLblTitle() {
-		return lblTitle;
 	}
 
 	public JButton getBtnRouteZoek() {

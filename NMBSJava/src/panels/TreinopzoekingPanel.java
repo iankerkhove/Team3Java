@@ -31,7 +31,6 @@ public class TreinopzoekingPanel extends JPanel {
 	private void initializeCompletePanel() {
 		/* init pane */
 		this.setLayout(new GridLayout(2, 1, 5, 5));
-		this.setVisible(false);
 
 		/* Add all components */
 		this.add(searchPanel);
@@ -62,8 +61,8 @@ public class TreinopzoekingPanel extends JPanel {
 		lblTitle = new JLabel("Trein opzoeken");
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
-		lblTrein = new JLabel("Trein: ");
-		txtTrein = new JTextField("trein");
+		lblTrein = new JLabel("<html>Trein:<br>(enkel nummer, geen prefix type)</html>");
+		txtTrein = new JTextField("");
 
 		btnZoek = new JButton("Zoek");
 

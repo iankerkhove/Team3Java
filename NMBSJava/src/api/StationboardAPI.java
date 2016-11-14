@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 
 public class StationboardAPI {
+	private String station;
 	private JSONArray json;
 	private ArrayList<TrainAPI> trains = new ArrayList<TrainAPI>();
 
 	public StationboardAPI(String station) {
 		try {
+			this.station = station;
 			json = new JSONArray(RouteberekeningAPI.readUrl("https://traintracks.online/api/stationboard/" + station));
 			for (int i = 0; i < json.length(); i++) {
 				TrainAPI t = new TrainAPI(json.getJSONObject(i));
@@ -34,5 +36,15 @@ public class StationboardAPI {
 
 	public void setJson(JSONArray json) {
 		this.json = json;
+	}
+
+	public String toString() {
+		String ss = "";
+		ss += "Treinen vanuit " + station + "\n\n";
+		for (int i = 0; i < trains.size() || i < 10; i++) {
+			ss += trains.get(i).getTime().getDeparture().substring(11, 16) + " " + trains.get(i).getTerminusStation();
+			ss += "\n";
+		}
+		return ss;
 	}
 }

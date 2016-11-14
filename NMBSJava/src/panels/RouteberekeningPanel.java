@@ -46,7 +46,6 @@ public class RouteberekeningPanel extends JPanel {
 	private void initializeCompletePanel() {
 		/* init pane */
 		this.setLayout(new GridLayout(2, 1, 5, 5));
-		this.setVisible(false);
 
 		/* Add all components */
 		this.add(searchPanel);
@@ -78,10 +77,10 @@ public class RouteberekeningPanel extends JPanel {
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		lblVan = new JLabel("Van: ");
-		txtVan = new JTextField("van");
+		txtVan = new JTextField("");
 
 		lblNaar = new JLabel("Naar: ");
-		txtNaar = new JTextField("naar");
+		txtNaar = new JTextField("");
 
 		lblTijd = new JLabel("Tijd:");
 		{
@@ -94,9 +93,9 @@ public class RouteberekeningPanel extends JPanel {
 			properties.put("text.year", "Year");
 			JDatePanelImpl datePanel = new JDatePanelImpl(new UtilDateModel(), properties);
 			datePicker = new JDatePickerImpl(datePanel, new GUIDateFormat());
-			datePicker.getJFormattedTextField().setText("01/11/2016");
+			datePicker.getJFormattedTextField().setText(GUIDateFormat.getDate());
 			timePicker = new TimePicker();
-			timePicker.setText("12:00");
+			timePicker.setText(GUIDateFormat.getTime());
 
 			timePanel.add(datePicker);
 			timePanel.add(timePicker);
