@@ -146,7 +146,7 @@ public class GUIController {
 		frame.setContentPane(frame.getContentPane());
 		KoopBiljetController.startListening(biljet);
 	}
-
+	
 	private static void startKoopAbonnement() {
 		abonnement = new NieuwAbonnementPanel();
 		frame.setTitle("NMBSTeam - Koop Abonnement");
