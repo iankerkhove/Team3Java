@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -47,9 +48,11 @@ public class StationboardPanel extends JPanel {
 		lblResult = new JLabel("Druk op zoeken om een stationsbord weer te geven.");
 		lblResult.setHorizontalAlignment(SwingConstants.LEFT);
 		lblResult.setVerticalAlignment(SwingConstants.TOP);
+		JScrollPane scroller = new JScrollPane(lblResult, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
 
 		/* Add all components */
-		resultPanel.add(lblResult);
+		resultPanel.add(scroller);
 
 	}
 

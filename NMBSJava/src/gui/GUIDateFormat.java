@@ -23,8 +23,29 @@ public class GUIDateFormat extends AbstractFormatter {
 			Calendar cal = (Calendar) value;
 			return dateFormatter.format(cal.getTime());
 		}
-
 		return "";
+	}
+	
+	public static Object stringToObject(String text) throws ParseException {
+		return dateFormatter.parseObject(text);
+	}
+
+	public static String objectToString(Object value) throws ParseException {
+		if (value != null) {
+			Calendar cal = (Calendar) value;
+			return dateFormatter.format(cal.getTime());
+		}
+		return "";
+	}
+	
+	public static Calendar dateToCalendar(Date d) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		return c;
+	}
+	
+	public static Date calendarToDate(Calendar c) {
+		return c.getTime();
 	}
 
 	public static String getDate() {
