@@ -3,6 +3,7 @@ package controller;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 
 import panels.NieuwAbonnementPanel;
 
@@ -18,17 +19,31 @@ public class KoopAbonnementController {
 				String straatEnNummer = abonnement.getTxtStraatEnNummer().getText();
 				String postcode = abonnement.getTxtPostcode().getText();
 				String gemeente = abonnement.getTxtGemeente().getText();
-				String treinkaart = abonnement.getCbxTreinkaart().getSelectedItem().toString();
 				String startDatum = abonnement.getDteStartDatum().getJFormattedTextField().getText();
 		//		int klasse = abonnement.getGrpKlasses().getSelection().getMnemonic();
 		//		int vastTraject = abonnement.getGrpJaNee().getSelection().getMnemonic();
 		//      String station1 = abonnement.getTxtStation1().getText();
 		//		String station2 = abonnement.getTxtStation2().getText();
 				
-
+				
                 abonnement.getbtnPrint().addActionListener(new ActionListener() {
+            
 					public void actionPerformed(ActionEvent e) {
-						abonnement.getLblDuur().setText("6 maanden");						
+						//instellen duur
+						String treinkaart = abonnement.getCbxTreinkaart().getSelectedItem().toString();
+						int duur=0;
+						switch(treinkaart){
+						case "Nettreinkaart":duur=7;break;
+						case "Trajecttreinkaart": duur=5;break;
+						case "Halftijdstreinkaart": duur=6;break;
+						case "Schooltreinkaart": duur=8;break;
+						}
+						abonnement.getLblDuur().setText(duur +" maanden");	
+						
+						String startDatum = abonnement.getDteStartDatum().getJFormattedTextField().getText();
+						abonnement.getLblVervaldatum().setText(startDatum);
+						
+					
 			
 					/*	if(vastTraject==1)
 						{
