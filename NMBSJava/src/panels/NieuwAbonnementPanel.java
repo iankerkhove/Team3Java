@@ -28,8 +28,8 @@ public class NieuwAbonnementPanel extends JPanel {
 	private JLabel lblKlasse;
 	private JLabel lblTreinkaart;
 	private JLabel lblVastTraject;
-	private JLabel lblDuurLabel;
 	private JLabel lblDuur;
+	private JLabel lblBerekendeVervaldatum;
 	private JLabel lblVervaldatum;
 	private JButton btnPrint;
 	private JLabel lblPrint;
@@ -61,6 +61,7 @@ public class NieuwAbonnementPanel extends JPanel {
 
 	@SuppressWarnings("rawtypes")
 	private JComboBox cbxTreinkaart;
+	private JComboBox cbxDuur;
 
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -94,9 +95,9 @@ public class NieuwAbonnementPanel extends JPanel {
 		lblVastTraject = new JLabel("Vast traject: ");
 		rdbJa = new JRadioButton("Ja");
 		rdbNee=new JRadioButton("Nee");
-		lblDuurLabel = new JLabel("Duur: ");
-		lblDuur = new JLabel("");
-		lblVervaldatum = new JLabel("'Vervaldatum'");
+		lblDuur = new JLabel("Duur: ");
+		lblVervaldatum = new JLabel("Vervaldatum: ");
+		lblBerekendeVervaldatum = new JLabel("'Vervaldatum'");
 		btnPrint = new JButton("PRINT");
 		lblPrint = new JLabel("€0");
 		lblStation1 = new JLabel("Station 1: ");
@@ -122,8 +123,11 @@ public class NieuwAbonnementPanel extends JPanel {
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteStartDatum = new JDatePickerImpl(datePanel2, new GUIDateFormat());
 
-		String[] str = { "Trajecttreinkaart", "Halftijdstreinkaart", "Nettreinkaart", "Schooltreinkaart" };
-		cbxTreinkaart = new JComboBox(str);
+		String[] soortKaart = { "Trajecttreinkaart", "Halftijdstreinkaart", "Nettreinkaart", "Schooltreinkaart" };
+		cbxTreinkaart = new JComboBox(soortKaart);
+		
+		String[] aantalMaanden = { "1 maand", "3 maanden", "12 maanden"};
+		cbxDuur = new JComboBox(aantalMaanden);
 
 		this.add(lblTitle);
 		this.add(new JLabel());
@@ -161,10 +165,10 @@ public class NieuwAbonnementPanel extends JPanel {
 		this.add(txtStation1);
 		this.add(lblStation2);
 		this.add(txtStation2);
-		this.add(lblDuurLabel);
 		this.add(lblDuur);
-		this.add(new JLabel());
+		this.add(cbxDuur);
 		this.add(lblVervaldatum);
+		this.add(lblBerekendeVervaldatum);
 		this.add(btnPrint);
 		this.add(lblPrint);
 		this.add(new JLabel());
@@ -239,13 +243,13 @@ public class NieuwAbonnementPanel extends JPanel {
 	}
 
 
-	public JLabel getLblDuurLabel() {
-		return lblDuurLabel;
+	public JLabel getLblDuur() {
+		return lblDuur;
 	}
 
 
-	public JLabel getLblDuur() {
-		return lblDuur;
+	public JLabel getLblBerekendeVervaldatum() {
+		return lblBerekendeVervaldatum;
 	}
 
 
@@ -254,7 +258,7 @@ public class NieuwAbonnementPanel extends JPanel {
 	}
 
 
-	public JButton getbtnPrint() {
+	public JButton getBtnPrint() {
 		return btnPrint;
 	}
 
@@ -271,6 +275,11 @@ public class NieuwAbonnementPanel extends JPanel {
 
 	public JLabel getLblStation2() {
 		return lblStation2;
+	}
+
+
+	public JButton getBtnValideer() {
+		return btnValideer;
 	}
 
 
@@ -362,10 +371,14 @@ public class NieuwAbonnementPanel extends JPanel {
 	public JComboBox getCbxTreinkaart() {
 		return cbxTreinkaart;
 	}
-	
-	public JButton getBtnValideer(){
-		return btnValideer;
+
+
+	public JComboBox getCbxDuur() {
+		return cbxDuur;
 	}
+
+
+	
 	
 	
 
