@@ -9,9 +9,7 @@ private String city;
 private int zipCode;
 private String coordinates;
 
-public Address(int addressID, String street, int number, String city, int zipCode, String coordinates) {
-	super();
-	this.addressID = addressID;
+public Address(String street, int number, String city, int zipCode, String coordinates) {
 	this.street = street;
 	this.number = number;
 	this.city = city;

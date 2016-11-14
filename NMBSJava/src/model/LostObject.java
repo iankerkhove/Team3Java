@@ -4,15 +4,13 @@ import java.util.Date;
 
 public class LostObject {
 private int objectID;
-private int stationID;
+private Station station;
 private String description;
 private Date date;
 private int trainID;
 
-public LostObject(int objectID, int stationID, String description, Date date, int trainID) {
-	super();
-	this.objectID = objectID;
-	this.stationID = stationID;
+public LostObject(Station station, String description, Date date, int trainID) {
+	this.station = station;
 	this.description = description;
 	this.date = date;
 	this.trainID = trainID;
@@ -26,12 +24,12 @@ public void setObjectID(int objectID) {
 	this.objectID = objectID;
 }
 
-public int getStationID() {
-	return stationID;
+public Station getStation() {
+	return station;
 }
 
-public void setStationID(int stationID) {
-	this.stationID = stationID;
+public void setStationID(Station station) {
+	this.station = station;
 }
 
 public String getDescription() {
@@ -60,7 +58,7 @@ public void setTrainID(int trainID) {
 
 @Override
 public String toString() {
-	return "LostObject [objectID=" + objectID + ", stationID=" + stationID + ", description=" + description + ", date="
+	return "LostObject [objectID=" + objectID + ", station=" + station.getStationName() + ", description=" + description + ", date="
 			+ date + ", trainID=" + trainID + "]";
 }
 
