@@ -15,15 +15,7 @@ public class KoopAbonnementController {
 	public static void startListening(NieuwAbonnementPanel abonnement){
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				String naam = abonnement.getTxtNaam().getText();
-				String voornaam = abonnement.getTxtVoornaam().getText();
-				String geboorteDatum = abonnement.getDteGeboorteDatum().getJFormattedTextField().getText();
-				String email = abonnement.getTxtEmail().getText();
-				String telefoonnummer = abonnement.getTxtTelefoonnr().getText();
-				String straatEnNummer = abonnement.getTxtStraatEnNummer().getText();
-				String postcode = abonnement.getTxtPostcode().getText();
-				String gemeente = abonnement.getTxtGemeente().getText();
-				String startDatum = abonnement.getDteStartDatum().getJFormattedTextField().getText();
+				
 		//		int klasse = abonnement.getGrpKlasses().getSelection().getMnemonic();
 		//      String station1 = abonnement.getTxtStation1().getText();
 		//		String station2 = abonnement.getTxtStation2().getText();
@@ -62,13 +54,11 @@ public class KoopAbonnementController {
 					}
 				});
 				
-                abonnement.getBtnPrint().addActionListener(new ActionListener() {
-                	
-					public void actionPerformed(ActionEvent ae) {
-						
-											
+				abonnement.getCbxDuur().addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
 						try{
-							String treinkaart = abonnement.getCbxTreinkaart().getSelectedItem().toString();
 							String duur = abonnement.getCbxDuur().getSelectedItem().toString();
 							String startDatum = abonnement.getDteStartDatum().getJFormattedTextField().getText();
 							
@@ -88,26 +78,60 @@ public class KoopAbonnementController {
 						{
 							pe.printStackTrace();
 						}
+					}
+				});
+				
+                abonnement.getBtnPrint().addActionListener(new ActionListener() {
+                	
+					public void actionPerformed(ActionEvent ae) {
+										
+						String naam = abonnement.getTxtNaam().getText();
+						String voornaam = abonnement.getTxtVoornaam().getText();
+						String geboorteDatum = abonnement.getDteGeboorteDatum().getJFormattedTextField().getText();
+						String email = abonnement.getTxtEmail().getText();
+						String telefoonnummer = abonnement.getTxtTelefoonnr().getText();
+						String straatEnNummer = abonnement.getTxtStraatEnNummer().getText();
+						String postcode = abonnement.getTxtPostcode().getText();
+						String gemeente = abonnement.getTxtGemeente().getText();
+						String startDatum = abonnement.getDteStartDatum().getJFormattedTextField().getText();
+						String treinkaart = abonnement.getCbxTreinkaart().getSelectedItem().toString();
+
+					if (!naam.equals("") && !voornaam.equals("") && DateTimeConverter.checkDate(geboorteDatum) 
+								&& !email.equals("") && !telefoonnummer.equals("") && !straatEnNummer.equals("")
+								&& !postcode.equals("") && !gemeente.equals("") && !treinkaart.equals(null) 
+								&& DateTimeConverter.checkDate(startDatum)){
+						abonnement.getFoutmelding().setText("");
+					}
+						else {abonnement.getFoutmelding().setText("Het formulier is niet volledig ingevuld.");}
 					
-			
-					/*	if(vastTraject==1)
-						{
-							if (!naam.equals("") && !voornaam.equals("") && DateTimeConverter.checkDate(geboorteDatum) 
-									&& !email.equals("") && !telefoonnummer.equals("") && !straatEnNummer.equals("")
-									&& !postcode.equals("") && !gemeente.equals("") && !treinkaart.equals(null) 
-									&& DateTimeConverter.checkDate(startDatum) && klasse!= 0 && vastTraject!=0
-									&& !station1.equals("") && station2.equals("")){}
-							else {System.err.println("Het formulier is niet volledig ingevuld.");}
-						}
-						else{
-							if (!naam.equals("") && !voornaam.equals("") && DateTimeConverter.checkDate(geboorteDatum) 
-									&& !email.equals("") && !telefoonnummer.equals("") && !straatEnNummer.equals("")
-									&& !postcode.equals("") && !gemeente.equals("") && !treinkaart.equals(null) 
-									&& DateTimeConverter.checkDate(startDatum) && klasse!= 0 && vastTraject!=0){}
-							else {System.err.println("Het formulier is niet volledig ingevuld.");}
-						}*/
+				/*	int prijs=0;
+					String duur = abonnement.getCbxDuur().getSelectedItem().toString();
+					
+					switch(treinkaart){
+					case "Schooltreinkaart":prijs+=100;break;
+					case "Nettreinkaart":;break;
+					case "Halftijdstreinkaart":;break;
+					case "Trajecttreinkaart":; break;
+					}
+					switch(duur){
+					case "1 maand":;break;
+					case "3 maanden":;break;
+					case "12 maanden":;break;
+					}*/
+					
+					//	abonnement.getLblPrint().setText("500 euro");
+						
                     }
                 });
+                
+                abonnement.getBtnValideer().addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// valideer 
+						
+					}
+				});
             }
         });
     }

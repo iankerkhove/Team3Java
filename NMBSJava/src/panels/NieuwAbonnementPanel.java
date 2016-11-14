@@ -36,6 +36,7 @@ public class NieuwAbonnementPanel extends JPanel {
 	private JLabel lblStation1;
 	private JLabel lblStation2;
 	private JButton btnValideer;
+	private JLabel lblFoutmelding;
 
 	private JTextField txtNaam;
 	private JTextField txtVoornaam;
@@ -105,6 +106,7 @@ public class NieuwAbonnementPanel extends JPanel {
 		txtStation1 = new JTextField();
 		txtStation2 = new JTextField();
 		btnValideer = new JButton("Valideer");
+		lblFoutmelding = new JLabel("");
 		
 		grpKlasses = new ButtonGroup();
 		grpKlasses.add(rdbEersteKlasse);
@@ -171,7 +173,7 @@ public class NieuwAbonnementPanel extends JPanel {
 		this.add(lblBerekendeVervaldatum);
 		this.add(btnPrint);
 		this.add(lblPrint);
-		this.add(new JLabel());
+		this.add(lblFoutmelding);
 		this.add(btnValideer);
 		
 
@@ -377,9 +379,9 @@ public class NieuwAbonnementPanel extends JPanel {
 		return cbxDuur;
 	}
 
-
-	
-	
+	public JLabel getFoutmelding(){
+		return lblFoutmelding;
+	}
 	
 
 }
