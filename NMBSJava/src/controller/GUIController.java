@@ -20,6 +20,7 @@ public class GUIController {
 	private static StationboardPanel station;
 	private static BiljetPanel biljet;
 	private static NieuwAbonnementPanel abonnement;
+	private static VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek;
 
 	public static void start() {
 		// Make frame after performing all other tasks
@@ -107,6 +108,14 @@ public class GUIController {
 						startKoopAbonnement();
 					}
 				});
+				
+				
+				nav.getBtnVerlorenVoorwerpenZoek().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startVerlorenVoorwerpZoek();
+					}
+				});
+				
 			}
 		});
 	}
@@ -154,6 +163,15 @@ public class GUIController {
 		frame.getContentPane().add(abonnement);
 		frame.setContentPane(frame.getContentPane());
 		KoopAbonnementController.startListening(abonnement);
+	}
+	
+	private static void startVerlorenVoorwerpZoek() {
+		verlorenVoorwerpZoek = new VerlorenVoorwerpZoekPanel();
+		frame.setTitle("NMBSTeam - Zoek verloren voorwerp");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(verlorenVoorwerpZoek);
+		frame.setContentPane(frame.getContentPane());
+		VerlorenVoorwerpZoekController.startListening(verlorenVoorwerpZoek);
 	}
 
 	public static GUIFrame getFrame() {
