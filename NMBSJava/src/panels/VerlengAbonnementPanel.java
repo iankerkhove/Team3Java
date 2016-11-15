@@ -91,7 +91,7 @@ public class VerlengAbonnementPanel extends JPanel {
 	}
 	
 	private void fullPanel(){
-		this.setLayout(new GridLayout(13,1,1,1));
+		this.setLayout(new GridLayout(12,1,1,1));
 		this.add(titel);
 		this.add(abonnementsNummer);
 		this.add(klantenNummer);
@@ -435,8 +435,5 @@ public class VerlengAbonnementPanel extends JPanel {
 	public JComboBox getCbxDuur() {
 		return cbxDuur;
 	}
-
-	
-	
 
 }
