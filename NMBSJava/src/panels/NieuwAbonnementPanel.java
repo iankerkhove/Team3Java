@@ -31,12 +31,13 @@ public class NieuwAbonnementPanel extends JPanel {
 	private JLabel lblDuur;
 	private JLabel lblBerekendeVervaldatum;
 	private JLabel lblVervaldatum;
-	private JButton btnPrint;
 	private JLabel lblPrint;
 	private JLabel lblStation1;
 	private JLabel lblStation2;
-	private JButton btnValideer;
 	private JLabel lblFoutmelding;
+
+	private JButton btnValideer;
+	private JButton btnPrint;
 
 	private JTextField txtNaam;
 	private JTextField txtVoornaam;
@@ -56,14 +57,11 @@ public class NieuwAbonnementPanel extends JPanel {
 	private JRadioButton rdbNee;
 	private ButtonGroup grpJaNee;
 	
-
 	private JDatePickerImpl dteGeboorteDatum;
 	private JDatePickerImpl dteStartDatum;
 
-	@SuppressWarnings("rawtypes")
 	private JComboBox cbxTreinkaart;
 	private JComboBox cbxDuur;
-
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public NieuwAbonnementPanel() {
@@ -175,8 +173,6 @@ public class NieuwAbonnementPanel extends JPanel {
 		this.add(lblPrint);
 		this.add(lblFoutmelding);
 		this.add(btnValideer);
-		
-
 	}
 
 

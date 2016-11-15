@@ -20,6 +20,7 @@ public class GUIController {
 	private static StationboardPanel station;
 	private static BiljetPanel biljet;
 	private static NieuwAbonnementPanel abonnement;
+	private static VerlengAbonnementPanel verlengAbonnement;
 
 	public static void start() {
 		// Make frame after performing all other tasks
@@ -107,6 +108,11 @@ public class GUIController {
 						startKoopAbonnement();
 					}
 				});
+				nav.getBtnAbonnementVerlengen().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startVerlengAbonnement();
+					}
+				});
 			}
 		});
 	}
@@ -154,6 +160,15 @@ public class GUIController {
 		frame.getContentPane().add(abonnement);
 		frame.setContentPane(frame.getContentPane());
 		KoopAbonnementController.startListening(abonnement);
+	}
+	
+	private static void startVerlengAbonnement() {
+		verlengAbonnement = new VerlengAbonnementPanel();
+		frame.setTitle("NMBSTeam - Koop Abonnement");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(verlengAbonnement);
+		frame.setContentPane(frame.getContentPane());
+		VerlengAbonnementController.startListening(verlengAbonnement);
 	}
 
 	public static GUIFrame getFrame() {

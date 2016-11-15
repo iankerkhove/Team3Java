@@ -82,8 +82,8 @@ public class VerlengAbonnementPanel extends JPanel {
 		startdatumPanel();
 		duurPanel();
 		vervaldatumPanel();
-		trajectPanel();
 		klassePanel();
+		trajectPanel();
 		station1Panel();
 		station2Panel();
 		printEnValideerPanel();
@@ -99,8 +99,8 @@ public class VerlengAbonnementPanel extends JPanel {
 		this.add(startdatum);
 		this.add(duur);
 		this.add(vervaldatum);
-		this.add(traject);
 		this.add(klasse);
+		this.add(traject);
 		this.add(station1);
 		this.add(station2);
 		this.add(printEnValideer);
@@ -197,14 +197,14 @@ public class VerlengAbonnementPanel extends JPanel {
 		klasse = new JPanel();
 		klasse.setLayout(new GridLayout(1, 3,1,1));
 		
-		grpKlasses = new ButtonGroup();
-		grpKlasses.add(rdbEersteKlasse);
-		grpKlasses.add(rdbTweedeKlasse);
-		
 		lblKlasse = new JLabel("Klasse: ");
 		rdbEersteKlasse = new JRadioButton("1e Klas");
 		rdbTweedeKlasse = new JRadioButton("2e Klas");
 		
+		grpKlasses = new ButtonGroup();
+		grpKlasses.add(rdbEersteKlasse);
+		grpKlasses.add(rdbTweedeKlasse);
+				
 		klasse.add(lblKlasse);
 		klasse.add(rdbEersteKlasse);
 		klasse.add(rdbTweedeKlasse);
@@ -214,13 +214,13 @@ public class VerlengAbonnementPanel extends JPanel {
 		traject = new JPanel();
 		traject.setLayout(new GridLayout(1, 3,1,1));
 		
-		grpJaNee = new ButtonGroup();
-		grpJaNee.add(rdbJa);
-		grpJaNee.add(rdbNee);
-		
 		lblVastTraject = new JLabel("Vast traject: ");
 		rdbJa = new JRadioButton("Ja");
 		rdbNee=new JRadioButton("Nee");
+		
+		grpJaNee = new ButtonGroup();
+		grpJaNee.add(rdbJa);
+		grpJaNee.add(rdbNee);
 		
 		traject.add(lblVastTraject);
 		traject.add(rdbJa);
