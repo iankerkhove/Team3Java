@@ -54,6 +54,27 @@ public class KoopAbonnementController {
 					}
 				});
 				
+				abonnement.getDteStartDatum().addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						try{
+						String startDatum = abonnement.getDteStartDatum().getJFormattedTextField().getText();
+						Calendar c = GUIDateFormat.dateToCalendar((Date) GUIDateFormat.stringToObject(startDatum));
+						c.add(Calendar.MONTH, 1);
+						startDatum = GUIDateFormat.objectToString(c);
+						abonnement.getLblBerekendeVervaldatum().setText(startDatum);
+						}
+						catch(ParseException pe)
+						{
+							pe.printStackTrace();
+						}
+
+						
+					}
+				});
+				
 				abonnement.getCbxDuur().addActionListener(new ActionListener() {
 					
 					@Override

@@ -151,8 +151,6 @@ public class NieuwAbonnementPanel extends JPanel {
 		this.add(new JLabel());
 		this.add(lblTreinkaart);
 		this.add(cbxTreinkaart);
-		this.add(lblStartDatum);
-		this.add(dteStartDatum);
 		this.add(lblKlasse);
 		this.add(rdbEersteKlasse);
 		this.add(new JLabel());
@@ -165,6 +163,8 @@ public class NieuwAbonnementPanel extends JPanel {
 		this.add(txtStation1);
 		this.add(lblStation2);
 		this.add(txtStation2);
+		this.add(lblStartDatum);
+		this.add(dteStartDatum);
 		this.add(lblDuur);
 		this.add(cbxDuur);
 		this.add(lblVervaldatum);
