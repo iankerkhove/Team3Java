@@ -1,7 +1,15 @@
 package panels;
 
 import javax.swing.*;
+
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
+import gui.GUIDateFormat;
+
 import java.awt.GridLayout;
+import java.util.Properties;
 import java.awt.Font;
 
 @SuppressWarnings("serial")
@@ -20,11 +28,12 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 	private JLabel lblResultat;
 
 	private JTextField txtTreinNummer;
-	private JTextField txtDatum;
 	private JTextField txtSoortVoorwerp;
 	private JTextField txtMerk;
 	private JTextField txtKleur;
-
+	
+	private JDatePickerImpl datePicker;
+	
 	public VerlorenVoorwerpZoekPanel() {
 		setLayout(new GridLayout(2, 1, 5, 5));
 
@@ -54,9 +63,11 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		lblDatum.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		search.add(lblDatum);
 
-		txtDatum = new JTextField();
-		txtDatum.setColumns(1);
-		search.add(txtDatum);
+		Properties properties = new Properties();
+		JDatePanelImpl datePanel = new JDatePanelImpl(new UtilDateModel(), properties);
+		datePicker = new JDatePickerImpl(datePanel, new GUIDateFormat());
+		datePicker.getJFormattedTextField().setText(GUIDateFormat.getDate());
+		search.add(datePicker);
 
 		lblSoortVoorwerp = new JLabel();
 		lblSoortVoorwerp.setText("Soort voorwerp:");
@@ -152,8 +163,8 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		return txtTreinNummer;
 	}
 
-	public JTextField getTxtDatum() {
-		return txtDatum;
+	public JDatePickerImpl getDatePicker() {
+		return datePicker;
 	}
 
 	public JTextField getTxtSoortVoorwerp() {
