@@ -1,12 +1,15 @@
 package model;
 
 public class Discount {
-	//datamembers
 	private int discountID;
 	private String name;
 	private double amount;
 	
-	//getters en setters
+	public Discount(String name, double amount) {
+		this.name = name;
+		this.amount = amount;
+	}
+	
 	public int getDiscountID() {
 		return discountID;
 	}
@@ -25,16 +28,4 @@ public class Discount {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
-	
-	//constructor
-	public Discount(int discountID, String name, double amount) {
-		super();
-		this.discountID = discountID;
-		this.name = name;
-		this.amount = amount;
-	}
-	
-	//functies en methoden
-	
-	
 }
