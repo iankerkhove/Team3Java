@@ -7,8 +7,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import gui.StationsAutoCompletor;
 
 @SuppressWarnings("serial")
 public class StationboardPanel extends JPanel {
@@ -20,7 +21,7 @@ public class StationboardPanel extends JPanel {
 	private JLabel lblStation;
 	private JLabel lblResult;
 
-	private JTextField txtStation;
+	private StationsAutoCompletor txtStation;
 
 	private JButton btnZoek;
 
@@ -66,7 +67,7 @@ public class StationboardPanel extends JPanel {
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		lblStation = new JLabel("Station: ");
-		txtStation = new JTextField("");
+		txtStation = new StationsAutoCompletor();
 
 		btnZoek = new JButton("Zoek");
 
@@ -101,7 +102,7 @@ public class StationboardPanel extends JPanel {
 		return lblResult;
 	}
 
-	public JTextField getTxtStation() {
+	public StationsAutoCompletor getTxtStation() {
 		return txtStation;
 	}
 

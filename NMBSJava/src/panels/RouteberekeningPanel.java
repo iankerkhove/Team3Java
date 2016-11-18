@@ -6,7 +6,6 @@ import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import org.jdatepicker.impl.*;
@@ -14,6 +13,7 @@ import org.jdatepicker.impl.*;
 import com.github.lgooddatepicker.components.TimePicker;
 
 import gui.GUIDateFormat;
+import gui.StationsAutoCompletor;
 
 import java.awt.Font;
 
@@ -30,8 +30,8 @@ public class RouteberekeningPanel extends JPanel {
 	private JLabel lblTijd;
 	private JLabel lblResult;
 
-	private JTextField txtVan;
-	private JTextField txtNaar;
+	private StationsAutoCompletor txtVan;
+	private StationsAutoCompletor txtNaar;
 	private JDatePickerImpl datePicker;
 	private TimePicker timePicker;
 
@@ -77,10 +77,10 @@ public class RouteberekeningPanel extends JPanel {
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		lblVan = new JLabel("Van: ");
-		txtVan = new JTextField("");
+		txtVan = new StationsAutoCompletor();
 
 		lblNaar = new JLabel("Naar: ");
-		txtNaar = new JTextField("");
+		txtNaar = new StationsAutoCompletor();
 
 		lblTijd = new JLabel("Tijd:");
 		{
@@ -148,11 +148,11 @@ public class RouteberekeningPanel extends JPanel {
 		return lblResult;
 	}
 
-	public JTextField getTxtVan() {
+	public StationsAutoCompletor getTxtVan() {
 		return txtVan;
 	}
 
-	public JTextField getTxtNaar() {
+	public StationsAutoCompletor getTxtNaar() {
 		return txtNaar;
 	}
 
