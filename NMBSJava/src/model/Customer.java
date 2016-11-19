@@ -1,72 +1,31 @@
 package model;
 
-public class Customer {
-	//datamembers
-	private int cumstomerID;
-	private int railCardID;
-	private int addressID;
-	private String lastName;
-	private String firstName;
-	private String emailAddress;
-	
-	//getters en setters
-	public int getCumstomerID() {
-		return cumstomerID;
+import java.util.Date;
+
+public class Customer extends Person {
+	private int customerID;
+	private RailCard railCard;
+
+	public Customer(String firstName, String lastName, Date birthDate, String emailAddress, Address address,
+			RailCard railCard) {
+		super(firstName, lastName, birthDate, emailAddress, address);
+		this.railCard = railCard;
 	}
-	public void setCumstomerID(int cumstomerID) {
-		this.cumstomerID = cumstomerID;
+
+	public int getCustomerID() {
+		return customerID;
 	}
-	public int getRailCardID() {
-		return railCardID;
+
+	public void setCustomerID(int customerID) {
+		this.customerID = customerID;
 	}
-	public void setRailCardID(int railCardID) {
-		this.railCardID = railCardID;
+
+	public RailCard getRailCard() {
+		return railCard;
 	}
-	public int getAddressID() {
-		return addressID;
+
+	public void setRailCard(RailCard railCard) {
+		this.railCard = railCard;
 	}
-	public void setAddressID(int addressID) {
-		this.addressID = addressID;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getEmailAddress() {
-		return emailAddress;
-	}
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
-	//constructor
-	public Customer(int cumstomerID, int railCardID, int addressID, String lastName, String firstName,
-			String emailAddress) {
-		super();
-		this.cumstomerID = cumstomerID;
-		this.railCardID = railCardID;
-		this.addressID = addressID;
-		this.lastName = lastName;
-		this.firstName = firstName;
-		this.emailAddress = emailAddress;
-	}
-	public Customer(int cumstomerID, int railCardID, int addressID, String lastName, String firstName) {
-		super();
-		this.cumstomerID = cumstomerID;
-		this.railCardID = railCardID;
-		this.addressID = addressID;
-		this.lastName = lastName;
-		this.firstName = firstName;
-	}
-	
-	//functies en methoden
-	
 	
 }

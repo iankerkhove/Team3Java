@@ -32,7 +32,7 @@ public class DateTimeConverter {
 	}
 
 	public static boolean checkTime(String s) {
-		return s.matches("\\d\\d:\\d\\d");
+		return s.matches("\\d\\d:\\d\\d") || s.matches("\\d:\\d\\d");
 
 	}
 }
