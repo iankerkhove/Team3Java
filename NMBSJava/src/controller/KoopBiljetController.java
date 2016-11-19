@@ -118,8 +118,7 @@ public class KoopBiljetController {
 								biljet.getLblPrijs().setText("€ 0");
 							}
 						}
-						
-						
+						//
 						
 					}
 					
