@@ -33,7 +33,7 @@ public class BiljetPanel extends JPanel {
 	
 	//panels
 	private JPanel vanNaarpanel;
-	private JPanel datumspanel;
+	private JPanel datumspanel; 
 	private JPanel typeTicketpanel;	
 	private JPanel klasseTicketpanel;
 	private JPanel comboBoxpanel;
