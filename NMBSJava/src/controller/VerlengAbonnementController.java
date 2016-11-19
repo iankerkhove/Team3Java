@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-
 import gui.GUIDateFormat;
 import panels.VerlengAbonnementPanel;
 
@@ -14,11 +13,29 @@ public class VerlengAbonnementController {
 	public static void startListening(VerlengAbonnementPanel abonnement){
 		EventQueue.invokeLater(new Runnable(){
 			public void run(){
+				try{
+					String startDatum = abonnement.getDteStartdatum().getJFormattedTextField().getText();
+					Calendar c = GUIDateFormat.dateToCalendar((Date) GUIDateFormat.stringToObject(startDatum));
+					c.add(Calendar.MONTH, 1);
+					startDatum = GUIDateFormat.objectToString(c);
+					abonnement.getLblVervaldatumResult().setText(startDatum);
+					}
+					catch(ParseException pe)
+					{
+						pe.printStackTrace();
+					}
 				
 				abonnement.getLblStation1().setVisible(false);
 				abonnement.getLblStation2().setVisible(false);
 				abonnement.getTxtStation1().setVisible(false);
 				abonnement.getTxtStation2().setVisible(false);
+				
+				abonnement.getBtnMeerInfo().addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+					}
+				});
 				
 				abonnement.getRdbJa().addActionListener(new ActionListener() {
 					

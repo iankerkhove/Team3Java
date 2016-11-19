@@ -165,6 +165,8 @@ public class VerlengAbonnementPanel extends JPanel {
 		properties.put("text.year", "Year");
 		JDatePanelImpl datePanel = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteStartdatum = new JDatePickerImpl(datePanel, new GUIDateFormat());
+		dteStartdatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
+
 		
 		startdatum.add(lblStartdatum);
 		startdatum.add(dteStartdatum);

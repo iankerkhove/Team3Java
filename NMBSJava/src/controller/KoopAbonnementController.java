@@ -15,6 +15,17 @@ public class KoopAbonnementController {
 	public static void startListening(NieuwAbonnementPanel abonnement){
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				try{
+					String startDatum = abonnement.getDteStartDatum().getJFormattedTextField().getText();
+					Calendar c = GUIDateFormat.dateToCalendar((Date) GUIDateFormat.stringToObject(startDatum));
+					c.add(Calendar.MONTH, 1);
+					startDatum = GUIDateFormat.objectToString(c);
+					abonnement.getLblBerekendeVervaldatum().setText(startDatum);
+					}
+					catch(ParseException pe)
+					{
+						pe.printStackTrace();
+					}
 				
 		//		int klasse = abonnement.getGrpKlasses().getSelection().getMnemonic();
 		//      String station1 = abonnement.getTxtStation1().getText();

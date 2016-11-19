@@ -120,8 +120,11 @@ public class NieuwAbonnementPanel extends JPanel {
 		properties.put("text.year", "Year");
 		JDatePanelImpl datePanel1 = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteGeboorteDatum = new JDatePickerImpl(datePanel1, new GUIDateFormat());
+		dteGeboorteDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteStartDatum = new JDatePickerImpl(datePanel2, new GUIDateFormat());
+		dteStartDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
+
 
 		String[] soortKaart = { "Trajecttreinkaart", "Halftijdstreinkaart", "Nettreinkaart", "Schooltreinkaart" };
 		cbxTreinkaart = new JComboBox(soortKaart);
