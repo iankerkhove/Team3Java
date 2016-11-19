@@ -105,7 +105,7 @@ public class KoopBiljetController {
 							if(biljet.getRdbKlasseVerhoging().isSelected()){
 								biljet.getLblPrijs().setText("€ 1");
 							}
-						}
+						} 
 						if(biljet.getCboBiljet().getSelectedItem().equals("Biljet Kind")){
 							//biljet.getLblPrijs().setText("€ 5");
 							if(biljet.getRdbHeenTerug().isSelected() && (biljet.getRdbEersteKlasse().isSelected()||biljet.getRdbTweedeKlasse().isSelected())){
