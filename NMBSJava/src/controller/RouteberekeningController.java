@@ -13,8 +13,8 @@ public class RouteberekeningController {
 				route.getBtnZoek().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						RouteberekeningAPI r;
-						String van = route.getTxtVan().getText();
-						String naar = route.getTxtNaar().getText();
+						String van = (String) route.getTxtVan().getSelectedItem();
+						String naar = (String) route.getTxtNaar().getSelectedItem();
 						String datum = route.getDatePicker().getJFormattedTextField().getText();
 						String tijd = route.getTimePicker().getText();
 						
