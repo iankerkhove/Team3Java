@@ -3,7 +3,6 @@ package model;
 import java.util.Date;
 
 public class Subscription {
-	// datamembers
 	private int subscriptionID;
 	private int railID;
 	private int routeID;
@@ -11,6 +10,21 @@ public class Subscription {
 	private Date validFrom;
 	private Date validUntil;
 	
+	public Subscription(int railID, int routeID, int discountID, Date validFrom, Date validUntil) {
+		super();
+		this.railID = railID;
+		this.routeID = routeID;
+		this.discountID = discountID;
+		this.validFrom = validFrom;
+		this.validUntil = validUntil;
+	}
+	public Subscription(int railID, int routeID, Date validFrom, Date validUntil) {
+		super();
+		this.railID = railID;
+		this.routeID = routeID;
+		this.validFrom = validFrom;
+		this.validUntil = validUntil;
+	}
 	//getters en setters
 	public int getSubscriptionID() {
 		return subscriptionID;
@@ -48,25 +62,4 @@ public class Subscription {
 	public void setValidUntil(Date validUntil) {
 		this.validUntil = validUntil;
 	}
-	
-	//constructor
-	public Subscription(int subscriptionID, int railID, int routeID, int discountID, Date validFrom, Date validUntil) {
-		super();
-		this.subscriptionID = subscriptionID;
-		this.railID = railID;
-		this.routeID = routeID;
-		this.discountID = discountID;
-		this.validFrom = validFrom;
-		this.validUntil = validUntil;
-	}
-	public Subscription(int subscriptionID, int railID, int routeID, Date validFrom, Date validUntil) {
-		super();
-		this.subscriptionID = subscriptionID;
-		this.railID = railID;
-		this.routeID = routeID;
-		this.validFrom = validFrom;
-		this.validUntil = validUntil;
-	}
-	
-	//functies en methoden
 }
