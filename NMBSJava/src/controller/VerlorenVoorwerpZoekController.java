@@ -39,7 +39,7 @@ public class VerlorenVoorwerpZoekController {
 							ss += v + "\n";
 						}
 						verlorenVoorwerpZoek.getLblResultat().setText("<html>"
-								+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
+								+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>").replaceAll("_", " ")
 								+ "</html>");
 					}
 				});
@@ -59,7 +59,7 @@ public class VerlorenVoorwerpZoekController {
 						if (json.getJSONObject(i).getString("TrainID").equals(treinNummer) && json.getJSONObject(i).getString("Date").equals(datum) /*&& json.getJSONObject(i).getString("StationID").equals(station)*/) {
 								ss = json.getJSONObject(i).getString("TrainID") + " " +json.getJSONObject(i).getString("Description") +" "+ json.getJSONObject(i).getString("Date");							
 							verlorenVoorwerpZoek.getLblResultat().setText("<html>"
-										+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
+										+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>").replaceAll("_", " ")
 										+ "</html>");
 								System.out.println(ss);
 							}

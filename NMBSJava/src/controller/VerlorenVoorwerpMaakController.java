@@ -30,9 +30,12 @@ public class VerlorenVoorwerpMaakController {
 						String omschrijving = verlorenVoorwerpMaak.getTxtOmschrijving().getText();
 						String datum = verlorenVoorwerpMaak.getDatePicker().getJFormattedTextField().getText();
 						
+						String omschrijving2 = omschrijving.replaceAll(" ", "_");
+						
+						
 						URLCon url = new URLCon();
 						try {
-							url.readUrl("http://nmbs-team.tk/api/lostObject/create?StationID=" +station +"&Description=" + omschrijving + "&Date=" + datum +"&TrainID=" + treinNummer, "POST");
+							url.readUrl("http://nmbs-team.tk/api/lostObject/create?StationID=" +station +"&Description=" + omschrijving2 + "&Date=" + datum +"&TrainID=" + treinNummer, "POST");
 						} catch (IOException e2) {
 							// TODO Auto-generated catch block
 							e2.printStackTrace();
