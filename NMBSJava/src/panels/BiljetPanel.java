@@ -30,10 +30,10 @@ public class BiljetPanel extends JPanel {
 	private ButtonGroup grpKlasseTicket;
 	private JButton btnPrint;
 	private JLabel lblPrijs;
-	
+	//
 	//panels
 	private JPanel vanNaarpanel;
-	private JPanel datumspanel;
+	private JPanel datumspanel; 
 	private JPanel typeTicketpanel;	
 	private JPanel klasseTicketpanel;
 	private JPanel comboBoxpanel;
@@ -186,5 +186,5 @@ public class BiljetPanel extends JPanel {
 	public JLabel getLblPrijs() {
 		return lblPrijs;
 	}
-
+//
 }
