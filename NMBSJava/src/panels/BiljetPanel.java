@@ -186,5 +186,5 @@ public class BiljetPanel extends JPanel {
 	public JLabel getLblPrijs() {
 		return lblPrijs;
 	}
-
+//
 }
