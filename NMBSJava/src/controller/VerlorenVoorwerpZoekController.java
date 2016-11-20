@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import api.StationAPI;
 import panels.VerlorenVoorwerpZoekPanel;
 
 public class VerlorenVoorwerpZoekController {
@@ -47,15 +48,17 @@ public class VerlorenVoorwerpZoekController {
 					public void actionPerformed(ActionEvent e) {
 						readUrl();
 						
+						//int station = verlorenVoorwerpZoek.getTxtStation().getSelectedIndex()+1;
 						String treinNummer = verlorenVoorwerpZoek.getTxtTreinNummer().getText();
+						String datum = verlorenVoorwerpZoek.getDatePicker().getJFormattedTextField().getText();
 						
 						
 						String ss=null;
-						String error ="Er werd geen voorwerp in deze trein teruggevonden!";
+						String error ="Er werd geen voorwerp teruggevonden!";
 						for (int i = 0;i<json.length();i++) {
-							if (json.getJSONObject(i).getString("TrainID").equals(treinNummer)) {
+						if (json.getJSONObject(i).getString("TrainID").equals(treinNummer) && json.getJSONObject(i).getString("Date").equals(datum) /*&& json.getJSONObject(i).getString("StationID").equals(station)*/) {
 								ss = json.getJSONObject(i).getString("TrainID") + " " +json.getJSONObject(i).getString("Description") +" "+ json.getJSONObject(i).getString("Date");							
-								verlorenVoorwerpZoek.getLblResultat().setText("<html>"
+							verlorenVoorwerpZoek.getLblResultat().setText("<html>"
 										+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
 										+ "</html>");
 								System.out.println(ss);
@@ -66,7 +69,9 @@ public class VerlorenVoorwerpZoekController {
 							verlorenVoorwerpZoek.getLblResultat().setText("<html>"
 									+ error.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
 									+ "</html>");
+
 						}
+						System.out.println(datum);
 					}
 				});
 				
@@ -100,10 +105,6 @@ public class VerlorenVoorwerpZoekController {
 				buffer.append(chars, 0, read);
 
 			json = new JSONArray(buffer.toString());
-			
-			/*for (int i = 0;i<json.length();i++) {
-				json.getJSONObject(i).getString("Description");
-			}*/
 			
 			
 		} catch (IOException e) {
