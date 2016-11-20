@@ -59,8 +59,7 @@ public class Ticket {
 	public void setComfortClass(ComfortClass comfortClass) {
 		this.comfortClass = comfortClass;
 	}
-	public Ticket(int routeID, Date date, double price, Date validFrom, Date validUntil, ComfortClass comfortClass,
-			int ticketID) {
+	public Ticket(int routeID, Date date, double price, Date validFrom, Date validUntil, ComfortClass comfortClass) {
 		super();
 		this.routeID = routeID;
 		this.date = date;
@@ -68,7 +67,6 @@ public class Ticket {
 		this.validFrom = validFrom;
 		this.validUntil = validUntil;
 		this.comfortClass = comfortClass;
-		this.ticketID = ticketID;
 	}
 	
 	//functies en methoden

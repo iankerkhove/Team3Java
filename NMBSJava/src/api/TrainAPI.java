@@ -2,6 +2,8 @@ package api;
 
 import org.json.JSONObject;
 
+import controller.URLCon;
+
 public class TrainAPI {
 	private JSONObject json;
 	private int number;
@@ -42,7 +44,7 @@ public class TrainAPI {
 
 	public TrainAPI(String trein) {
 		try {
-			json = new JSONObject(RouteberekeningAPI.readUrl("https://traintracks.online/api/Train/" + trein));
+			json = new JSONObject(URLCon.readUrl("https://traintracks.online/api/Train/" + trein, "GET"));
 			if (!json.get("Number").equals(null)) {
 				this.number = json.getInt("Number");
 			} else

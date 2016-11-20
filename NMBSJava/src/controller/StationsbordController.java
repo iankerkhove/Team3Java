@@ -13,7 +13,7 @@ public class StationsbordController {
 				station.getBtnZoek().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						StationboardAPI s;
-						String stationName = station.getTxtStation().getText();
+						String stationName = (String) station.getTxtStation().getSelectedItem();
 						
 						if (!stationName.equals("")) {
 							
