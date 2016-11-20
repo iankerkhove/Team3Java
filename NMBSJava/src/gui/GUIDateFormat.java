@@ -11,8 +11,13 @@ public class GUIDateFormat extends AbstractFormatter {
 
 	private static String timePattern = "HH:mm";
 	private static String datePattern = "dd/MM/yyyy";
-	private static SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
 	private static SimpleDateFormat timeFormatter = new SimpleDateFormat(timePattern);
+	private static SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+
+	private static String rawTimePattern = "HHmm";
+	private static String rawDatePattern = "ddMMyy";
+	private static SimpleDateFormat rawTimeFormatter = new SimpleDateFormat(rawTimePattern);
+	private static SimpleDateFormat rawDateFormatter = new SimpleDateFormat(rawDatePattern);
 
 	public Object stringToValue(String text) throws ParseException {
 		return dateFormatter.parseObject(text);
@@ -25,7 +30,7 @@ public class GUIDateFormat extends AbstractFormatter {
 		}
 		return "";
 	}
-	
+
 	public static Object stringToObject(String text) throws ParseException {
 		return dateFormatter.parseObject(text);
 	}
@@ -37,13 +42,13 @@ public class GUIDateFormat extends AbstractFormatter {
 		}
 		return "";
 	}
-	
+
 	public static Calendar dateToCalendar(Date d) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);
 		return c;
 	}
-	
+
 	public static Date calendarToDate(Calendar c) {
 		return c.getTime();
 	}
@@ -56,6 +61,26 @@ public class GUIDateFormat extends AbstractFormatter {
 	public static String getTime() {
 		String ss = timeFormatter.format(new Date());
 		return ss;
+	}
+
+	public static String getRawDate() {
+		return rawDateFormatter.format(new Date());
+	}
+
+	public static String getRawTime() {
+		return rawTimeFormatter.format(new Date());
+	}
+
+	public static String getRawDate(String s) throws ParseException {
+		Calendar temp = Calendar.getInstance();
+		temp.setTime((Date) dateFormatter.parseObject(s));
+		return rawDateFormatter.format(temp.getTime());
+	}
+
+	public static String getRawTime(String s) throws ParseException {
+		Calendar temp = Calendar.getInstance();
+		temp.setTime((Date) timeFormatter.parseObject(s));
+		return rawTimeFormatter.format(temp.getTime());
 	}
 
 }
