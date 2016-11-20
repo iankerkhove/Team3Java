@@ -31,8 +31,8 @@ public class KoopBiljetController {
 			public void run() {
 				biljet.getBtnPrint().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						van = biljet.getTxtVan().getText();
-						naar = biljet.getTxtNaar().getText();
+						van = (String) biljet.getTxtVan().getSelectedItem();
+						naar = (String) biljet.getTxtNaar().getSelectedItem();
 						begindatum = biljet.getDteGaanDatum().getJFormattedTextField().getText();
 						einddatum = biljet.getDteTerugDatum().getJFormattedTextField().getText();
 						int typeHeenTerugSelectedMnem = biljet.getGrpHeenTerug().getSelection().getMnemonic();
