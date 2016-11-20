@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 
+import controller.URLCon;
+
 public class StationboardAPI {
 	private String station;
 	private JSONArray json;
@@ -12,7 +14,7 @@ public class StationboardAPI {
 	public StationboardAPI(String station) {
 		try {
 			this.station = station;
-			json = new JSONArray(RouteberekeningAPI.readUrl("https://traintracks.online/api/stationboard/" + station));
+			json = new JSONArray(URLCon.readUrl("https://traintracks.online/api/stationboard/" + station, "GET"));
 			for (int i = 0; i < json.length(); i++) {
 				TrainAPI t = new TrainAPI(json.getJSONObject(i));
 				trains.add(t);

@@ -28,6 +28,7 @@ public class LoginController {
 							l.getLblResult().setText("");
 							GUIController.getFrame().getContentPane().removeAll();
 							GUIController.showApp();
+							CacheExistingSations.cache();
 						} else {
 							l.getLblResult().setText("Fout, probeer opnieuw!");
 							l.getTxtUsername().setText("");
