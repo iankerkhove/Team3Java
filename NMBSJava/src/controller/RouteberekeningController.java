@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import api.RouteberekeningAPI;
+import api.TimeSelector;
 import panels.RouteberekeningPanel;
 
 public class RouteberekeningController {
@@ -20,17 +21,17 @@ public class RouteberekeningController {
 						
 						if (!van.equals("") && !naar.equals("") && DateTimeConverter.checkTime(tijd) && DateTimeConverter.checkDate(datum)) {
 							
-							int tempInt = Integer.parseInt(DateTimeConverter.getEpoch(datum, tijd));
-							tempInt += 300;
-							String tempString = "";
-							tempString += tempInt;
+							TimeSelector timeSel;
+							if (route.getGrpTimeSel().getSelection().getMnemonic() == 1) {
+								timeSel = TimeSelector.VERTREK;
+							} else {
+								timeSel = TimeSelector.AANKOMST;
+							}
 							
-							r = new RouteberekeningAPI(van, naar, tempString);
+							r = new RouteberekeningAPI(van, naar, datum, tijd, timeSel);
 							String ss = r.toString();
 							if (!ss.contains("null")) {
-								route.getLblResult().setText("<html>"
-										+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
-										+ "</html>");
+								route.getLblResult().setText(r.toStringHTML());
 							} else
 								route.getLblResult().setText("Dit verzoek kon niet verwerkt worden.");
 						} else {
