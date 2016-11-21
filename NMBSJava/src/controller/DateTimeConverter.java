@@ -13,17 +13,30 @@ public class DateTimeConverter {
 			Date date;
 			try {
 				date = df.parse(str);
-				epoch = date.getTime()/1000;
+				epoch = date.getTime() / 1000;
 				return Long.toString(epoch);
 			} catch (ParseException e) {
 				System.err.println("cannot parse");
 				e.printStackTrace();
-			} 
-		}
-		else {
+			}
+		} else {
 			System.out.println("Ongeldige invoer in getEpoch()");
 		}
 		return Long.toString(epoch);
+	}
+
+	public static String getReadableFromEpoch(String e) {
+		return Integer.parseInt(e) / 60 + "";
+	}
+
+	public static String getDateString(String epoch) {
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		return df.format(new Date(Long.parseLong(epoch) * 1000));
+	}
+
+	public static String getTimeString(String epoch) {
+		SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+		return df.format(new Date(Long.parseLong(epoch) * 1000));
 	}
 
 	public static boolean checkDate(String s) {
