@@ -21,6 +21,7 @@ public class GUIController {
 	private static StationboardPanel station;
 	private static BiljetPanel biljet;
 	private static NieuwAbonnementPanel abonnement;
+	private static VerlengAbonnementPanel verlengAbonnement;
 	private static VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek;
 	private static VerlorenVoorwerpMaakPanel verlorenVoorwerpMaak;
 
@@ -110,14 +111,18 @@ public class GUIController {
 						startKoopAbonnement();
 					}
 				});
-				
-				
+				nav.getBtnAbonnementVerlengen().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startVerlengAbonnement();
+					}
+				});
+
 				nav.getBtnVerlorenVoorwerpenZoek().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						startVerlorenVoorwerpZoek();
 					}
 				});
-				
+
 				nav.getBtnbtnVerlorenVoorwerpenVoegToe().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						startVerlorenVoorwerpMaak();
@@ -171,7 +176,16 @@ public class GUIController {
 		frame.setContentPane(frame.getContentPane());
 		KoopAbonnementController.startListening(abonnement);
 	}
-	
+
+	private static void startVerlengAbonnement() {
+		verlengAbonnement = new VerlengAbonnementPanel();
+		frame.setTitle("NMBSTeam - Koop Abonnement");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(verlengAbonnement);
+		frame.setContentPane(frame.getContentPane());
+		VerlengAbonnementController.startListening(verlengAbonnement);
+	}
+
 	private static void startVerlorenVoorwerpZoek() {
 		verlorenVoorwerpZoek = new VerlorenVoorwerpZoekPanel();
 		frame.setTitle("NMBSTeam - Zoek verloren voorwerp");
@@ -180,9 +194,9 @@ public class GUIController {
 		frame.setContentPane(frame.getContentPane());
 		VerlorenVoorwerpZoekController.startListening(verlorenVoorwerpZoek);
 	}
-	
+
 	private static void startVerlorenVoorwerpMaak() {
-		verlorenVoorwerpMaak= new VerlorenVoorwerpMaakPanel();
+		verlorenVoorwerpMaak = new VerlorenVoorwerpMaakPanel();
 		frame.setTitle("NMBSTeam - Maak verloren voorwerp");
 		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
 		frame.getContentPane().add(verlorenVoorwerpMaak);
