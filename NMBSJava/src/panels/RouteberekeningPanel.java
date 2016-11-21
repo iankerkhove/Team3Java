@@ -3,9 +3,12 @@ package panels;
 import java.awt.GridLayout;
 import java.util.Properties;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import org.jdatepicker.impl.*;
@@ -34,6 +37,10 @@ public class RouteberekeningPanel extends JPanel {
 	private StationsAutoCompletor txtNaar;
 	private JDatePickerImpl datePicker;
 	private TimePicker timePicker;
+	
+	private JRadioButton rdbVertrek;
+	private JRadioButton rdbAankomst;
+	private ButtonGroup grpTimeSel;
 
 	private JButton btnZoek;
 
@@ -63,14 +70,15 @@ public class RouteberekeningPanel extends JPanel {
 		lblResult.setVerticalAlignment(SwingConstants.TOP);
 
 		/* Add all components */
-		resultPanel.add(lblResult);
+		JScrollPane scroller = new JScrollPane(lblResult, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		resultPanel.add(scroller);
 
 	}
 
 	private void initSearchPanel() {
 		/* init pane */
 		searchPanel = new JPanel();
-		searchPanel.setLayout(new GridLayout(5, 2, 5, 5));
+		searchPanel.setLayout(new GridLayout(6, 2, 5, 5));
 
 		/* Create all components */
 		lblTitle = new JLabel("Routeberekening");
@@ -100,6 +108,19 @@ public class RouteberekeningPanel extends JPanel {
 			timePanel.add(datePicker);
 			timePanel.add(timePicker);
 		}
+		
+		rdbVertrek = new JRadioButton("Vertrek");
+		rdbVertrek.setSelected(true);
+		rdbVertrek.setMnemonic(1);
+		rdbAankomst = new JRadioButton("Aankomst");
+		rdbAankomst.setMnemonic(2);
+		grpTimeSel = new ButtonGroup();
+		grpTimeSel.add(rdbVertrek);
+		grpTimeSel.add(rdbAankomst);
+		
+		JPanel timeSelPanel = new JPanel();
+		timeSelPanel.add(rdbVertrek);
+		timeSelPanel.add(rdbAankomst);
 
 		btnZoek = new JButton("Zoek");
 
@@ -112,6 +133,8 @@ public class RouteberekeningPanel extends JPanel {
 		searchPanel.add(txtNaar);
 		searchPanel.add(lblTijd);
 		searchPanel.add(timePanel);
+		searchPanel.add(new JLabel());
+		searchPanel.add(timeSelPanel);
 		searchPanel.add(new JLabel());
 		searchPanel.add(btnZoek);
 	}
@@ -166,5 +189,9 @@ public class RouteberekeningPanel extends JPanel {
 
 	public JButton getBtnZoek() {
 		return btnZoek;
+	}
+
+	public ButtonGroup getGrpTimeSel() {
+		return grpTimeSel;
 	}
 }
