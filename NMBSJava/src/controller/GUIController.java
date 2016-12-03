@@ -51,6 +51,19 @@ public class GUIController {
 			}
 		});
 	}
+	
+	public static void logout() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				LoginController.clearCreds();
+				frame.getContentPane().removeAll();
+				LoginPanel l = new LoginPanel();
+				frame.getContentPane().add(l, BorderLayout.CENTER);
+				frame.setContentPane(frame.getContentPane());
+				LoginController.login(l);
+			}
+		});
+	}
 
 	public static void showApp() {
 		// Make frame after performing all other tasks
@@ -126,6 +139,11 @@ public class GUIController {
 				nav.getBtnbtnVerlorenVoorwerpenVoegToe().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						startVerlorenVoorwerpMaak();
+					}
+				});
+				nav.getBtnLogout().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						logout();
 					}
 				});
 			}
