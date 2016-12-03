@@ -91,4 +91,9 @@ public class LoginController {
 	public static int getStatuscode() {
 		return statuscode;
 	}
+
+	public static void clearCreds() {
+		token = "";
+		staffID = 0;
+	}
 }
