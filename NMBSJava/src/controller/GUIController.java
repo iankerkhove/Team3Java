@@ -1,6 +1,7 @@
 package controller;
 
 import java.awt.BorderLayout;
+
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +21,9 @@ public class GUIController {
 	private static StationboardPanel station;
 	private static BiljetPanel biljet;
 	private static NieuwAbonnementPanel abonnement;
+	private static VerlengAbonnementPanel verlengAbonnement;
+	private static VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek;
+	private static VerlorenVoorwerpMaakPanel verlorenVoorwerpMaak;
 
 	public static void start() {
 		// Make frame after performing all other tasks
@@ -107,6 +111,23 @@ public class GUIController {
 						startKoopAbonnement();
 					}
 				});
+				nav.getBtnAbonnementVerlengen().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startVerlengAbonnement();
+					}
+				});
+
+				nav.getBtnVerlorenVoorwerpenZoek().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startVerlorenVoorwerpZoek();
+					}
+				});
+
+				nav.getBtnbtnVerlorenVoorwerpenVoegToe().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startVerlorenVoorwerpMaak();
+					}
+				});
 			}
 		});
 	}
@@ -154,6 +175,33 @@ public class GUIController {
 		frame.getContentPane().add(abonnement);
 		frame.setContentPane(frame.getContentPane());
 		KoopAbonnementController.startListening(abonnement);
+	}
+
+	private static void startVerlengAbonnement() {
+		verlengAbonnement = new VerlengAbonnementPanel();
+		frame.setTitle("NMBSTeam - Koop Abonnement");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(verlengAbonnement);
+		frame.setContentPane(frame.getContentPane());
+		VerlengAbonnementController.startListening(verlengAbonnement);
+	}
+
+	private static void startVerlorenVoorwerpZoek() {
+		verlorenVoorwerpZoek = new VerlorenVoorwerpZoekPanel();
+		frame.setTitle("NMBSTeam - Zoek verloren voorwerp");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(verlorenVoorwerpZoek);
+		frame.setContentPane(frame.getContentPane());
+		VerlorenVoorwerpZoekController.startListening(verlorenVoorwerpZoek);
+	}
+
+	private static void startVerlorenVoorwerpMaak() {
+		verlorenVoorwerpMaak = new VerlorenVoorwerpMaakPanel();
+		frame.setTitle("NMBSTeam - Maak verloren voorwerp");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(verlorenVoorwerpMaak);
+		frame.setContentPane(frame.getContentPane());
+		VerlorenVoorwerpMaakController.startListening(verlorenVoorwerpMaak);
 	}
 
 	public static GUIFrame getFrame() {
