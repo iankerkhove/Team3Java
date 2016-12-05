@@ -15,7 +15,9 @@ public class NavPanel extends JPanel {
 	private JButton btnbtnVerlorenVoorwerpenVoegToe;
 	private JButton btnBiljetKoop;
 	private JButton btnAbonnementKoop;
+	private JButton btnAbonnementVerlengen;
 	private JButton btnPrijzenAanpassen;
+	private JButton btnLogout;
 
 	public NavPanel() {
 		initialize();
@@ -24,7 +26,7 @@ public class NavPanel extends JPanel {
 	}
 
 	private void initialize() {
-		this.setLayout(new GridLayout(8, 1, 5, 5));
+		this.setLayout(new GridLayout(10, 1, 5, 5));
 	}
 
 	private void createComponents() {
@@ -50,8 +52,14 @@ public class NavPanel extends JPanel {
 		btnAbonnementKoop = new JButton("Koop abonnement");
 		btnAbonnementKoop.setHorizontalAlignment(SwingConstants.LEFT);
 
+		btnAbonnementVerlengen = new JButton("Verleng abonnement");
+		btnAbonnementVerlengen.setHorizontalAlignment(SwingConstants.LEFT);
+
 		btnPrijzenAanpassen = new JButton("Pas prijzen aan");
 		btnPrijzenAanpassen.setHorizontalAlignment(SwingConstants.LEFT);
+
+		btnLogout = new JButton("Uitloggen");
+		btnLogout.setHorizontalAlignment(SwingConstants.LEFT);
 	}
 
 	private void addComponents() {
@@ -60,9 +68,11 @@ public class NavPanel extends JPanel {
 		this.add(btnStationZoek);
 		this.add(btnBiljetKoop);
 		this.add(btnAbonnementKoop);
+		this.add(btnAbonnementVerlengen);
 		this.add(btnVerlorenVoorwerpenZoek);
 		this.add(btnbtnVerlorenVoorwerpenVoegToe);
 		this.add(btnPrijzenAanpassen);
+		this.add(btnLogout);
 	}
 
 	public JButton getBtnRouteZoek() {
@@ -93,7 +103,15 @@ public class NavPanel extends JPanel {
 		return btnAbonnementKoop;
 	}
 
+	public JButton getBtnAbonnementVerlengen() {
+		return btnAbonnementVerlengen;
+	}
+
 	public JButton getBtnPrijzenAanpassen() {
 		return btnPrijzenAanpassen;
+	}
+
+	public JButton getBtnLogout() {
+		return btnLogout;
 	}
 }

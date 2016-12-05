@@ -9,6 +9,7 @@ import org.jdatepicker.impl.UtilDateModel;
 import gui.GUIDateFormat;
 import gui.StationsAutoCompletor;
 
+import model.Station;
 import java.awt.GridLayout;
 import java.util.Properties;
 import java.awt.Font;
