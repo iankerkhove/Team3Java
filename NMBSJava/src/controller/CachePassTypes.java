@@ -49,4 +49,11 @@ public class CachePassTypes {
 	public static JSONArray getJSON() {
 		return passTypes;
 	}
+	
+	public static String get(int index) {
+		if (index < passTypes.length()) {
+			return passTypes.getJSONObject(index).getString("Name");
+		}
+		return "";
+	}
 }
