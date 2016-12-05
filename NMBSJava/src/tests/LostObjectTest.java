@@ -29,7 +29,7 @@ public class LostObjectTest {
 		assertEquals(3635,lobj.getTrainID());
 	}
 	
-	@Test
+	@Test 
 	public void ObjectIDTest(){
 		lobj.setObjectID(1);
 		assertEquals(1,lobj.getObjectID());

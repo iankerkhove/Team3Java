@@ -18,7 +18,7 @@ public class DiscountTest {
 	public void ConstructorTest(){
 		assertEquals("Standaardbiljet",disc.getName());
 		assertEquals(1.5, disc.getAmount(),1.5);
-	}
+	} 
 	
 	@Test
 	public void DiscountIDTest(){

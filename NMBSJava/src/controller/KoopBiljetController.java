@@ -20,7 +20,7 @@ public class KoopBiljetController {
 	private static int naarID;
 	private static String prijs;
 
-	public static void startListening(BiljetPanel biljet) {
+	public static void startListening(BiljetPanel biljet)  {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				biljet.getBtnPrint().addActionListener(new ActionListener() {
