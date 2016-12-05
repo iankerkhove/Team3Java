@@ -30,7 +30,7 @@ public class AddressTest {
 
 	}
 
-	@Test
+	@Test 
 	public void AddressIDTest() {
 		adres.setAddressID(3);
 		assertEquals(3, adres.getAddressID());

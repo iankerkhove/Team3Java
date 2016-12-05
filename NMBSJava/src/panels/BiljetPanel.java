@@ -14,7 +14,7 @@ import java.util.Properties;
 import java.awt.Font;
 
 
-@SuppressWarnings("serial")
+@SuppressWarnings("serial") 
 public class BiljetPanel extends JPanel {
 	private JLabel lblVan;
 	private StationsAutoCompletor txtVan;
