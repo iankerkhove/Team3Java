@@ -19,12 +19,14 @@ public class CacheTicketTypes {
 
 	// get price from ticketID
 	public static double getPrice(int typeId) {
-		if (typeId < ticketTypes.length()) {
-			return ticketTypes.getJSONObject(typeId).getDouble("Price");
+		for (int i = 0; i < ticketTypes.length(); i++) {
+			if (typeId == ticketTypes.getJSONObject(i).getInt("TypeTicketID")) {
+				return ticketTypes.getJSONObject(typeId).getDouble("Price");
+			}			
 		}
 		return -1;
 	}
-	
+
 	// get price from type and class
 	public static double getPrice(String ticketType, int comfortClass) {
 		for (int i = 0; i < ticketTypes.length(); i++) {
@@ -46,7 +48,7 @@ public class CacheTicketTypes {
 		}
 		return -1;
 	}
-	
+
 	// get name from typeid
 	public static double getName(int typeTicketID) {
 		for (int i = 0; i < ticketTypes.length(); i++) {
@@ -56,9 +58,9 @@ public class CacheTicketTypes {
 		}
 		return -1;
 	}
-	
+
 	// get amount of objects
-	public static int getObjectCount(){
+	public static int getObjectCount() {
 		return ticketTypes.length();
 	}
 
@@ -71,9 +73,9 @@ public class CacheTicketTypes {
 		}
 		return tempArrayList;
 	}
-	
+
 	// get comfortclass from typeticketID
-	public static int getComfortClass(int typeTicketID){
+	public static int getComfortClass(int typeTicketID) {
 		for (int i = 0; i < ticketTypes.length(); i++) {
 			if (ticketTypes.getJSONObject(i).getInt("TypeTicketID") == typeTicketID) {
 				return ticketTypes.getJSONObject(i).getInt("ComfortClass");
@@ -84,5 +86,12 @@ public class CacheTicketTypes {
 
 	public static JSONArray getJSON() {
 		return ticketTypes;
+	}
+
+	public static String get(int index) {
+		if (index < ticketTypes.length()) {
+			return ticketTypes.getJSONObject(index).getString("Name");
+		}
+		return "";
 	}
 }
