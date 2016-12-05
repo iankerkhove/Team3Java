@@ -1,128 +1,204 @@
 package api;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
-
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import controller.DateTimeConverter;
+import controller.URLCon;
+import gui.GUIDateFormat;
+
 public class RouteberekeningAPI {
-	JSONObject json = null;
-	private String stepOn;
-	private String stepOff;
-	private ArrayList<RouteAPI> routes = new ArrayList<RouteAPI>();
+	private JSONObject json = null;
 
-	public RouteberekeningAPI(String van, String naar) {
+	private String van;
+	private String naar;
+	private String version;
+	private String timestamp;
+	private ArrayList<ConnectionAPI> connections;
+
+	public RouteberekeningAPI(String from, String to) {
 		try {
-			json = new JSONObject(readUrl("https://traintracks.online/api/Route/" + van + "/" + naar));
-			this.stepOn = json.getString("StepOn");
-			this.stepOff = json.getString("StepOff");
-			for (int i = 0; i < json.getJSONArray("Routes").length(); i++) {
-				RouteAPI r = new RouteAPI(json.getJSONArray("Routes").getJSONObject(i));
-				routes.add(r);
+			this.json = new JSONObject(URLCon.readUnsecureUrl("https://api.irail.be/connections/?to=" + to + "&from="
+					+ from + "&date=" + GUIDateFormat.getRawDate() + "&time=" + GUIDateFormat.getRawTime()
+					+ "&timeSel=depart&format=json&lang=NL"));
+
+			this.van = from;
+			this.naar = to;
+			this.version = this.json.getString("version");
+			this.timestamp = this.json.getString("timestamp");
+			this.connections = new ArrayList<ConnectionAPI>();
+			for (int i = 0; i < this.json.getJSONArray("connection").length(); i++) {
+				ConnectionAPI e = new ConnectionAPI(this.json.getJSONArray("connection").getJSONObject(i));
+				connections.add(e);
 			}
-		} catch (Exception e) {
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public RouteberekeningAPI(String van, String naar, String tijd) {
+
+	public RouteberekeningAPI(String from, String to, String date, String time, TimeSelector timeSel) {
 		try {
-			json = new JSONObject(readUrl("https://traintracks.online/api/Route/" + van + "/" + naar + "/" + tijd));
-			this.stepOn = json.getString("StepOn");
-			this.stepOff = json.getString("StepOff");
-			for (int i = 0; i < json.getJSONArray("Routes").length(); i++) {
-				RouteAPI r = new RouteAPI(json.getJSONArray("Routes").getJSONObject(i));
-				routes.add(r);
+			String tempTimeSel;
+			switch (timeSel) {
+			case VERTREK:
+				tempTimeSel = "depart";
+				break;
+			case AANKOMST:
+				tempTimeSel = "arrive";
+				break;
+			default:
+				tempTimeSel = "depart";
+				break;
 			}
-		} catch (Exception e) {
+			this.json = new JSONObject(URLCon.readUnsecureUrl("https://api.irail.be/connections/?to=" + to + "&from="
+					+ from + "&date=" + GUIDateFormat.getRawDate(date) + "&time=" + GUIDateFormat.getRawTime(time)
+					+ "&timeSel=" + tempTimeSel + "&format=json&lang=NL"));
+
+			this.van = from;
+			this.naar = to;
+			this.version = this.json.getString("version");
+			this.timestamp = this.json.getString("timestamp");
+			this.connections = new ArrayList<ConnectionAPI>();
+			for (int i = 0; i < this.json.getJSONArray("connection").length(); i++) {
+				ConnectionAPI e = new ConnectionAPI(this.json.getJSONArray("connection").getJSONObject(i));
+				connections.add(e);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public String getStepOn() {
-		return stepOn;
-	}
-
-	public void setStepOn(String stepOn) {
-		this.stepOn = stepOn;
-	}
-
-	public String getStepOff() {
-		return stepOff;
-	}
-
-	public void setStepOff(String stepOff) {
-		this.stepOff = stepOff;
-	}
-
-	public ArrayList<RouteAPI> getRoutes() {
-		return routes;
-	}
-
-	public void setRoutes(ArrayList<RouteAPI> routes) {
-		this.routes = routes;
-	}
-
-	public static String readUrl(String urlString) throws Exception {
-		BufferedReader reader = null;
-		try {
-			URL url = new URL(urlString); 
-			URLConnection connection = url.openConnection();
-			connection.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.29 Safari/537.36");
-			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			StringBuffer buffer = new StringBuffer();
-			int read;
-			char[] chars = new char[1024];
-			while ((read = reader.read(chars)) != -1)
-				buffer.append(chars, 0, read);
-			return buffer.toString();
-
-		} finally {
-			if (reader != null)
-				reader.close();
-		}
-	}
-
-	public JSONObject getJson() {
-		return json;
-	}
-
-	public void setJson(JSONObject json) {
-		this.json = json;
-	}
-	public String toString(){
-		String ss = "";
-		ss += "Treinen van " + stepOn + " naar " + stepOff + ":\n\n";
-		for (int i = 0; i < routes.size() - 1; i++) {
-			for (int k = 0; k < routes.get(i).getTrains().get(0).getStop().getStations().size(); k++) {
-				if (routes.get(i).getTrains().get(0).getStop().getStations().get(k).getName().equals(stepOn)) {
-					String dep = routes.get(i).getTrains().get(0).getStop().getStations().get(k).getTime()
-							.getDeparture();
-					ss += dep.substring(11, 16) + " - ";
-				}
+	@Override
+	public String toString() {
+		String temp = "";
+		for (int i = 0; i < this.getConnections().size(); i++) {
+			// ROUTE ALGEMENE INFO
+			// Vertek
+			String ss = "Route " + (i + 1) + " -> " + this.getConnections().get(i).getDeparture().getTime();
+			if (!this.getConnections().get(i).getDeparture().getDelay().equals("0")) {
+				ss += " (+" + this.getConnections().get(i).getDeparture().getDelay() + ")";
 			}
-			for (int k = 0; k < routes.get(i).getTrains().get(routes.get(i).getTrains().size() - 1).getStop()
-					.getStations().size(); k++) {
-				if (routes.get(i).getTrains().get(routes.get(i).getTrains().size() - 1).getStop().getStations().get(k)
-						.getName().equals(stepOff)) {
-					String arr = routes.get(i).getTrains().get(routes.get(i).getTrains().size() - 1).getStop()
-							.getStations().get(k).getTime().getArrival();
-					ss += arr.substring(11, 16) + " -> ";
-				}
 
+			ss += " - ";
+
+			// Aankomst
+			ss += this.getConnections().get(i).getArrival().getTime();
+			if (!this.getConnections().get(i).getArrival().getDelay().equals("0")) {
+				ss += " (+" + this.getConnections().get(i).getArrival().getDelay() + ")";
 			}
-			for (int j = 0; j < routes.get(i).getTrains().size(); j++) {
+
+			ss += "\n";
+
+			// ROUTE EXTRA INFO
+			ss += this.getConnections().get(i).getDuration() + " minuten";
+			if (!this.getConnections().get(i).getNumberOfVias().equals("0")) {
+				ss += " - " + this.getConnections().get(i).getNumberOfVias() + " keer overstappen";
+			}
+			if (!this.getConnections().get(i).getDeparture().getCancelled().equals("0")) {
+				ss += " - AFGELAST";
+			}
+			ss += "\n\n";
+
+			// ROUTEBESCHRIJVING
+			// Vertrek
+			ss += "\t" + this.getConnections().get(i).getDeparture().getTime();
+			if (!this.getConnections().get(i).getDeparture().getDelay().equals("0")) {
+				ss += " (+" + this.getConnections().get(i).getDeparture().getDelay() + ")";
+			}
+			ss += " - " + this.getConnections().get(i).getDeparture().getStation() + " ("
+					+ this.getConnections().get(i).getDeparture().getPlatform() + ")";
+			ss += "\n";
+
+			if (!this.getConnections().get(i).getNumberOfVias().equals("0")) {
+				// Treininfo
+				ss += "\t\t" + this.getConnections().get(i).getDeparture().getDirection() + " - "
+						+ this.getConnections().get(i).getDeparture().getVehicle().split("\\.")[2];
+				ss += "\n";
+			}
+			// als er overstappen zijn
+			for (int j = 0; j < this.getConnections().get(i).getVias().size(); j++) {
 				if (j != 0) {
-					ss += ", ";
+					// via treininfo
+					ss += "\t\t" + this.getConnections().get(i).getVias().get(j).getDirection() + " - "
+							+ this.getConnections().get(i).getVias().get(j).getVehicle().split("\\.")[2];
+					ss += "\n";
 				}
-				ss += routes.get(i).getTrains().get(j).getFullId();
+
+				// via aankomst
+				ss += "\t" + this.getConnections().get(i).getVias().get(j).getArrival().getTime();
+				if (!this.getConnections().get(i).getVias().get(j).getArrival().getDelay().equals("0")) {
+					ss += " (+" + this.getConnections().get(i).getVias().get(j).getArrival().getDelay() + ")";
+				}
+				ss += " - " + this.getConnections().get(i).getVias().get(j).getStation() + " ("
+						+ this.getConnections().get(i).getVias().get(j).getArrival().getPlatform() + ")";
+				ss += "\n\n";
+				// via vertrek
+				ss += "\t" + this.getConnections().get(i).getVias().get(j).getDeparture().getTime();
+				if (!this.getConnections().get(i).getVias().get(j).getDeparture().getDelay().equals("0")) {
+					ss += " (+" + this.getConnections().get(i).getVias().get(j).getDeparture().getDelay() + ")";
+				}
+				ss += " - " + this.getConnections().get(i).getVias().get(j).getStation() + " ("
+						+ this.getConnections().get(i).getVias().get(j).getDeparture().getPlatform() + ")";
+				ss += "\n";
 			}
+
+			// Treininfo
+			ss += "\t\t" + this.getConnections().get(i).getArrival().getDirection() + " - "
+					+ this.getConnections().get(i).getArrival().getVehicle().split("\\.")[2];
 			ss += "\n";
+
+			// Aankomst
+			ss += "\t" + this.getConnections().get(i).getArrival().getTime();
+			if (!this.getConnections().get(i).getArrival().getDelay().equals("0")) {
+				ss += " (+" + this.getConnections().get(i).getArrival().getDelay() + ")";
+			}
+			ss += " - " + this.getConnections().get(i).getArrival().getStation() + " ("
+					+ this.getConnections().get(i).getArrival().getPlatform() + ")";
+
 			ss += "\n";
+
+			temp += ss + "\n";
 		}
-		return ss;
+		return temp;
+	}
+
+	public String toStringHTML() {
+		return "<html>" + this.toString().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
+				.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;") + "</html>";
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public String getTimestamp() {
+		return timestamp;
+	}
+
+	public String getFormattedTimestamp() {
+		return DateTimeConverter.getDateString(this.timestamp);
+	}
+
+	public ArrayList<ConnectionAPI> getConnections() {
+		return connections;
+	}
+
+	public String getVan() {
+		return van;
+	}
+
+	public String getNaar() {
+		return naar;
 	}
 }
