@@ -54,8 +54,6 @@ public class LoginController {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				
-				System.out.println(evt.getNewValue());
-				
 				if("state".equals(evt.getPropertyName())
 						&& SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
 					
