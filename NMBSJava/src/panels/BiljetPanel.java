@@ -7,6 +7,8 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import gui.GUIDateFormat;
+import gui.StationsAutoCompletor;
+
 import java.awt.GridLayout;
 import java.util.Properties;
 import java.awt.Font;
@@ -15,9 +17,9 @@ import java.awt.Font;
 @SuppressWarnings("serial")
 public class BiljetPanel extends JPanel {
 	private JLabel lblVan;
-	private JTextField txtVan;
+	private StationsAutoCompletor txtVan;
 	private JLabel lblNaar;
-	private JTextField txtNaar;
+	private StationsAutoCompletor txtNaar;
 	private JDatePickerImpl dteGaanDatum;
 	private JDatePickerImpl dteTerugDatum;
 	private JComboBox<String> cboBiljet;
@@ -53,13 +55,13 @@ public class BiljetPanel extends JPanel {
 		lblVan = new JLabel("Van: ");
 		vanNaarpanel.add(lblVan);
 		// textfieldVan
-		txtVan = new JTextField("");
+		txtVan = new StationsAutoCompletor();
 		vanNaarpanel.add(txtVan);
 		
 		lblNaar = new JLabel("Naar: ");
 		vanNaarpanel.add(lblNaar);
 		
-		txtNaar = new JTextField("");
+		txtNaar = new StationsAutoCompletor();
 		vanNaarpanel.add(txtNaar);
 		//datepicker
 		Properties properties = new Properties();
@@ -141,13 +143,13 @@ public class BiljetPanel extends JPanel {
 	public JLabel getLblVan() {
 		return lblVan;
 	}
-	public JTextField getTxtVan() {
+	public StationsAutoCompletor getTxtVan() {
 		return txtVan;
 	}
 	public JLabel getLblNaar() {
 		return lblNaar;
 	}
-	public JTextField getTxtNaar() {
+	public StationsAutoCompletor getTxtNaar() {
 		return txtNaar;
 	}
 	public JDatePickerImpl getDteGaanDatum() {
@@ -186,5 +188,4 @@ public class BiljetPanel extends JPanel {
 	public JLabel getLblPrijs() {
 		return lblPrijs;
 	}
-//
 }
