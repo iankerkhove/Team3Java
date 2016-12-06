@@ -8,14 +8,14 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import gui.GUIDateFormat;
 import gui.StationsAutoCompletor;
-import model.Station;
 
+import model.Station;
 import java.awt.GridLayout;
 import java.util.Properties;
 import java.awt.Font;
 
 
-@SuppressWarnings("serial")
+@SuppressWarnings("serial") 
 public class BiljetPanel extends JPanel {
 	private JLabel lblVan;
 	private StationsAutoCompletor txtVan;
@@ -189,5 +189,4 @@ public class BiljetPanel extends JPanel {
 	public JLabel getLblPrijs() {
 		return lblPrijs;
 	}
-//
 }
