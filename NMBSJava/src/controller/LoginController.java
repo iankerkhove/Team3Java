@@ -71,6 +71,8 @@ public class LoginController {
 							GUIController.getFrame().getContentPane().removeAll();
 							GUIController.showApp();
 							CacheExistingSations.cache();
+							CacheTicketTypes.cache();
+							CachePassTypes.cache();
 						} else {
 							l.getLblResult().setText("Fout, probeer opnieuw!");
 							l.getTxtUsername().setText("");
@@ -103,4 +105,8 @@ public class LoginController {
 		return statuscode;
 	}
 
+	public static void clearCreds() {
+		token = "";
+		staffID = 0;
+	}
 }

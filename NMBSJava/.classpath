@@ -16,5 +16,7 @@
 	<classpathentry exported="true" kind="lib" path="src/external_jars/json-20160810.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/external_jars/LGoodDatePicker-7.6.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/external_jars/swingx-core-1.6.2-AutoCompletition.jar"/>
+	<classpathentry exported="true" kind="lib" path="src/external_jars/hamcrest-core-1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="src/external_jars/junit-4.12.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
