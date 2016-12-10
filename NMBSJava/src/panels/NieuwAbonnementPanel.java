@@ -1,6 +1,8 @@
 package panels;
 
 import javax.swing.JPanel;
+
+
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -12,8 +14,11 @@ import javax.swing.JTextField;
 import java.util.Properties;
 import org.jdatepicker.impl.*;
 import gui.GUIDateFormat;
+import gui.LangageHandler;
 
 public class NieuwAbonnementPanel extends JPanel {
+	
+	private String taal= LangageHandler.getTaal();
 	
 	private JLabel lblTitle;
 	private JLabel lblNaam;
@@ -67,43 +72,67 @@ public class NieuwAbonnementPanel extends JPanel {
 	public NieuwAbonnementPanel() {
 		this.setLayout(new GridLayout(22, 2, 1, 1));
 
-		lblTitle = new JLabel("Nieuw Abonnement");
+		lblTitle = new JLabel();
+		LangageHandler.chooseLangageLbl(lblTitle, taal, "nieuwAbo");
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
-		lblNaam = new JLabel("Naam: ");
+		lblNaam = new JLabel();
+		LangageHandler.chooseLangageLbl(lblNaam, taal, "naam");
 		txtNaam = new JTextField();
 
-		lblVoornaam = new JLabel("Voornaam: ");
+		lblVoornaam = new JLabel();
+		LangageHandler.chooseLangageLbl(lblVoornaam, taal, "voornaam");
 		txtVoornaam = new JTextField();
-		lblGeboortedatum = new JLabel("Geboortedatum: ");
-		lblEmail = new JLabel("Email: ");
+		lblGeboortedatum = new JLabel();
+		LangageHandler.chooseLangageLbl(lblGeboortedatum, taal, "geboortedatum");
+		lblEmail = new JLabel();
+		LangageHandler.chooseLangageLbl(lblEmail, taal, "email");
 		txtEmail = new JTextField();
-		lblTelefoonnr = new JLabel("Telefoonnummer: ");
+		lblTelefoonnr = new JLabel();
+		LangageHandler.chooseLangageLbl(lblTelefoonnr, taal, "telefoonNummer");
 		txtTelefoonnr = new JTextField();
-		lblGemeente = new JLabel("Gemeente: ");
+		lblGemeente = new JLabel();
+		LangageHandler.chooseLangageLbl(lblGemeente, taal, "gemeente");
 		txtGemeente = new JTextField();
-		lblPostcode = new JLabel("Postcode: ");
+		lblPostcode = new JLabel();
+		LangageHandler.chooseLangageLbl(lblPostcode, taal, "postcode");
 		txtPostcode = new JTextField();
-		lblStraatEnNummer = new JLabel("Straat + nr: ");
+		lblStraatEnNummer = new JLabel();
+		LangageHandler.chooseLangageLbl(lblStraatEnNummer, taal, "straat");
+
 		txtStraatEnNummer = new JTextField();
-		lblStartDatum = new JLabel("Startdatum: ");
-		lblKlasse = new JLabel("Klasse: ");
-		rdbEersteKlasse = new JRadioButton("1e Klas");
-		rdbTweedeKlasse = new JRadioButton("2e Klas");
-		lblTreinkaart = new JLabel("Type treinkaart: ");
-		lblVastTraject = new JLabel("Vast traject: ");
-		rdbJa = new JRadioButton("Ja");
-		rdbNee=new JRadioButton("Nee");
-		lblDuur = new JLabel("Duur: ");
-		lblVervaldatum = new JLabel("Vervaldatum: ");
+		lblStartDatum = new JLabel();
+		LangageHandler.chooseLangageLbl(lblStartDatum, taal, "startdatum");
+		lblKlasse = new JLabel();
+		LangageHandler.chooseLangageLbl(lblKlasse, taal, "klasse");
+		rdbEersteKlasse = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbEersteKlasse, taal, "1eKlasse");
+		rdbTweedeKlasse = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbTweedeKlasse, taal, "2eKlasse");
+		lblTreinkaart = new JLabel();
+		LangageHandler.chooseLangageLbl(lblTreinkaart, taal, "treinkaart");
+		lblVastTraject = new JLabel();
+		LangageHandler.chooseLangageLbl(lblVastTraject, taal, "vast");
+		rdbJa = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbJa, taal, "ja");
+		rdbNee=new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbNee, taal, "nee");
+		lblDuur = new JLabel();
+		LangageHandler.chooseLangageLbl(lblDuur, taal, "duur");
+		lblVervaldatum = new JLabel();
+		LangageHandler.chooseLangageLbl(lblVervaldatum, taal, "vervaldatum");
+		
+		//////////
 		lblBerekendeVervaldatum = new JLabel("'Vervaldatum'");
-		btnPrint = new JButton("PRINT");
+		btnPrint = new JButton();
+		LangageHandler.chooseLangageBtn(btnPrint, taal, "print");
 		lblPrint = new JLabel("€0");
 		lblStation1 = new JLabel("Station 1: ");
 		lblStation2 = new JLabel("Station 2: ");
 		txtStation1 = new JTextField();
 		txtStation2 = new JTextField();
-		btnValideer = new JButton("Valideer");
+		btnValideer = new JButton();
+		LangageHandler.chooseLangageBtn(btnValideer, taal, "valideer");
 		lblFoutmelding = new JLabel("");
 		
 		grpKlasses = new ButtonGroup();
