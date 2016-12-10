@@ -14,10 +14,12 @@ import gui.StationsAutoCompletor;
 import java.awt.GridLayout;
 import java.util.Properties;
 import java.awt.Font;
-
+import gui.LangageHandler;
 @SuppressWarnings("serial")
 public class VerlorenVoorwerpZoekPanel extends JPanel {
 
+	private String taal = LangageHandler.getTaal();
+	
 	private JButton btnToonAlles;
 	private JButton btnZoek;
 
@@ -41,7 +43,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 
 		//1
 		lblTitel = new JLabel();
-		lblTitel.setText("Zoek voorwerp");
+		LangageHandler.chooseLangageLbl(lblTitel, taal, "zoekVoorwerp");
 		lblTitel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		search.add(lblTitel);
 		
@@ -51,12 +53,12 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		search.add(new JLabel());
 		
 		btnToonAlles = new JButton();
-		btnToonAlles.setText("Toon alles");
+		LangageHandler.chooseLangageBtn(btnToonAlles, taal, "toonAlles");
 		search.add(btnToonAlles);
 		
 		//3
 		lblStation = new JLabel();
-		lblStation.setText("Station: ");
+		LangageHandler.chooseLangageLbl(lblStation, taal, "station");
 		search.add(lblStation);
 	
 		txtStation = new StationsAutoCompletor();
@@ -65,7 +67,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 
 		//4
 		lblTreinNummer = new JLabel();
-		lblTreinNummer.setText("Treinnummer:");
+		LangageHandler.chooseLangageLbl(lblTreinNummer, taal, "treinnummer");
 		search.add(lblTreinNummer);
 
 		txtTreinNummer = new JTextField();
@@ -73,7 +75,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 
 		//5
 		lblDatum = new JLabel();
-		lblDatum.setText("Datum:");
+		LangageHandler.chooseLangageLbl(lblDatum, taal, "datum");
 		search.add(lblDatum);
 
 		Properties properties = new Properties();
@@ -90,7 +92,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		search.add(new JLabel());
 		
 		btnZoek = new JButton();
-		btnZoek.setText("Zoek");
+		LangageHandler.chooseLangageBtn(btnZoek, taal, "zoek");
 		search.add(btnZoek);
 
 		

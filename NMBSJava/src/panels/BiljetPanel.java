@@ -14,9 +14,12 @@ import java.awt.GridLayout;
 import java.util.Properties;
 import java.awt.Font;
 
+import gui.LangageHandler;
 
 @SuppressWarnings("serial") 
 public class BiljetPanel extends JPanel {
+	private String taal = LangageHandler.getTaal();
+	
 	private JLabel lblVan;
 	private StationsAutoCompletor txtVan;
 	private JLabel lblNaar;
@@ -53,13 +56,15 @@ public class BiljetPanel extends JPanel {
 		klasseTicketpanel = new JPanel();
 		comboBoxpanel = new JPanel();
 		// labelVan
-		lblVan = new JLabel("Van: ");
+		lblVan = new JLabel();
+		LangageHandler.chooseLangageLbl(lblVan, taal, "van");
 		vanNaarpanel.add(lblVan);
 		// textfieldVan
 		txtVan = new StationsAutoCompletor();
 		vanNaarpanel.add(txtVan);
 		
 		lblNaar = new JLabel("Naar: ");
+		LangageHandler.chooseLangageLbl(lblNaar, taal, "naar");
 		vanNaarpanel.add(lblNaar);
 		
 		txtNaar = new StationsAutoCompletor();
@@ -77,33 +82,40 @@ public class BiljetPanel extends JPanel {
 		comboBoxpanel.setLayout(new GridLayout(2, 1, 5, 5));
 		String[] s = {"Standaardbiljet" , "GoPass 1" , "Weekendbiljet", "Seniorenbiljet", "Biljet Kind"};
 		cboBiljet = new JComboBox<String>(s);
-	
+		
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteTerugDatum = new JDatePickerImpl(datePanel2,new GUIDateFormat());
 		dteTerugDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
 		
-		rdbEnkel = new JRadioButton("Enkel");
+		rdbEnkel = new JRadioButton();
+		
 		rdbEnkel.setMnemonic(1);
 		rdbEnkel.setSelected(true);
-		rdbHeenTerug = new JRadioButton("Heen en terug");
+		rdbHeenTerug = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbHeenTerug, taal, "heenTerug");
 		rdbHeenTerug.setMnemonic(2);
 		
 		typeTicketpanel.setLayout(new GridLayout(2, 2, 5, 5));
 		
 		klasseTicketpanel.setLayout(new GridLayout(3,2,5,5));
-		rdbEersteKlasse = new JRadioButton("1e klasse");
+		rdbEersteKlasse = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbEersteKlasse, taal, "1eKlasse");
 		rdbEersteKlasse.setMnemonic(1);
-		rdbTweedeKlasse = new JRadioButton("2e klasse");
+		rdbTweedeKlasse = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbTweedeKlasse, taal, "2eKlasse");
 		rdbTweedeKlasse.setMnemonic(2);
 		rdbTweedeKlasse.setSelected(true);
-		rdbKlasseVerhoging = new JRadioButton("Klasseverhoging");
+		rdbKlasseVerhoging = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbKlasseVerhoging, taal, "klasseVerhoging");
 		rdbKlasseVerhoging.setMnemonic(3);
 		
 		grpHeenTerug = new ButtonGroup();
 		grpKlasseTicket = new ButtonGroup();
 		
 		btnPrint = new JButton("Print");
-		lblPrijs = new JLabel(" € 0 ");
+		LangageHandler.chooseLangageBtn(btnPrint, taal, "print");
+		lblPrijs = new JLabel();
+		LangageHandler.chooseLangageLbl(lblPrijs, taal, "prijs");
 		lblPrijs.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPrijs.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		//adds
@@ -128,7 +140,8 @@ public class BiljetPanel extends JPanel {
 		datumspanel.add(dteGaanDatum);
 		datumspanel.add(dteTerugDatum);
 		
-		JLabel label = new JLabel("Koop biljet");
+		JLabel label = new JLabel();
+		LangageHandler.chooseLangageLbl(label, taal, "koopBiljet");
 		label.setHorizontalAlignment(SwingConstants.LEFT);
 		label.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		add(label);

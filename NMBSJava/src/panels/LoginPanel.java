@@ -6,7 +6,9 @@ import java.awt.FlowLayout;
 
 @SuppressWarnings("serial")
 public class LoginPanel extends JPanel {
-
+	
+	private JLabel lblLangage;
+	private JComboBox cmbLangage;
 	private JLabel lblUsername;
 	private JTextField txtUsername;
 	private JLabel lblPassword;
@@ -18,6 +20,15 @@ public class LoginPanel extends JPanel {
 	public LoginPanel() {
 		JPanel content = new JPanel();
 
+		
+		JPanel lang = new JPanel();
+		String[] langage = {"Nederlands","Français","English"};
+		cmbLangage = new JComboBox(langage);
+		lblLangage = new JLabel("Langage:");
+		lang.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+		lang.add(lblLangage);
+		lang.add(cmbLangage);
+		
 		JPanel usrn = new JPanel();
 		lblUsername = new JLabel("Username:");
 		txtUsername = new JTextField();
@@ -47,8 +58,9 @@ public class LoginPanel extends JPanel {
 		lblResult = new JLabel();
 		lblResult.setHorizontalAlignment(SwingConstants.CENTER);
 
-		content.setLayout(new GridLayout(7, 1, 5, 5));
+		content.setLayout(new GridLayout(8, 1, 5, 5));
 
+		content.add(lang);
 		content.add(new JLabel());
 		content.add(new JLabel());
 		content.add(usrn);
@@ -88,5 +100,15 @@ public class LoginPanel extends JPanel {
 	public JLabel getLblResult() {
 		return lblResult;
 	}
+
+	public JComboBox getCmbLangage() {
+		return cmbLangage;
+	}
+
+	public JLabel getLblLangage() {
+		return lblLangage;
+	}
+	
+	
 
 }

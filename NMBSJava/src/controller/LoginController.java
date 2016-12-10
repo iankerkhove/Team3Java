@@ -9,9 +9,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import org.json.JSONObject;
+
+import gui.LangageHandler;
 import panels.LoginPanel;
 
-public class LoginController {
+public class LoginController{
 
 	private static int staffID;
 	private static String token;
@@ -36,6 +38,10 @@ public class LoginController {
 							l.getTxtUsername().setText("");
 							l.getTxtPassword().setText("");
 						}
+						
+						
+						LangageHandler.setTaal(l.getCmbLangage().getSelectedItem().toString());
+					
 					}
 				});
 			}
