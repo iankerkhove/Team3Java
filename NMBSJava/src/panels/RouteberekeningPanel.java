@@ -24,8 +24,6 @@ import java.awt.Font;
 
 @SuppressWarnings("serial")
 public class RouteberekeningPanel extends JPanel {
-
-	private String taal = LangageHandler.getTaal();
 	
 	private JPanel searchPanel;
 	private JPanel timePanel;
@@ -70,7 +68,7 @@ public class RouteberekeningPanel extends JPanel {
 
 		/* Create all components */
 		lblResult = new JLabel();
-		LangageHandler.chooseLangageLbl(lblResult, taal, "resRoute");
+		LangageHandler.chooseLangageLbl(lblResult, "resRoute");
 		lblResult.setHorizontalAlignment(SwingConstants.LEFT);
 		lblResult.setVerticalAlignment(SwingConstants.TOP);
 
@@ -87,19 +85,19 @@ public class RouteberekeningPanel extends JPanel {
 
 		/* Create all components */
 		lblTitle = new JLabel();
-		LangageHandler.chooseLangageLbl(lblTitle, taal, "routeberekening");
+		LangageHandler.chooseLangageLbl(lblTitle, "routeberekening");
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		lblVan = new JLabel();
-		LangageHandler.chooseLangageLbl(lblVan, taal, "van");
+		LangageHandler.chooseLangageLbl(lblVan, "van");
 		txtVan = new StationsAutoCompletor();
 
 		lblNaar = new JLabel("Naar: ");
-		LangageHandler.chooseLangageLbl(lblNaar, taal, "naar");
+		LangageHandler.chooseLangageLbl(lblNaar, "naar");
 		txtNaar = new StationsAutoCompletor();
 
 		lblTijd = new JLabel();
-		LangageHandler.chooseLangageLbl(lblTijd, taal, "tijd");
+		LangageHandler.chooseLangageLbl(lblTijd, "tijd");
 		{
 			timePanel = new JPanel();
 			timePanel.setLayout(new GridLayout(1, 2, 5, 5));
@@ -119,11 +117,11 @@ public class RouteberekeningPanel extends JPanel {
 		}
 		
 		rdbVertrek = new JRadioButton();
-		LangageHandler.chooseLangageRdb(rdbVertrek, taal, "vertrek");
+		LangageHandler.chooseLangageRdb(rdbVertrek, "vertrek");
 		rdbVertrek.setSelected(true);
 		rdbVertrek.setMnemonic(1);
 		rdbAankomst = new JRadioButton();
-		LangageHandler.chooseLangageRdb(rdbAankomst, taal, "Aankomst");
+		LangageHandler.chooseLangageRdb(rdbAankomst, "Aankomst");
 		rdbAankomst.setMnemonic(2);
 		grpTimeSel = new ButtonGroup();
 		grpTimeSel.add(rdbVertrek);
@@ -134,7 +132,7 @@ public class RouteberekeningPanel extends JPanel {
 		timeSelPanel.add(rdbAankomst);
 
 		btnZoek = new JButton("Zoek");
-		LangageHandler.chooseLangageBtn(btnZoek, taal, "zoek");
+		LangageHandler.chooseLangageBtn(btnZoek, "zoek");
 
 		/* Add all components */
 		searchPanel.add(lblTitle);

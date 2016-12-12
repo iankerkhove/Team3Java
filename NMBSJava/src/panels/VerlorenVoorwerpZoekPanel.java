@@ -43,7 +43,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 
 		//1
 		lblTitel = new JLabel();
-		LangageHandler.chooseLangageLbl(lblTitel, taal, "zoekVoorwerp");
+		LangageHandler.chooseLangageLbl(lblTitel, "zoekVoorwerp");
 		lblTitel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		search.add(lblTitel);
 		
@@ -53,12 +53,12 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		search.add(new JLabel());
 		
 		btnToonAlles = new JButton();
-		LangageHandler.chooseLangageBtn(btnToonAlles, taal, "toonAlles");
+		LangageHandler.chooseLangageBtn(btnToonAlles, "toonAlles");
 		search.add(btnToonAlles);
 		
 		//3
 		lblStation = new JLabel();
-		LangageHandler.chooseLangageLbl(lblStation, taal, "station");
+		LangageHandler.chooseLangageLbl(lblStation, "station");
 		search.add(lblStation);
 	
 		txtStation = new StationsAutoCompletor();
@@ -67,7 +67,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 
 		//4
 		lblTreinNummer = new JLabel();
-		LangageHandler.chooseLangageLbl(lblTreinNummer, taal, "treinnummer");
+		LangageHandler.chooseLangageLbl(lblTreinNummer, "treinnummer");
 		search.add(lblTreinNummer);
 
 		txtTreinNummer = new JTextField();
@@ -75,7 +75,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 
 		//5
 		lblDatum = new JLabel();
-		LangageHandler.chooseLangageLbl(lblDatum, taal, "datum");
+		LangageHandler.chooseLangageLbl(lblDatum, "datum");
 		search.add(lblDatum);
 
 		Properties properties = new Properties();
@@ -92,7 +92,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		search.add(new JLabel());
 		
 		btnZoek = new JButton();
-		LangageHandler.chooseLangageBtn(btnZoek, taal, "zoek");
+		LangageHandler.chooseLangageBtn(btnZoek, "zoek");
 		search.add(btnZoek);
 
 		

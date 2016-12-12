@@ -9,8 +9,6 @@ import javax.swing.SwingConstants;
 import gui.LangageHandler;
 @SuppressWarnings("serial")
 public class NavPanel extends JPanel {
-
-	private String taal = LangageHandler.getTaal();
 	
 	private JButton btnRouteZoek;
 	private JButton btnTreinZoek;
@@ -36,43 +34,43 @@ public class NavPanel extends JPanel {
 	private void createComponents() {
 
 		btnRouteZoek = new JButton();
-		LangageHandler.chooseLangageBtn(btnRouteZoek, taal, "zoekRoute");
+		LangageHandler.chooseLangageBtn(btnRouteZoek,"zoekRoute");
 		btnRouteZoek.setHorizontalAlignment(SwingConstants.LEFT);
 
 		btnTreinZoek = new JButton();
-		LangageHandler.chooseLangageBtn(btnTreinZoek, taal, "zoekTrein");
+		LangageHandler.chooseLangageBtn(btnTreinZoek, "zoekTrein");
 		btnTreinZoek.setHorizontalAlignment(SwingConstants.LEFT);
 
 		btnStationZoek = new JButton();
-		LangageHandler.chooseLangageBtn(btnStationZoek, taal, "zoekStation");
+		LangageHandler.chooseLangageBtn(btnStationZoek, "zoekStation");
 		btnStationZoek.setHorizontalAlignment(SwingConstants.LEFT);
 
 		btnVerlorenVoorwerpenZoek = new JButton();
-		LangageHandler.chooseLangageBtn(btnVerlorenVoorwerpenZoek, taal, "zoekVoorwerp");
+		LangageHandler.chooseLangageBtn(btnVerlorenVoorwerpenZoek, "zoekVoorwerp");
 		btnVerlorenVoorwerpenZoek.setHorizontalAlignment(SwingConstants.LEFT);
 
 		btnbtnVerlorenVoorwerpenVoegToe = new JButton();
-		LangageHandler.chooseLangageBtn(btnbtnVerlorenVoorwerpenVoegToe, taal, "voegVoorwerp");
+		LangageHandler.chooseLangageBtn(btnbtnVerlorenVoorwerpenVoegToe, "voegVoorwerp");
 		btnbtnVerlorenVoorwerpenVoegToe.setHorizontalAlignment(SwingConstants.LEFT);
 
 		btnBiljetKoop = new JButton();
-		LangageHandler.chooseLangageBtn(btnBiljetKoop, taal, "koopBiljet");
+		LangageHandler.chooseLangageBtn(btnBiljetKoop, "koopBiljet");
 		btnBiljetKoop.setHorizontalAlignment(SwingConstants.LEFT);
 		btnAbonnementKoop = new JButton("Koop abonnement");
-		LangageHandler.chooseLangageBtn(btnAbonnementKoop, taal, "koopAbonnement");
+		LangageHandler.chooseLangageBtn(btnAbonnementKoop, "koopAbonnement");
 		
 		btnAbonnementKoop.setHorizontalAlignment(SwingConstants.LEFT);
 
 		btnAbonnementVerlengen = new JButton();
-		LangageHandler.chooseLangageBtn(btnAbonnementVerlengen, taal, "verlengAbonnement");
+		LangageHandler.chooseLangageBtn(btnAbonnementVerlengen, "verlengAbonnement");
 		btnAbonnementVerlengen.setHorizontalAlignment(SwingConstants.LEFT);
 
 		btnPrijzenAanpassen = new JButton();
-		LangageHandler.chooseLangageBtn(btnPrijzenAanpassen, taal, "pasPrijzen");
+		LangageHandler.chooseLangageBtn(btnPrijzenAanpassen, "pasPrijzen");
 		btnPrijzenAanpassen.setHorizontalAlignment(SwingConstants.LEFT);
 
 		btnLogout = new JButton();
-		LangageHandler.chooseLangageBtn(btnLogout, taal, "Uitloggen");
+		LangageHandler.chooseLangageBtn(btnLogout, "Uitloggen");
 		btnLogout.setHorizontalAlignment(SwingConstants.LEFT);
 	}
 

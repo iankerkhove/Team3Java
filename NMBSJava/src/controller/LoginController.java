@@ -15,6 +15,7 @@ import panels.LoginPanel;
 
 public class LoginController{
 
+	
 	private static int staffID;
 	private static String token;
 	private static int statuscode;
@@ -23,6 +24,7 @@ public class LoginController{
 	public static void login(LoginPanel l) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				
 				l.getBtnLogin().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						readUrl(l);
@@ -39,9 +41,7 @@ public class LoginController{
 							l.getTxtPassword().setText("");
 						}
 						
-						
 						LangageHandler.setTaal(l.getCmbLangage().getSelectedItem().toString());
-					
 					}
 				});
 			}
