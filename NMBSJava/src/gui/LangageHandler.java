@@ -42,49 +42,68 @@ public abstract class LangageHandler {
 	s = bundle.getString(t);
 	return s;
 	}
+
 	
-	public static void chooseLangageLbl(JLabel l, String t, String s) {
-		if(t == "Français")
+	public static void chooseLangageLbl(JLabel l,String s) {
+		if(taal == "Français")
 		{
-			l.setText(LangageHandler.bundleFR(s));
+			l.setText(bundleFR(s));
 		}
-		else if (t == "English")
+		else if (taal == "English")
 		{
-			l.setText(LangageHandler.bundleEN(s));
+			l.setText(bundleEN(s));
 		}
-		else if (t == "Nederlands")
+		else if (taal == "Nederlands")
 		{
-			l.setText(LangageHandler.bundleNL(s));
+			l.setText(bundleNL(s));
 		}
 	}
 	
-	public static void chooseLangageBtn(JButton b, String t, String s) {
-		if(t == "Français")
+	public static void chooseLangageBtn(JButton b, String s) {
+		if(taal == "Français")
 		{
-			b.setText(LangageHandler.bundleFR(s));
+			b.setText(bundleFR(s));
 		}
-		else if (t == "English")
+		else if (taal == "English")
 		{
-			b.setText(LangageHandler.bundleEN(s));
+			b.setText(bundleEN(s));
 		}
-		else if (t == "Nederlands")
+		else if (taal == "Nederlands")
 		{
-			b.setText(LangageHandler.bundleNL(s));
+			b.setText(bundleNL(s));
 		}
 	}
 	
-	public static void chooseLangageRdb(JRadioButton b, String t, String s) {
-		if(t == "Français")
+	public static void chooseLangageRdb(JRadioButton b, String s) {
+		if(taal == "Français")
 		{
-			b.setText(LangageHandler.bundleFR(s));
+			b.setText(bundleFR(s));
 		}
-		else if (t == "English")
+		else if (taal == "English")
 		{
-			b.setText(LangageHandler.bundleEN(s));
+			b.setText(bundleEN(s));
 		}
-		else if (t == "Nederlands")
+		else if (taal == "Nederlands")
 		{
-			b.setText(LangageHandler.bundleNL(s));
+			b.setText(bundleNL(s));
 		}
+	}
+	
+	public static String chooseLangageCmb(String s)
+	{
+		String vertal = "";
+		if(taal == "Français")
+		{
+			vertal = bundleFR(s);
+		}
+		else if (taal == "English")
+		{
+			vertal = bundleEN(s);
+		}
+		else if (taal == "Nederlands")
+		{
+			vertal = bundleNL(s);
+		}
+		return vertal;
 	}
 }

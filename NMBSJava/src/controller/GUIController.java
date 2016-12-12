@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import gui.GUIFrame;
+import gui.LangageHandler;
 import panels.*;
 
 public class GUIController {
@@ -15,6 +16,7 @@ public class GUIController {
 	// navbar
 	private static NavPanel nav;
 	// all panels
+	private static LoginPanel l;
 	private static StartPanel start;
 	private static RouteberekeningPanel route;
 	private static TreinopzoekingPanel trein;
@@ -44,20 +46,24 @@ public class GUIController {
 	public static void login() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				LangageHandler.setTaal("Nederlands");
 				LoginPanel l = new LoginPanel();
+				
+				//GUIController.startListeningForLang(l);
+				
 				frame.getContentPane().add(l, BorderLayout.CENTER);
 				frame.setContentPane(frame.getContentPane());
 				LoginController.login(l);
 			}
 		});
 	}
-	
+
 	public static void logout() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				LoginController.clearCreds();
 				frame.getContentPane().removeAll();
-				LoginPanel l = new LoginPanel();
+				l = new LoginPanel();
 				frame.getContentPane().add(l, BorderLayout.CENTER);
 				frame.setContentPane(frame.getContentPane());
 				LoginController.login(l);
@@ -91,6 +97,27 @@ public class GUIController {
 		frame.getContentPane().add(nav, BorderLayout.WEST);
 		frame.getContentPane().add(start, BorderLayout.CENTER);
 		frame.setContentPane(frame.getContentPane());
+	}
+
+	public static void startListeningForLang(LoginPanel l) {
+		l.getCmbLangage().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("ok");
+				LangageHandler.setTaal(l.getCmbLangage().getSelectedItem().toString());
+				GUIController.reloadLogin();
+			}
+		});
+	}
+
+	protected static void reloadLogin() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				l = new LoginPanel();
+				frame.getContentPane().removeAll();
+				frame.getContentPane().add(l);
+				frame.setContentPane(frame.getContentPane());
+			}
+		});
 	}
 
 	public static void startListeningOnNav() {

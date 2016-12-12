@@ -12,8 +12,6 @@ import javax.swing.SwingConstants;
 import gui.LangageHandler;
 @SuppressWarnings("serial")
 public class TreinopzoekingPanel extends JPanel {
-
-	private String taal = LangageHandler.getTaal();
 	
 	private JPanel searchPanel;
 	private JPanel resultPanel;
@@ -48,7 +46,7 @@ public class TreinopzoekingPanel extends JPanel {
 
 		/* Create all components */
 		lblResult = new JLabel();
-		LangageHandler.chooseLangageLbl(lblResult, taal, "resRoute");
+		LangageHandler.chooseLangageLbl(lblResult, "resRoute");
 		lblResult.setHorizontalAlignment(SwingConstants.LEFT);
 		lblResult.setVerticalAlignment(SwingConstants.TOP);
 
@@ -67,7 +65,7 @@ public class TreinopzoekingPanel extends JPanel {
 
 		/* Create all components */
 		lblTitle = new JLabel("Trein opzoeken");
-		LangageHandler.chooseLangageLbl(lblTitle, taal, "treinOpzoeken");
+		LangageHandler.chooseLangageLbl(lblTitle, "treinOpzoeken");
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		lblTrein = new JLabel("<html>Trein:<br>(enkel nummer, geen prefix type)</html>");

@@ -17,7 +17,7 @@ import gui.LangageHandler;
 @SuppressWarnings("serial")
 public class VerlorenVoorwerpMaakPanel extends JPanel {
 
-	private String taal = LangageHandler.getTaal();
+	//private String taal = LangageHandler.getTaal();
 	
 	private JLabel lblTitel;
 	private JLabel lblStation;
@@ -43,7 +43,7 @@ public class VerlorenVoorwerpMaakPanel extends JPanel {
 		
 		// 1
 		lblTitel = new JLabel();
-		LangageHandler.chooseLangageLbl(lblTitel, taal, "toevoegenVoorwerp");
+		LangageHandler.chooseLangageLbl(lblTitel, "toevoegenVoorwerp");
 		lblTitel.setFont((new Font("Tahoma", Font.PLAIN, 18)));
 		maak.add(lblTitel);
 		
@@ -55,7 +55,7 @@ public class VerlorenVoorwerpMaakPanel extends JPanel {
 		
 		//2
 		lblStation = new JLabel();
-		LangageHandler.chooseLangageLbl(lblStation, taal, "station");
+		LangageHandler.chooseLangageLbl(lblStation, "station");
 		maak.add(lblStation);
 	
 		txtStation = new StationsAutoCompletor();
@@ -63,7 +63,7 @@ public class VerlorenVoorwerpMaakPanel extends JPanel {
 		
 		//3
 		lblTrein = new JLabel();
-		LangageHandler.chooseLangageLbl(lblTrein, taal, "treinnummer");
+		LangageHandler.chooseLangageLbl(lblTrein, "treinnummer");
 		maak.add(lblTrein);
 		
 		txtTrein = new JTextField();
@@ -72,7 +72,7 @@ public class VerlorenVoorwerpMaakPanel extends JPanel {
 		
 		//4
 		lblOmschrijving = new JLabel();
-		LangageHandler.chooseLangageLbl(lblOmschrijving, taal, "omschrijving");
+		LangageHandler.chooseLangageLbl(lblOmschrijving, "omschrijving");
 		maak.add(lblOmschrijving);
 		
 		txtOmschrijving = new JTextField();
@@ -81,7 +81,7 @@ public class VerlorenVoorwerpMaakPanel extends JPanel {
 		
 		//5
 		lblDatum = new JLabel();
-		LangageHandler.chooseLangageLbl(lblDatum, taal, "datum");
+		LangageHandler.chooseLangageLbl(lblDatum, "datum");
 		maak.add(lblDatum);
 		
 		Properties properties = new Properties();
@@ -98,7 +98,7 @@ public class VerlorenVoorwerpMaakPanel extends JPanel {
 		maak.add(new JLabel());
 		
 		btnMaak = new JButton();
-		LangageHandler.chooseLangageBtn(btnMaak, taal, "voegNieuwe");
+		LangageHandler.chooseLangageBtn(btnMaak, "voegNieuwe");
 		maak.add(btnMaak);
 		
 		lblResultat = new JLabel();

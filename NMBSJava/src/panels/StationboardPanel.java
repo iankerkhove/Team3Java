@@ -14,8 +14,6 @@ import gui.StationsAutoCompletor;
 import gui.LangageHandler;
 @SuppressWarnings("serial")
 public class StationboardPanel extends JPanel {
-
-	private String taal = LangageHandler.getTaal();
 	
 	private JPanel searchPanel;
 	private JPanel resultPanel;
@@ -50,7 +48,7 @@ public class StationboardPanel extends JPanel {
 
 		/* Create all components */
 		lblResult = new JLabel();
-		LangageHandler.chooseLangageLbl(lblResult, taal, "resStation");
+		LangageHandler.chooseLangageLbl(lblResult, "resStation");
 		lblResult.setHorizontalAlignment(SwingConstants.LEFT);
 		lblResult.setVerticalAlignment(SwingConstants.TOP);
 		JScrollPane scroller = new JScrollPane(lblResult, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -67,15 +65,15 @@ public class StationboardPanel extends JPanel {
 
 		/* Create all components */
 		lblTitle = new JLabel();
-		LangageHandler.chooseLangageLbl(lblTitle, taal, "stationsbord");
+		LangageHandler.chooseLangageLbl(lblTitle, "stationsbord");
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		lblStation = new JLabel();
-		LangageHandler.chooseLangageLbl(lblStation, taal, "station");
+		LangageHandler.chooseLangageLbl(lblStation, "station");
 		txtStation = new StationsAutoCompletor();
 
 		btnZoek = new JButton();
-		LangageHandler.chooseLangageBtn(btnZoek, taal, "zoek");
+		LangageHandler.chooseLangageBtn(btnZoek, "zoek");
 
 		/* Add all components */
 		searchPanel.add(lblTitle);
@@ -86,6 +84,8 @@ public class StationboardPanel extends JPanel {
 		searchPanel.add(btnZoek);
 		searchPanel.add(new JLabel());
 		searchPanel.add(new JLabel());
+		
+		
 	}
 
 	public JPanel getSearchPanel() {

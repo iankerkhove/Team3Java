@@ -1,12 +1,15 @@
 package panels;
 
 import javax.swing.*;
+
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 
+import gui.LangageHandler;
+
 @SuppressWarnings("serial")
 public class LoginPanel extends JPanel {
-	
+
 	private JLabel lblLangage;
 	private JComboBox cmbLangage;
 	private JLabel lblUsername;
@@ -20,17 +23,18 @@ public class LoginPanel extends JPanel {
 	public LoginPanel() {
 		JPanel content = new JPanel();
 
-		
 		JPanel lang = new JPanel();
-		String[] langage = {"Nederlands","Français","English"};
+		String[] langage = { "Nederlands", "Français", "English" };
 		cmbLangage = new JComboBox(langage);
-		lblLangage = new JLabel("Langage:");
+		lblLangage = new JLabel();
+		LangageHandler.chooseLangageLbl(lblLangage, "taal");
 		lang.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		lang.add(lblLangage);
 		lang.add(cmbLangage);
-		
+
 		JPanel usrn = new JPanel();
-		lblUsername = new JLabel("Username:");
+		lblUsername = new JLabel();
+		LangageHandler.chooseLangageLbl(lblUsername, "username");
 		txtUsername = new JTextField();
 		txtUsername.setColumns(20);
 		usrn.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -38,7 +42,8 @@ public class LoginPanel extends JPanel {
 		usrn.add(txtUsername);
 
 		JPanel usrp = new JPanel();
-		lblPassword = new JLabel("Password:");
+		lblPassword = new JLabel();
+		LangageHandler.chooseLangageLbl(lblPassword, "password");
 		txtPassword = new JPasswordField();
 		txtPassword.setColumns(20);
 		usrp.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -52,7 +57,8 @@ public class LoginPanel extends JPanel {
 
 		JPanel login = new JPanel();
 		login.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		btnLogin = new JButton("Login");
+		btnLogin = new JButton();
+		LangageHandler.chooseLangageBtn(btnLogin, "login");
 		login.add(btnLogin);
 
 		lblResult = new JLabel();
@@ -108,7 +114,5 @@ public class LoginPanel extends JPanel {
 	public JLabel getLblLangage() {
 		return lblLangage;
 	}
-	
-	
 
 }
