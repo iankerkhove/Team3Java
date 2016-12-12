@@ -14,21 +14,30 @@ import model.Subscription;
 
 public class SubscriptionTest {
 	private Subscription sub;
+	private Subscription sub2;
 	private Date datumvan = new Date(2017,03,02);
 	private Date datumtot = new Date(2018,03,02);
 	@Before
 	public void setUp() throws Exception {
 		sub = new Subscription(1, 12, 1, datumvan, datumtot);
-
+		sub2 = new Subscription(1, 2, datumvan, datumtot);
 	}
 	
 	@Test
-	public void ConstructorTest(){
+	public void ConstructorTest1(){
 		assertEquals(1,sub.getRailID());
 		assertEquals(12,sub.getRouteID());
 		assertEquals(1,sub.getDiscountID());
 		assertEquals(datumvan,sub.getValidFrom());
 		assertEquals(datumtot,sub.getValidUntil());
+	}
+	
+	@Test
+	public void ConstructorTest2(){
+		assertEquals(1,sub2.getRailID());
+		assertEquals(2,sub2.getRouteID());
+		assertEquals(datumvan,sub2.getValidFrom());
+		assertEquals(datumtot,sub2.getValidUntil());
 	}
 	
 	@Test
