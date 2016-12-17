@@ -6,12 +6,11 @@ public class Station {
 	private int stationID;
 	private Address address;
 	private String stationName;
-	private ArrayList<User> users = null;
 	
 	public Station(Address address, String stationName) {
 		this.address = address;
 		this.stationName = stationName;
-		users = new ArrayList ();
+		
 	}
 	
 	public Address getAddress() {
@@ -22,6 +21,14 @@ public class Station {
 		this.address = address;
 	}
 
+	public int getStationID() {
+		return stationID;
+	}
+
+	public void setStationID(int stationID) {
+		this.stationID = stationID;
+	}
+
 	public String getStationName() {
 		return stationName;
 	}
@@ -30,8 +37,6 @@ public class Station {
 		this.stationName = stationName;
 	}
 
-	public void addUser(User u) {
-		users.add(u);
-	}
+	
 	
 }
