@@ -20,6 +20,8 @@ import gui.LangageHandler;
 @SuppressWarnings("serial") 
 public class BiljetPanel extends JPanel {
 	
+	private JLabel lblType;
+	private JLabel lblKlasse;
 	private JLabel lblVan;
 	private StationsAutoCompletor txtVan;
 	private JLabel lblNaar;
@@ -118,6 +120,12 @@ public class BiljetPanel extends JPanel {
 		LangageHandler.chooseLangageLbl(lblPrijs, "prijs");
 		lblPrijs.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPrijs.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		
+		lblKlasse = new JLabel();
+		LangageHandler.chooseLangageLbl(lblKlasse, "klasse");
+		lblType = new JLabel();
+		LangageHandler.chooseLangageLbl(lblType, "type");
+		
 		//adds
 		grpHeenTerug.add(rdbEnkel);
 		grpHeenTerug.add(rdbHeenTerug);
@@ -126,14 +134,16 @@ public class BiljetPanel extends JPanel {
 		grpKlasseTicket.add(rdbKlasseVerhoging);
 		comboBoxpanel.add(cboBiljet);
 		comboBoxpanel.add(new JLabel());
-		klasseTicketpanel.add(new JLabel("Klasse: "));
+		
+		
+		klasseTicketpanel.add(lblKlasse);
 		klasseTicketpanel.add(rdbEersteKlasse);
 		klasseTicketpanel.add(new JLabel());
 		klasseTicketpanel.add(rdbTweedeKlasse);
 		klasseTicketpanel.add(new JLabel());
 		klasseTicketpanel.add(rdbKlasseVerhoging);
 		
-		typeTicketpanel.add(new JLabel("type: "));
+		typeTicketpanel.add(lblType);
 		typeTicketpanel.add(rdbEnkel);
 		typeTicketpanel.add(new JLabel());
 		typeTicketpanel.add(rdbHeenTerug);

@@ -1,6 +1,7 @@
 package controller;
 
 import java.awt.EventQueue;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -24,7 +25,6 @@ public class LoginController{
 	public static void login(LoginPanel l) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				
 				l.getBtnLogin().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						readUrl(l);
@@ -40,8 +40,13 @@ public class LoginController{
 							l.getTxtUsername().setText("");
 							l.getTxtPassword().setText("");
 						}
-						
+					}
+				});
+				
+				l.getCmbLangage().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e){
 						LangageHandler.setTaal(l.getCmbLangage().getSelectedItem().toString());
+						GUIController.reloadLogin();
 					}
 				});
 			}
@@ -51,7 +56,6 @@ public class LoginController{
 	private static void readUrl(LoginPanel l) {
 		String usrn = l.getTxtUsername().getText().replaceAll("&", "%26");
 		String password = l.getTxtPassword().getText().replaceAll("&", "%26");
-		// boolean chAdmin = l.getChAdmin().isSelected();
 
 		BufferedReader reader = null;
 		try {

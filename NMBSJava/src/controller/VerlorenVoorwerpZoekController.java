@@ -56,7 +56,8 @@ public class VerlorenVoorwerpZoekController {
 						String ss=null;
 						String error ="Er werd geen voorwerp teruggevonden!";
 						for (int i = 0;i<json.length();i++) {
-						if (json.getJSONObject(i).getString("TrainID").equals(treinNummer) && json.getJSONObject(i).getString("Date").equals(datum) /*&& json.getJSONObject(i).getString("StationID").equals(station)*/) {
+						if (json.getJSONObject(i).getString("TrainID").equals(treinNummer) && 
+								json.getJSONObject(i).getString("Date").equals(datum)){
 								ss = json.getJSONObject(i).getString("TrainID") + " " +json.getJSONObject(i).getString("Description") +" "+ json.getJSONObject(i).getString("Date");							
 							verlorenVoorwerpZoek.getLblResultat().setText("<html>"
 										+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>").replaceAll("_", " ")
