@@ -19,8 +19,9 @@ public class GUIController {
 	// navbar
 	private static NavPanel nav;
 	// all panels
-	private static LoginPanel l;
+	
 	private static StartPanel start;
+	private static LoginPanel l;
 	private static RouteberekeningPanel route;
 	private static TreinopzoekingPanel trein;
 	private static StationboardPanel station;
