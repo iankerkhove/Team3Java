@@ -19,7 +19,7 @@ public class LoginPanel extends JPanel {
 	private JCheckBox chAdmin;
 	private JButton btnLogin;
 	private JLabel lblResult;
-
+	
 	public LoginPanel() {
 		JPanel content = new JPanel();
 
@@ -27,6 +27,7 @@ public class LoginPanel extends JPanel {
 		String[] langage = { "Nederlands", "Français", "English" };
 		cmbLangage = new JComboBox(langage);
 		lblLangage = new JLabel();
+		
 		LangageHandler.chooseLangageLbl(lblLangage, "taal");
 		lang.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		lang.add(lblLangage);
@@ -115,4 +116,17 @@ public class LoginPanel extends JPanel {
 		return lblLangage;
 	}
 
+	/*public JButton getBtnFr() {
+		return btnFr;
+	}
+
+	public JButton getBtnNl() {
+		return btnNl;
+	}
+
+	public JButton getBtnEn() {
+		return btnEn;
+	}*/
+
+	
 }

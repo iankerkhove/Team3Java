@@ -2,12 +2,15 @@ package controller;
 
 import java.awt.BorderLayout;
 
+
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import gui.GUIFrame;
 import gui.LangageHandler;
 import panels.*;
+
+import controller.TaalController;
 
 public class GUIController {
 
@@ -50,14 +53,15 @@ public class GUIController {
 				LoginPanel l = new LoginPanel();
 				
 				//GUIController.startListeningForLang(l);
-				
+				//taalListener();
 				frame.getContentPane().add(l, BorderLayout.CENTER);
 				frame.setContentPane(frame.getContentPane());
 				LoginController.login(l);
+				
 			}
 		});
 	}
-
+	
 	public static void logout() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -99,16 +103,6 @@ public class GUIController {
 		frame.setContentPane(frame.getContentPane());
 	}
 
-	public static void startListeningForLang(LoginPanel l) {
-		l.getCmbLangage().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("ok");
-				LangageHandler.setTaal(l.getCmbLangage().getSelectedItem().toString());
-				GUIController.reloadLogin();
-			}
-		});
-	}
-
 	protected static void reloadLogin() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -116,9 +110,12 @@ public class GUIController {
 				frame.getContentPane().removeAll();
 				frame.getContentPane().add(l);
 				frame.setContentPane(frame.getContentPane());
+				LoginController.login(l);
 			}
 		});
 	}
+	
+	
 
 	public static void startListeningOnNav() {
 		EventQueue.invokeLater(new Runnable() {
