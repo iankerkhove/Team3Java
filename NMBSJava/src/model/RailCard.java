@@ -8,6 +8,8 @@ public class RailCard {
 	private UUID railCardID;
 	private ArrayList<Subscription> subscriptions;
 	private long unixTimestamp;
+	
+
 	public RailCard() {
 		subscriptions = new ArrayList ();
 		railCardID = UUID.randomUUID();
@@ -54,4 +56,5 @@ public class RailCard {
 			System.out.println("Abonnement met id " + subscriptionID + " bestaat niet");
 		}
 	}
+	
 }
