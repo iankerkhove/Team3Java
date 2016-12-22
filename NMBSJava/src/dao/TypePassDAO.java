@@ -6,20 +6,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import model.Address;
-import model.Customer;
-import model.RailCard;
+import model.TypePass;
 
-public class CustomerDAO extends BaseDAO {
+public class TypePassDAO extends BaseDAO {
 
-	public CustomerDAO() {
-
+	public TypePassDAO() {
+		
 	}
 
-	public int insert(Customer c) {
+	public int insert(TypePass t) {
 		PreparedStatement ps = null;
 
-		String sql = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO TypePass VALUES(?,?,?,?)";
 
 		try {
 
@@ -28,17 +26,10 @@ public class CustomerDAO extends BaseDAO {
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			AddressDAO h = new AddressDAO();
-			h.insert(c.getAddress());
-			
-			ps.setString(1, c.getCustomerID().toString());
-			ps.setString(2, c.getRailCard().toString());
-			ps.setString(3, c.getAddress().getAddressID().toString());
-			ps.setString(4, c.getFirstName());
-			ps.setString(5, c.getLastName());
-			ps.setString(6, c.getBirthDate().toString());
-			ps.setString(7, c.getEmailAddress());
-			ps.setLong(8, c.getUnixTimestamp());
+			ps.setString(1, t.getTypePassID().toString());
+			ps.setString(2, t.getName());
+			ps.setDouble(3, t.getPrice());
+			ps.setLong(4, t.getUnixTimestamp());
 
 			// api call
 
@@ -60,13 +51,13 @@ public class CustomerDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Customer> selectAllSync() {
-		ArrayList<Customer> list = null;
+	public ArrayList<TypePass> selectAllSync() {
+		ArrayList<TypePass> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Customer";
+		String sql = "SELECT * FROM TypePass";
 
 		try {
 
@@ -76,7 +67,7 @@ public class CustomerDAO extends BaseDAO {
 			ps = getConnection().prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			list = new ArrayList<Customer>();
+			list = new ArrayList<TypePass>();
 
 			while (rs.next()) {
 				list.add(resultToModel(rs));
@@ -100,17 +91,14 @@ public class CustomerDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Customer> selectAll() {
-		ArrayList<Customer> list = null;
+	public ArrayList<TypePass> selectAll() {
+		ArrayList<TypePass> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
-				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
-				+ " FROM Customer c" + "INNER JOIN Address a ON a.AddressID = c.AddressID"
-				+ "INNER JOIN RailCard r ON r.CardID = c.RailCardID;";
+		String sql = "SELECT t.TypePassID, t.Name, t.Price, t.LastUpdated as TypePassLastUpdated"
+				+ "FROM TypePass t;";
 
 		try {
 
@@ -120,7 +108,7 @@ public class CustomerDAO extends BaseDAO {
 			ps = getConnection().prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			list = new ArrayList<Customer>();
+			list = new ArrayList<TypePass>();
 
 			while (rs.next()) {
 				list.add(resultToModel(rs));
@@ -144,15 +132,12 @@ public class CustomerDAO extends BaseDAO {
 
 	}
 
-	public Customer selectOne(String customerID) {
+	public TypePass selectOne(String typePassID) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
-				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
-				+ " FROM Customer c" + "INNER JOIN Address a ON a.AddressID = c.AddressID"
-				+ "INNER JOIN RailCard r ON r.CardID = c.RailCardID" + "WHERE c.CustomerID = ?;";
+		String sql = "SELECT t.TypePassID, t.Name, t.Price, t.LastUpdated as TypePassLastUpdated"
+				+ "FROM TypePass t" + "WHERE TypePassID = ?;";
 
 		try {
 
@@ -161,7 +146,7 @@ public class CustomerDAO extends BaseDAO {
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, customerID);
+			ps.setString(1, typePassID);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);
@@ -183,44 +168,27 @@ public class CustomerDAO extends BaseDAO {
 		}
 	}
 
-	private Customer resultToModel(ResultSet rs) throws SQLException {
-		Address a = new Address();
-		Customer c = new Customer();
-		RailCard r = new RailCard();
+	private TypePass resultToModel(ResultSet rs) throws SQLException {
+		TypePass t = new TypePass();
+		
+		t.setTypePassID(UUID.fromString(rs.getString("TypePassID")));
+		t.setName(rs.getString("Name"));
+		t.setPrice(rs.getDouble("Price"));
+		t.setLastUpdated(rs.getLong("TypePassLastUpdated"));
 
-		r.setRailCardID(UUID.fromString(rs.getString("CardID")));
-		r.setLastUpdated(rs.getLong("CardLastUpdated"));
-
-		a.setAddressID(UUID.fromString(rs.getString("AddressID")));
-		a.setStreet(rs.getString("Street"));
-		a.setNumber(rs.getInt("Number"));
-		a.setCity(rs.getString("City"));
-		a.setZipCode(rs.getInt("ZipCode"));
-		a.setCoordinates(rs.getString("Coordinates"));
-		a.setLastUpdated(rs.getLong("AddressLastUpdated"));
-
-		c.setCustomerID(UUID.fromString(rs.getString("CustomerID")));
-		c.setAddress(a);
-		c.setRailCard(r);
-		c.setFirstName(rs.getString("FirstName"));
-		c.setLastName(rs.getString("LastName"));
-		c.setBirthDate(rs.getDate("BirthDate"));
-		c.setEmailAddress(rs.getString("Email"));
-		c.setLastUpdated(rs.getLong("LastUpdated"));
-		return c;
+		return t;
 	}
 
 	public static void createTable() {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS `Customer` (" + "`CustomerID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`RailCardID` varchar(36) NOT NULL DEFAULT '0'," + "`AddressID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`FirstName` varchar(20) NOT NULL," + "`LastName` varchar(20) NOT NULL,"
-				+ "`BirthDate` varchar(20) NOT NULL," + "`Email` varchar(50) NOT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," + "PRIMARY KEY (`CustomerID`),"
-				+ "KEY `AddressID` (`AddressID`)," + "KEY `RailCardID` (`RailCardID`)"
-				+ ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+		String sql = "CREATE TABLE IF NOT EXISTS `TypePass` (  "
+				+ "`TypePassID` varchar(36) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',  "
+				+ "`Name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,  "
+				+ "`Price` double NOT NULL,  `LastUpdated` bigint(14) DEFAULT NULL,  "
+				+ "PRIMARY KEY (`TypePassID`)) "
+				+ "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
 		try {
 
@@ -244,5 +212,4 @@ public class CustomerDAO extends BaseDAO {
 			}
 		}
 	}
-
 }
