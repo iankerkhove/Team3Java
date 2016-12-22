@@ -1,53 +1,74 @@
 package model;
 
+import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 
 public class Subscription {
-	private int subscriptionID;
-	private int railID;
-	private int routeID;
-	private int discountID;
+	private UUID subscriptionID;
+	private UUID railID;
+	private UUID routeID;
+	private UUID discountID;
 	private Date validFrom;
 	private Date validUntil;
-	
-	public Subscription(int railID, int routeID, int discountID, Date validFrom, Date validUntil) {
+	private long unixTimestamp;
+	public Subscription(UUID railID, UUID routeID, UUID discountID, Date validFrom, Date validUntil) {
 		super();
 		this.railID = railID;
 		this.routeID = routeID;
 		this.discountID = discountID;
 		this.validFrom = validFrom;
 		this.validUntil = validUntil;
+		this.subscriptionID = UUID.randomUUID();
+		this.unixTimestamp = Instant.now().getEpochSecond();
 	}
-	public Subscription(int railID, int routeID, Date validFrom, Date validUntil) {
+	public Subscription(UUID railID, UUID routeID, Date validFrom, Date validUntil) {
 		super();
 		this.railID = railID;
 		this.routeID = routeID;
 		this.validFrom = validFrom;
 		this.validUntil = validUntil;
+		this.subscriptionID = UUID.randomUUID();
+		this.unixTimestamp = Instant.now().getEpochSecond();
+	}
+	public Subscription() {
+
+	}
+	public void setUnixTimestamp(long unixTimestamp) {
+		this.unixTimestamp = unixTimestamp;
+	}
+	public void setLastUpdated(long unixTimestamp){
+		this.unixTimestamp = unixTimestamp;
+	}
+	public long getUnixTimestamp() {
+		return unixTimestamp;
+	}
+	public void update() {
+		this.unixTimestamp = Instant.now().getEpochSecond();
 	}
 	//getters en setters
-	public int getSubscriptionID() {
+	public UUID getSubscriptionID() {
 		return subscriptionID;
 	}
-	public void setSubscriptionID(int subscriptionID) {
+	public void setSubscriptionID(UUID subscriptionID) {
 		this.subscriptionID = subscriptionID;
 	}
-	public int getRailID() {
+	public UUID getRailID() {
 		return railID;
 	}
-	public void setRailID(int railID) {
+	public void setRailID(UUID railID) {
 		this.railID = railID;
 	}
-	public int getRouteID() {
+	public UUID getRouteID() {
 		return routeID;
 	}
-	public void setRouteID(int routeID) {
+	public void setRouteID(UUID routeID) {
 		this.routeID = routeID;
 	}
-	public int getDiscountID() {
+	public UUID getDiscountID() {
 		return discountID;
 	}
-	public void setDiscountID(int discountID) {
+	public void setDiscountID(UUID discountID) {
 		this.discountID = discountID;
 	}
 	public Date getValidFrom() {
