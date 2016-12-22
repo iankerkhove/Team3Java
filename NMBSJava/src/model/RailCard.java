@@ -1,20 +1,37 @@
 package model;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class RailCard {
-	private int railCardID;
+	private UUID railCardID;
 	private ArrayList<Subscription> subscriptions;
+	private long unixTimestamp;
 	
+
 	public RailCard() {
 		subscriptions = new ArrayList ();
+		railCardID = UUID.randomUUID();
+		unixTimestamp = Instant.now().getEpochSecond();
 	}
 
-	public int getRailCardID() {
+	public long getUnixTimestamp() {
+		return unixTimestamp;
+	}
+
+	public void update() {
+		this.unixTimestamp = Instant.now().getEpochSecond();
+	}
+	
+	public void setLastUpdated(long unixTimestamp){
+		this.unixTimestamp = unixTimestamp;
+	}
+	public UUID getRailCardID() {
 		return railCardID;
 	}
 
-	public void setRailCardID(int railCardID) {
+	public void setRailCardID(UUID railCardID) {
 		this.railCardID = railCardID;
 	}
 
@@ -39,4 +56,5 @@ public class RailCard {
 			System.out.println("Abonnement met id " + subscriptionID + " bestaat niet");
 		}
 	}
+	
 }
