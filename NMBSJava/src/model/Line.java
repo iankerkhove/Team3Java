@@ -8,12 +8,16 @@ public class Line {
 	private UUID routeID;
 	private String trainType;
 	private long unixTimestamp;
+	private Route route;
 	public Line(UUID routeID, String trainType) {
 		super();
 		this.lineID = UUID.randomUUID();
 		this.routeID = routeID;
 		this.trainType = trainType;
 		this.unixTimestamp = Instant.now().getEpochSecond();
+	}
+	public Line() {
+		
 	}
 	public UUID getLineID() {
 		return lineID;
@@ -45,6 +49,12 @@ public class Line {
 	}
 	public void setLastUpdated(long unixTimestamp){
 		this.unixTimestamp = unixTimestamp;
+	}
+	public void setRoute(Route r) {
+		this.route = r;	
+	}
+	public Route getRoute(){
+		return this.route;
 	}
 	
 	

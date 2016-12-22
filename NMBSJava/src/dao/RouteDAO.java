@@ -1,27 +1,24 @@
 package dao;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import model.Discount;
-import model.RailCard;
+import model.Address;
 import model.Route;
 import model.Station;
-import model.Subscription;
-public class SubscriptionDAO extends BaseDAO {
+public class RouteDAO extends BaseDAO {
 	
-						public SubscriptionDAO() {
+						public RouteDAO() {
 
 						}
 
-						public int insert(Subscription s) {
+						public int insert(Route r) {
 							PreparedStatement ps = null;
 
-							String sql = "INSERT INTO Subscription VALUES(?,?,?,?,?,?,?)";
+							String sql = "INSERT INTO Route VALUES(?,?,?,?)";
 
 							try {
 
@@ -30,13 +27,10 @@ public class SubscriptionDAO extends BaseDAO {
 								}
 								ps = getConnection().prepareStatement(sql);
 
-								ps.setString(1, s.getSubscriptionID().toString());
-								ps.setString(2,s.getRailID().toString());
-								ps.setString(3, s.getRouteID().toString());
-								ps.setString(4, s.getDiscountID().toString());
-								ps.setString(5,s.getValidFrom().toString());
-								ps.setString(6, s.getValidUntil().toString());
-								ps.setLong(7, s.getUnixTimestamp());
+								ps.setString(1,r.getRouteID().toString());
+								ps.setString(2,r.getDepartureStationID().toString());
+								ps.setString(3, r.getArrivalStationID().toString());
+								ps.setLong(4, r.getUnixTimestamp());
 								
 								//api call
 								
@@ -60,13 +54,13 @@ public class SubscriptionDAO extends BaseDAO {
 							}
 
 						}
-						public ArrayList<Subscription> selectAllSync() {
-							ArrayList<Subscription> list = null;
+						public ArrayList<Route> selectAllSync() {
+							ArrayList<Route> list = null;
 
 							PreparedStatement ps = null;
 							ResultSet rs = null;
 
-							String sql = "SELECT * FROM LostObject";
+							String sql = "SELECT * FROM Route";
 
 							try {
 
@@ -76,7 +70,7 @@ public class SubscriptionDAO extends BaseDAO {
 								ps = getConnection().prepareStatement(sql);
 
 								rs = ps.executeQuery();
-								list = new ArrayList<Subscription>();
+								list = new ArrayList<Route>();
 
 								while (rs.next()) {
 									list.add(resultToModel(rs));
@@ -100,20 +94,20 @@ public class SubscriptionDAO extends BaseDAO {
 
 						}
 
-						public ArrayList<Subscription> selectAll() {
-							ArrayList<Subscription> list = null;
+						public ArrayList<Route> selectAll() {
+							ArrayList<Route> list = null;
 
 							PreparedStatement ps = null;
 							ResultSet rs = null;
 
-							String sql = "SELECT s.SubscriptionID, c.CardID,c.LastUpdated as RailCardLastUpdated"+
-									 "r.RouteID,r.DepartureStationID,r.ArrivalStationID,r.LastUpdated as RouteLastUpdated,"
-									 + "d.DiscountID, d.Name,d.Amount,d.LastUpdated as DiscountLastUpdated,"+
-									 "s.ValidFrom,s.ValidUntil,s.LastUpdated as SubscriptionLastUpdated"+
-									 " FROM Subscription s"+
-									 "INNER JOIN RailCard c ON c.CardID = s.RailCardID"+
-									 "INNER JOIN Route r ON r.RouteID = s.RouteID"+
-									 "INNER JOIN Discount d ON d.DiscountID = s.DiscountID;";
+							String sql = "SELECT r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"+
+									 " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
+									 + " s.Name, s.CoX,s.CoY,"+
+									 "s.LastUpdated as StationLastUpdated, "+
+									 "r.LastUpdated as RouteLastUpdated"+
+									 " FROM Route r"+
+									 "INNER JOIN Station s ON s.StationID = r.DepartureStationID"+
+									 "INNER JOIN Address a ON a.AddressID = s.AddressID;";
 
 							try {
 
@@ -123,7 +117,7 @@ public class SubscriptionDAO extends BaseDAO {
 								ps = getConnection().prepareStatement(sql);
 
 								rs = ps.executeQuery();
-								list = new ArrayList<Subscription>();
+								list = new ArrayList<Route>();
 
 								while (rs.next()) {
 									list.add(resultToModel(rs));
@@ -147,19 +141,20 @@ public class SubscriptionDAO extends BaseDAO {
 
 						}
 
-						public Subscription selectOne(String discountID) {
+						public Route selectOne(String routeID) {
 							PreparedStatement ps = null;
 							ResultSet rs = null;
 
 							String sql = 
-									"SELECT s.SubscriptionID, c.CardID,c.LastUpdated as RailCardLastUpdated"+
-											 "r.RouteID,r.DepartureStationID,r.ArrivalStationID,r.LastUpdated as RouteLastUpdated,"
-											 + "d.DiscountID, d.Name,d.Amount,d.LastUpdated as DiscountLastUpdated,"+
-											 "s.ValidFrom,s.ValidUntil,s.LastUpdated as SubscriptionLastUpdated"+
-											 " FROM Subscription s"+
-											 "INNER JOIN RailCard c ON c.CardID = s.RailCardID"+
-											 "INNER JOIN Route r ON r.RouteID = s.RouteID"+
-											 "INNER JOIN Discount d ON d.DiscountID = s.DiscountID;";
+									"SELECT r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"+
+											 " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
+											 + " s.Name, s.CoX,s.CoY,"+
+											 "s.LastUpdated as StationLastUpdated, "+
+											 "r.LastUpdated as RouteLastUpdated"+
+											 " FROM Route r"+
+											 "INNER JOIN Station s ON s.StationID = r.DepartureStationID"+
+											 "INNER JOIN Address a ON a.AddressID = s.AddressID"
+											 + "WHERE r.RouteID=?;";
 							try {
 
 								if (getConnection().isClosed()) {
@@ -167,7 +162,7 @@ public class SubscriptionDAO extends BaseDAO {
 								}
 								ps = getConnection().prepareStatement(sql);
 
-								ps.setString(1, discountID);
+								ps.setString(1, routeID);
 								rs = ps.executeQuery();
 								if (rs.next())
 									return resultToModel(rs);
@@ -189,56 +184,64 @@ public class SubscriptionDAO extends BaseDAO {
 							}
 						}
 
-						private Subscription resultToModel(ResultSet rs) throws SQLException {
-							Subscription s= new Subscription();
-							RailCard c = new RailCard();
-							Route r = new Route();
-							Discount d = new Discount();
+						static Route resultToModel(ResultSet rs) throws SQLException {
+							Route r= new Route();
+							Station s = new Station();
+							Station s2 = new Station();
+							Address a = new Address();
+							Address a2 = new Address();
 							
-							c.setRailCardID(UUID.fromString(rs.getString("CardID")));
-							c.setLastUpdated(rs.getLong("RailCardLastUpdated"));
+							a.setAddressID(UUID.fromString(rs.getString("AddressID")));
+							a.setStreet(rs.getString("Street"));
+							a.setNumber(rs.getInt("Number"));
+							a.setCity(rs.getString("City"));
+							a.setZipCode(rs.getInt("ZipCode"));
+							a.setCoordinates(rs.getString("Coordinates"));
+							a.setLastUpdated(rs.getLong("AddressLastUpdated"));
+							
+							s.setStationID(UUID.fromString(rs.getString("StationID")));
+							s.setAddress(a);
+							s.setStationName(rs.getString("Name"));
+							s.setCox(rs.getString("CoX"));
+							s.setCoy(rs.getString("CoY"));
+							s.setLastUpdated(rs.getLong("StationLasUpdated"));
+							
+							a2.setAddressID(UUID.fromString(rs.getString("AddressID")));
+							a2.setStreet(rs.getString("Street"));
+							a2.setNumber(rs.getInt("Number"));
+							a2.setCity(rs.getString("City"));
+							a2.setZipCode(rs.getInt("ZipCode"));
+							a2.setCoordinates(rs.getString("Coordinates"));
+							a2.setLastUpdated(rs.getLong("AddressLastUpdated"));
+							
+							s2.setStationID(UUID.fromString(rs.getString("StationID")));
+							s2.setAddress(a2);
+							s2.setStationName(rs.getString("Name"));
+							s2.setCox(rs.getString("CoX"));
+							s2.setCoy(rs.getString("CoY"));
+							s2.setLastUpdated(rs.getLong("StationLasUpdated"));
 							
 							r.setRouteID(UUID.fromString(rs.getString("RouteID")));
-							r.setDepartureStationID(UUID.fromString(rs.getString("DepartureStationID")));
-							r.setArrivalStationID(UUID.fromString(rs.getString("ArrivalStationID")));
+							r.setDepartureStation(s);
+							r.setArrivalStation(s2);
 							r.setLastUpdated(rs.getLong("RouteLastUpdated"));
-							
-							d.setDiscountID(UUID.fromString(rs.getString("DiscountID")));
-							d.setName(rs.getString("Name"));
-							d.setAmount(rs.getDouble("Amount"));
-							d.setLastUpdated(rs.getLong("LastUpdated"));
-							
-							
-							//  static functie maken zodat er geen dubbele code is
 						
-							s.setSubscriptionID(UUID.fromString(rs.getString("SubscriptionID")));
-							s.setRailCard(c);
-							s.setRoute(r);
-							s.setDiscount(d);
-							s.setValidFrom(rs.getDate("ValidFrom"));
-							s.setValidUntil(rs.getDate("ValidUntil"));
-							s.setLastUpdated(rs.getLong("SubscriptionLastUpdated"));
-							
-							return s;
+							return r;
 						}
 
 						public static void createTable(){
 							PreparedStatement ps = null;
 							ResultSet rs = null;
 
-							String sql = "CREATE TABLE IF NOT EXISTS `Subscription` ("+
-										"`SubscriptionID` varchar(36) NOT NULL DEFAULT '0',"+
-										"`RailCardID` varchar(36) NOT NULL DEFAULT '0',"+
+							String sql = "CREATE TABLE IF NOT EXISTS `Route` ("+
 										"`RouteID` varchar(36) NOT NULL DEFAULT '0',"+
-										"`DiscountID` varchar(36) NOT NULL DEFAULT '0',"+
-										"`ValidFrom` varchar(20) NOT NULL,"+
-										"`ValidUntil` varchar(20) NOT NULL,"+
-										"`LastUpdated` bigint(14) DEFAULT NULL,"+
-										"PRIMARY KEY (`SubscriptionID`),"+
-										"KEY `RailCardID` (`RailCardID`),"+
-										"KEY `RouteID` (`RouteID`),"+
-										"KEY `DiscountID` (`DiscountID`)"+
-										") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+  										"`DepartureStationID` varchar(36) NOT NULL DEFAULT '0',"+
+  										"`ArrivalStationID` varchar(36) NOT NULL DEFAULT '0',"+
+  										"`LastUpdated` bigint(14) DEFAULT NULL,"+
+  										"PRIMARY KEY (`RouteID`),"+
+  										"UNIQUE KEY `uq_route` (`DepartureStationID`,`ArrivalStationID`) USING BTREE,"+
+  										"KEY `fk_arrivStat` (`ArrivalStationID`)"+
+  										") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
 
 							try {
 
