@@ -12,6 +12,9 @@ public class Subscription {
 	private Date validFrom;
 	private Date validUntil;
 	private long unixTimestamp;
+	private RailCard r;
+	private Route route;
+	private Discount discount;
 	public Subscription(UUID railID, UUID routeID, UUID discountID, Date validFrom, Date validUntil) {
 		super();
 		this.railID = railID;
@@ -82,5 +85,24 @@ public class Subscription {
 	}
 	public void setValidUntil(Date validUntil) {
 		this.validUntil = validUntil;
+	}
+	public RailCard getRailCard() {
+		return r;
+	}
+
+	public void setRailCard(RailCard r) {
+		this.r = r;
+	}
+	public void setRoute(Route r) {
+		this.route = r;
+	}
+	public Route getRoute(){
+		return this.route;
+	}
+	public void setDiscount(Discount d) {
+		this.discount = d;
+	}
+	public Discount getDiscount(){
+		return this.discount;
 	}
 }

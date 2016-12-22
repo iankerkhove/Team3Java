@@ -1,4 +1,7 @@
-/dao/
+/api/
 /controller/
+/dao/
+/gui/
 /model/
+/panels/
 /tests/
