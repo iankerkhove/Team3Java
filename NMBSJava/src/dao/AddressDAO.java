@@ -17,7 +17,7 @@ import model.Address;
 		public int insert(Address a) {
 			PreparedStatement ps = null;
 
-			String sql = "INSERT INTO boeken VALUES(?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO Address VALUES(?,?,?,?,?,?,?)";
 
 			try {
 
