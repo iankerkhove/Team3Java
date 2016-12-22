@@ -1,28 +1,48 @@
 package model;
 
+import java.time.Instant;
+import java.util.UUID;
+
 public class Address {
 	
-private int addressID;
+private UUID addressID;
 private String street;
 private int number;
 private String city;
 private int zipCode;
 private String coordinates;
+private long unixTimestamp;
 
-public Address(String street, int number, String city, int zipCode, String coordinates) {
+public Address(String street, int number, String city, int zipCode, String coordinates ) {
 	this.street = street;
 	this.number = number;
 	this.city = city;
 	this.zipCode = zipCode;
 	this.coordinates = coordinates;
+	this.addressID = UUID.randomUUID();
+	unixTimestamp = Instant.now().getEpochSecond();
 }
-
-public int getAddressID() {
-	return addressID;
+public Address() {
+	
 }
-
-public void setAddressID(int addressID) {
+public void setAddressID(UUID addressID) {
 	this.addressID = addressID;
+}
+public void setUnixTimestamp(long unixTimestamp) {
+	this.unixTimestamp = unixTimestamp;
+}
+public long getUnixTimestamp() {
+	return unixTimestamp;
+}
+
+public void update() {
+	this.unixTimestamp = Instant.now().getEpochSecond();
+}
+public void setLastUpdated(long unixTimestamp){
+	this.unixTimestamp = unixTimestamp;
+}
+public UUID getAddressID() {
+	return addressID;
 }
 
 public String getStreet() {

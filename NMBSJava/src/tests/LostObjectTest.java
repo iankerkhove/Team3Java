@@ -14,10 +14,10 @@ public class LostObjectTest {
 	private Date datum = new Date(2016,12,05);
 	private Station station;
 	private LostObject lobj;
-	
+	private String trainID = "3635";
 	@Before
 	public void setUp() throws Exception {
-		lobj = new LostObject(station, "blauwe pull", datum, 3635);
+		lobj = new LostObject(station, "blauwe pull", datum, trainID);
 		
 	}
 	
@@ -31,13 +31,13 @@ public class LostObjectTest {
 	
 	@Test 
 	public void ObjectIDTest(){
-		lobj.setObjectID(1);
+		//lobj.setObjectID(1);
 		assertEquals(1,lobj.getObjectID());
 	}
 	
 	@Test
 	public void StationTest(){
-		lobj.setStationID(station);
+		lobj.setStation(station);
 		assertEquals(station,lobj.getStation());
 	}
 	
@@ -55,7 +55,7 @@ public class LostObjectTest {
 	
 	@Test
 	public void TrainIDTest(){
-		lobj.setTrainID(3635);
+		lobj.setTrainID("3635");
 		assertEquals(3635,lobj.getTrainID());
 	}
 	
