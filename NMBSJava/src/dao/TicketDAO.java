@@ -6,20 +6,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import model.Address;
-import model.Customer;
-import model.RailCard;
+import model.Route;
+import model.Ticket;
+import model.TypeTicket;
 
-public class CustomerDAO extends BaseDAO {
+public class TicketDAO extends BaseDAO {
 
-	public CustomerDAO() {
+	public TicketDAO() {
 
 	}
 
-	public int insert(Customer c) {
+	public int insert(Ticket t) {
 		PreparedStatement ps = null;
 
-		String sql = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO Ticket VALUES(?,?,?,?,?,?,?)";
 
 		try {
 
@@ -28,17 +28,13 @@ public class CustomerDAO extends BaseDAO {
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			AddressDAO h = new AddressDAO();
-			h.insert(c.getAddress());
-
-			ps.setString(1, c.getCustomerID().toString());
-			ps.setString(2, c.getRailCard().toString());
-			ps.setString(3, c.getAddress().toString());
-			ps.setString(4, c.getFirstName());
-			ps.setString(5, c.getLastName());
-			ps.setString(6, c.getBirthDate().toString());
-			ps.setString(7, c.getEmailAddress());
-			ps.setLong(8, c.getUnixTimestamp());
+			ps.setString(1, t.getTicketID().toString());
+			ps.setString(2, t.getRouteID().toString());
+			ps.setString(3, t.getTicketID().toString());
+			ps.setString(4, t.getDate().toString());
+			ps.setString(5, t.getValidFrom().toString());
+			ps.setString(6, t.getValidUntil().toString());
+			ps.setLong(7, t.getUnixTimestamp());
 
 			// api call
 
@@ -60,13 +56,13 @@ public class CustomerDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Customer> selectAllSync() {
-		ArrayList<Customer> list = null;
+	public ArrayList<Ticket> selectAllSync() {
+		ArrayList<Ticket> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Customer";
+		String sql = "SELECT * FROM Ticket";
 
 		try {
 
@@ -76,7 +72,7 @@ public class CustomerDAO extends BaseDAO {
 			ps = getConnection().prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			list = new ArrayList<Customer>();
+			list = new ArrayList<Ticket>();
 
 			while (rs.next()) {
 				list.add(resultToModel(rs));
@@ -100,18 +96,22 @@ public class CustomerDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Customer> selectAll() {
-		ArrayList<Customer> list = null;
+	public ArrayList<Ticket> selectAll() {
+		ArrayList<Ticket> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
-				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
-				+ " FROM Customer c" + "INNER JOIN Address a ON a.AddressID = c.AddressID"
-				+ "INNER JOIN RailCard r ON r.CardID = c.RailCardID;";
-
+		String sql = "SELECT t.TicketID, r.RouteID, r.DepartureStation as DepartStation, r.ArrivalStation as ArrivalStation, a.AddressID, a.Street,"
+				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
+				+ " s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
+				+ "r.LastUpdated as RouteLastUpdated"
+				+ "ty.TypeTicketID, ty.Name,ty.Price,ty.ComfortClass, ty.LastUpdated"
+				+ "t.Date,t.ValidFrom,t.ValidUntil,t.LastUpdated as TicketLastUpdated" + " FROM Ticket t"
+				+ "INNER JOIN Route r ON r.RouteID = t.RouteID"
+				+ "INNER JOIN TypeTicket ty ON ty.TypeTicket = t.TypeTicket"
+				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID;";
 		try {
 
 			if (getConnection().isClosed()) {
@@ -120,7 +120,7 @@ public class CustomerDAO extends BaseDAO {
 			ps = getConnection().prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			list = new ArrayList<Customer>();
+			list = new ArrayList<Ticket>();
 
 			while (rs.next()) {
 				list.add(resultToModel(rs));
@@ -144,16 +144,20 @@ public class CustomerDAO extends BaseDAO {
 
 	}
 
-	public Customer selectOne(String customerID) {
+	public Ticket selectOne(String ticketID) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
-				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
-				+ " FROM Customer c" + "INNER JOIN Address a ON a.AddressID = c.AddressID"
-				+ "INNER JOIN RailCard r ON r.CardID = c.RailCardID" + "WHERE c.CustomerID = ?;";
-
+		String sql = "SELECT t.TicketID, r.RouteID, r.DepartureStation as DepartStation, r.ArrivalStation as ArrivalStation, a.AddressID, a.Street,"
+				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
+				+ " s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
+				+ "r.LastUpdated as RouteLastUpdated"
+				+ "ty.TypeTicketID, ty.Name,ty.Price,ty.ComfortClass, ty.LastUpdated"
+				+ "t.Date,t.ValidFrom,t.ValidUntil,t.LastUpdated as TicketLastUpdated" + " FROM Ticket t"
+				+ "INNER JOIN Route r ON r.RouteID = t.RouteID"
+				+ "INNER JOIN TypeTicket ty ON ty.TypeTicket = t.TypeTicket"
+				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID" + "WHERE t.TicketID=?;";
 		try {
 
 			if (getConnection().isClosed()) {
@@ -161,7 +165,7 @@ public class CustomerDAO extends BaseDAO {
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, customerID);
+			ps.setString(1, ticketID);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);
@@ -183,44 +187,33 @@ public class CustomerDAO extends BaseDAO {
 		}
 	}
 
-	private Customer resultToModel(ResultSet rs) throws SQLException {
-		Address a = new Address();
-		Customer c = new Customer();
-		RailCard r = new RailCard();
+	static Ticket resultToModel(ResultSet rs) throws SQLException {
+		Ticket t = new Ticket();
+		TypeTicket ty = TypeTicketDAO.resultToModel(rs);
+		Route r = RouteDAO.resultToModel(rs);
 
-		r.setRailCardID(UUID.fromString(rs.getString("CardID")));
-		r.setLastUpdated(rs.getLong("CardLastUpdated"));
+		t.setTicketID(UUID.fromString(rs.getString("TicketID")));
+		t.setRouteID(r.getRouteID());
+		t.setTicketID(ty.getTypeTicketID());
+		t.setDate(rs.getDate("Date"));
+		t.setValidFrom(rs.getDate("ValidFrom"));
+		t.setValidUntil(rs.getDate("ValidUntil"));
+		t.setLastUpdated(rs.getLong("TicketLastUpdated"));
 
-		a.setAddressID(UUID.fromString(rs.getString("AddressID")));
-		a.setStreet(rs.getString("Street"));
-		a.setNumber(rs.getInt("Number"));
-		a.setCity(rs.getString("City"));
-		a.setZipCode(rs.getInt("ZipCode"));
-		a.setCoordinates(rs.getString("Coordinates"));
-		a.setLastUpdated(rs.getLong("AddressLastUpdated"));
-
-		c.setCustomerID(UUID.fromString(rs.getString("CustomerID")));
-		c.setAddress(a);
-		c.setRailCard(r);
-		c.setFirstName(rs.getString("FirstName"));
-		c.setLastName(rs.getString("LastName"));
-		c.setBirthDate(rs.getDate("BirthDate"));
-		c.setEmailAddress(rs.getString("Email"));
-		c.setLastUpdated(rs.getLong("LastUpdated"));
-		return c;
+		return t;
 	}
 
 	public static void createTable() {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS `Customer` (" + "`CustomerID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`RailCardID` varchar(36) NOT NULL DEFAULT '0'," + "`AddressID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`FirstName` varchar(20) NOT NULL," + "`LastName` varchar(20) NOT NULL,"
-				+ "`BirthDate` varchar(20) NOT NULL," + "`Email` varchar(50) NOT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," + "PRIMARY KEY (`CustomerID`),"
-				+ "KEY `AddressID` (`AddressID`)," + "KEY `RailCardID` (`RailCardID`)"
+		String sql = "CREATE TABLE IF NOT EXISTS `Ticket` (" + "`TicketID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0'," + "`TypeTicketID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`Date` varchar(20) NOT NULL," + "`ValidFrom` varchar(20) NOT NULL,"
+				+ "`ValidUntil` varchar(20) NOT NULL," + "`LastUpdated` bigint(14) DEFAULT NULL,"
+				+ "PRIMARY KEY (`TicketID`)," + "KEY `RouteID` (`RouteID`)," + "KEY `TypeTicketID` (`TypeTicketID`)"
 				+ ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+		;
 
 		try {
 
