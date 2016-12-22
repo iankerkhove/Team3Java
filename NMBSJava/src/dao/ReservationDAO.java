@@ -6,20 +6,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import model.Address;
-import model.Customer;
-import model.RailCard;
+import model.Reservation;
+import model.Route;
 
-public class CustomerDAO extends BaseDAO {
+public class ReservationDAO extends BaseDAO {
 
-	public CustomerDAO() {
+	public ReservationDAO() {
 
 	}
 
-	public int insert(Customer c) {
+	public int insert(Reservation r) {
 		PreparedStatement ps = null;
 
-		String sql = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO Reservation VALUES(?,?,?,?,?,?)";
 
 		try {
 
@@ -28,17 +27,12 @@ public class CustomerDAO extends BaseDAO {
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			AddressDAO h = new AddressDAO();
-			h.insert(c.getAddress());
-			
-			ps.setString(1, c.getCustomerID().toString());
-			ps.setString(2, c.getRailCard().toString());
-			ps.setString(3, c.getAddress().getAddressID().toString());
-			ps.setString(4, c.getFirstName());
-			ps.setString(5, c.getLastName());
-			ps.setString(6, c.getBirthDate().toString());
-			ps.setString(7, c.getEmailAddress());
-			ps.setLong(8, c.getUnixTimestamp());
+			ps.setString(1, r.getReservationID().toString());
+			ps.setInt(2, r.getPassengerCount());
+			ps.setString(3, r.getTrainID().toString());
+			ps.setDouble(4, r.getPrice());
+			ps.setString(5, r.getRouteID().toString());
+			ps.setLong(6, r.getUnixTimestamp());
 
 			// api call
 
@@ -60,13 +54,13 @@ public class CustomerDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Customer> selectAllSync() {
-		ArrayList<Customer> list = null;
+	public ArrayList<Reservation> selectAllSync() {
+		ArrayList<Reservation> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Customer";
+		String sql = "SELECT * FROM Reservation";
 
 		try {
 
@@ -76,7 +70,7 @@ public class CustomerDAO extends BaseDAO {
 			ps = getConnection().prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			list = new ArrayList<Customer>();
+			list = new ArrayList<Reservation>();
 
 			while (rs.next()) {
 				list.add(resultToModel(rs));
@@ -100,17 +94,19 @@ public class CustomerDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Customer> selectAll() {
-		ArrayList<Customer> list = null;
+	public ArrayList<Reservation> selectAll() {
+		ArrayList<Reservation> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
-				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
-				+ " FROM Customer c" + "INNER JOIN Address a ON a.AddressID = c.AddressID"
-				+ "INNER JOIN RailCard r ON r.CardID = c.RailCardID;";
+		String sql = "SELECT r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"
+				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
+				+ " s.Name, s.CoX,s.CoY, s.LastUpdated as StationLastUpdated, "
+				+ "r.LastUpdated as RouteLastUpdated, re.ReservationID, re.PassengerCount, re.TrainID, re.Price, re.LastUpdated as ReservationLastUpdated FROM Reservation re"
+				+ "INNER JOIN Route r ON r.RouteID = re.RouteID"
+				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID;";
 
 		try {
 
@@ -120,7 +116,7 @@ public class CustomerDAO extends BaseDAO {
 			ps = getConnection().prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			list = new ArrayList<Customer>();
+			list = new ArrayList<Reservation>();
 
 			while (rs.next()) {
 				list.add(resultToModel(rs));
@@ -144,15 +140,17 @@ public class CustomerDAO extends BaseDAO {
 
 	}
 
-	public Customer selectOne(String customerID) {
+	public Reservation selectOne(String reservationID) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
-				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
-				+ " FROM Customer c" + "INNER JOIN Address a ON a.AddressID = c.AddressID"
-				+ "INNER JOIN RailCard r ON r.CardID = c.RailCardID" + "WHERE c.CustomerID = ?;";
+		String sql = "SELECT r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"
+				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
+				+ " s.Name, s.CoX,s.CoY, s.LastUpdated as StationLastUpdated, "
+				+ "r.LastUpdated as RouteLastUpdated, re.ReservationID, re.PassengerCount, re.TrainID, re.Price, re.LastUpdated as ReservationLastUpdated FROM Reservation re"
+				+ "INNER JOIN Route r ON r.RouteID = re.RouteID"
+				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID" + "WHERE re.ReservationID = ?;";
 
 		try {
 
@@ -161,7 +159,7 @@ public class CustomerDAO extends BaseDAO {
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, customerID);
+			ps.setString(1, reservationID);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);
@@ -183,44 +181,30 @@ public class CustomerDAO extends BaseDAO {
 		}
 	}
 
-	private Customer resultToModel(ResultSet rs) throws SQLException {
-		Address a = new Address();
-		Customer c = new Customer();
-		RailCard r = new RailCard();
+	private Reservation resultToModel(ResultSet rs) throws SQLException {
+		Reservation re = new Reservation();
 
-		r.setRailCardID(UUID.fromString(rs.getString("CardID")));
-		r.setLastUpdated(rs.getLong("CardLastUpdated"));
+		Route r = RouteDAO.resultToModel(rs);
+		re.setReservationID(UUID.fromString(rs.getString("ReservationID")));
+		re.setPassengerCount(rs.getInt("PassengerCount"));
+		re.setTrainID(UUID.fromString(rs.getString("TrainID")));
+		re.setPrice(rs.getDouble("Price"));
+		re.setRoute(r);
+		re.setLastUpdated(rs.getLong("ReservationLastUpdated"));
 
-		a.setAddressID(UUID.fromString(rs.getString("AddressID")));
-		a.setStreet(rs.getString("Street"));
-		a.setNumber(rs.getInt("Number"));
-		a.setCity(rs.getString("City"));
-		a.setZipCode(rs.getInt("ZipCode"));
-		a.setCoordinates(rs.getString("Coordinates"));
-		a.setLastUpdated(rs.getLong("AddressLastUpdated"));
-
-		c.setCustomerID(UUID.fromString(rs.getString("CustomerID")));
-		c.setAddress(a);
-		c.setRailCard(r);
-		c.setFirstName(rs.getString("FirstName"));
-		c.setLastName(rs.getString("LastName"));
-		c.setBirthDate(rs.getDate("BirthDate"));
-		c.setEmailAddress(rs.getString("Email"));
-		c.setLastUpdated(rs.getLong("LastUpdated"));
-		return c;
+		return re;
 	}
 
 	public static void createTable() {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS `Customer` (" + "`CustomerID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`RailCardID` varchar(36) NOT NULL DEFAULT '0'," + "`AddressID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`FirstName` varchar(20) NOT NULL," + "`LastName` varchar(20) NOT NULL,"
-				+ "`BirthDate` varchar(20) NOT NULL," + "`Email` varchar(50) NOT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," + "PRIMARY KEY (`CustomerID`),"
-				+ "KEY `AddressID` (`AddressID`)," + "KEY `RailCardID` (`RailCardID`)"
-				+ ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+		String sql = "CREATE TABLE IF NOT EXISTS `Reservation` (  "
+				+ "`ReservationID` varchar(36) NOT NULL DEFAULT '0', " + "`PassengerCount` int(11) NOT NULL,  "
+				+ "`TrainID` varchar(36) NOT NULL DEFAULT '0',  "
+				+ "`Price` double NOT NULL,  `RouteID` varchar(36) NOT NULL DEFAULT '0',  "
+				+ "`LastUpdated` bigint(14) DEFAULT NULL,  PRIMARY KEY (`ReservationID`), "
+				+ "KEY `routeID` (`RouteID`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
 
 		try {
 
@@ -244,5 +228,4 @@ public class CustomerDAO extends BaseDAO {
 			}
 		}
 	}
-
 }

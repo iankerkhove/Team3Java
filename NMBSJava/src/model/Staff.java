@@ -7,7 +7,7 @@ import java.util.UUID;
 public class Staff {
 	private UUID staffID;
 	private UUID addressID;
-	private String stationID;
+	private UUID stationID;
 	private String firstName;
 	private String lastName;
 	private String userName;
@@ -18,8 +18,8 @@ public class Staff {
 	private String apiToken;
 	private long unixTimestamp;
 	
-	public Staff(UUID addressID, String stationID, String firstName, String lastName, String userName, String password,
-			int rights, Date birthDate, String email, String apiToken) {
+	public Staff(UUID addressID, UUID stationID, String firstName, String lastName, String userName, String password,
+			int rights, Date birthDate, String email) {
 		super();
 		this.staffID = UUID.randomUUID();
 		this.addressID = addressID;
@@ -31,7 +31,7 @@ public class Staff {
 		this.rights = rights;
 		this.birthDate = birthDate;
 		this.email = email;
-		this.apiToken = apiToken;
+		this.apiToken = null;
 		this.unixTimestamp =  Instant.now().getEpochSecond();
 	}
 	public UUID getStaffID() {
@@ -46,10 +46,10 @@ public class Staff {
 	public void setAddressID(UUID addressID) {
 		this.addressID = addressID;
 	}
-	public String getStationID() {
+	public UUID getStationID() {
 		return stationID;
 	}
-	public void setStationID(String stationID) {
+	public void setStationID(UUID stationID) {
 		this.stationID = stationID;
 	}
 	public String getFirstName() {
