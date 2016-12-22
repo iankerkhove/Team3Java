@@ -195,7 +195,7 @@ public class LineDAO extends BaseDAO {
 								Route r = RouteDAO.resultToModel(rs);
 								
 								l.setLineID(UUID.fromString(rs.getString("LineID")));
-								l.setRoute(r);
+								l.setRouteID(r.getRouteID());
 								l.setTrainType(rs.getString("TrainType"));
 								l.setLastUpdated(rs.getLong("LastUpdated"));
 								

@@ -188,7 +188,7 @@ public class PassDAO extends BaseDAO {
 								t.setLastUpdated(rs.getLong("TypePassLastUpdated"));
 								
 								p.setPassID(UUID.fromString(rs.getString("PassID")));
-								p.setTypePass(t);
+								p.setTypePassID(t.getTypePassID());
 								p.setDate(rs.getDate("Date"));
 								p.setStartDate(rs.getDate("StartDate"));
 								p.setComfortClass(rs.getInt("ComfortClass"));
@@ -196,7 +196,7 @@ public class PassDAO extends BaseDAO {
 								
 								return p;
 							}
-
+ 
 							public static void createTable(){
 								PreparedStatement ps = null;
 								ResultSet rs = null;
@@ -214,7 +214,7 @@ public class PassDAO extends BaseDAO {
 
 								try {
 
-									if (getConnection().isClosed()) {
+									if (getConnection().isClosed()){
 										throw new IllegalStateException("error unexpected");
 									}
 									ps = getConnection().prepareStatement(sql);

@@ -30,15 +30,15 @@ public class Ticket {
 	public void update() {
 		this.unixTimestamp = Instant.now().getEpochSecond();
 	}
-	/*public void setTicketID(int ticketID) {
+	public void setTicketID(UUID ticketID) {
 		this.ticketID = ticketID;
-	}*/
+	}
 	public UUID getRouteID() {
 		return routeID;
 	}
-	/*public void setRouteID(int routeID) {
+	public void setRouteID(UUID routeID) {
 		this.routeID = routeID;
-	}*/
+	}
 	public Date getDate() {
 		return date;
 	}
@@ -78,6 +78,15 @@ public class Ticket {
 		this.comfortClass = comfortClass;
 		this.routeID = UUID.randomUUID();
 		this.unixTimestamp = Instant.now().getEpochSecond();
+	}
+	public Ticket() {
+		
+	}
+	public void setUnixTimestamp(long unixTimestamp) {
+		this.unixTimestamp = unixTimestamp;
+	}
+	public void setLastUpdated(long unixTimestamp){
+		this.unixTimestamp = unixTimestamp;
 	}
 	
 	//functies en methoden

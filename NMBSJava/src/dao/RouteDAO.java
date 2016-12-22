@@ -146,7 +146,7 @@ public class RouteDAO extends BaseDAO {
 							ResultSet rs = null;
 
 							String sql = 
-									"SELECT r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"+
+									"SELECT r.RouteID, r.DepartureStationID as DepartStation, r.ArrivalStationID as ArrivalStation, a.AddressID, a.Street,"+
 											 " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
 											 + " s.Name, s.CoX,s.CoY,"+
 											 "s.LastUpdated as StationLastUpdated, "+
@@ -222,8 +222,8 @@ public class RouteDAO extends BaseDAO {
 							s2.setLastUpdated(rs.getLong("StationLasUpdated"));
 							
 							r.setRouteID(UUID.fromString(rs.getString("RouteID")));
-							r.setDepartureStation(s);
-							r.setArrivalStation(s2);
+							r.setDepartureStationID(s.getStationID());
+							r.setArrivalStationID(s2.getStationID());
 							r.setLastUpdated(rs.getLong("RouteLastUpdated"));
 						
 							return r;
