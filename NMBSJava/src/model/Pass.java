@@ -11,6 +11,7 @@ public class Pass {
 	private Date startDate;
 	private int comfortClass;
 	private long unixTimestamp;
+	private TypePass typePass;
 	public Pass(UUID typePassID, Date date, Date startDate, int comfortClass) {
 		super();
 		this.passID = UUID.randomUUID();
@@ -19,6 +20,9 @@ public class Pass {
 		this.startDate = startDate;
 		this.comfortClass = comfortClass;
 		this.unixTimestamp = Instant.now().getEpochSecond();
+	}
+	public Pass() {
+		
 	}
 	public UUID getPassID() {
 		return passID;
@@ -62,6 +66,12 @@ public class Pass {
 	}
 	public void setLastUpdated(long unixTimestamp){
 		this.unixTimestamp = unixTimestamp;
+	}
+	public void setTypePass(TypePass t) {
+		this.typePass = t;
+	}
+	public TypePass getTypePass(){
+		return this.typePass;
 	}
 	
 }

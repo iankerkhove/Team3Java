@@ -8,6 +8,8 @@ public class Route {
 	private UUID departureStationID;
 	private UUID arrivalStationID;
 	private long unixTimestamp;
+	private Station departureStation;
+	private Station arrivalStation;
 	public Route(UUID routeID, UUID departureStationID, UUID arrivalStationID) {
 		super();
 		this.routeID = routeID;
@@ -43,6 +45,20 @@ public class Route {
 	}
 	public long getUnixTimestamp() {
 		return unixTimestamp;
+	}
+	public void setDepartureStation(Station s) {
+		this.departureStation = s;
+		
+	}
+	public void setArrivalStation(Station s) {
+		this.arrivalStation = s;
+		
+	}
+	public Station getDepartureStation() {
+		return departureStation;
+	}
+	public Station getArrivalStation() {
+		return arrivalStation;
 	}
 
 	
