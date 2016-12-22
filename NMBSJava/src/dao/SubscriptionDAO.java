@@ -213,8 +213,8 @@ public class SubscriptionDAO extends BaseDAO {
 						
 							s.setSubscriptionID(UUID.fromString(rs.getString("SubscriptionID")));
 							s.setRailCard(c);
-							s.setRoute(r);
-							s.setDiscount(d);
+							s.setRouteID(r.getRouteID());
+							s.setDiscountID(d.getDiscountID());
 							s.setValidFrom(rs.getDate("ValidFrom"));
 							s.setValidUntil(rs.getDate("ValidUntil"));
 							s.setLastUpdated(rs.getLong("SubscriptionLastUpdated"));
