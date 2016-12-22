@@ -6,18 +6,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import model.Route;
+import model.Ticket;
 import model.TypeTicket;
 
-public class TypeTicketDAO extends BaseDAO {
+public class TicketDAO extends BaseDAO {
 
-	public TypeTicketDAO() {
+	public TicketDAO() {
 
 	}
 
-	public int insert(TypeTicket t) {
+	public int insert(Ticket t) {
 		PreparedStatement ps = null;
 
-		String sql = "INSERT INTO TypeTicket VALUES(?,?,?,?,?)";
+		String sql = "INSERT INTO Ticket VALUES(?,?,?,?,?,?,?)";
 
 		try {
 
@@ -26,11 +28,13 @@ public class TypeTicketDAO extends BaseDAO {
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, t.getTypeTicketID().toString());
-			ps.setString(2, t.getName());
-			ps.setDouble(3, t.getPrice());
-			ps.setInt(4, t.getComfortClass());
-			ps.setLong(5, t.getUnixTimestamp());
+			ps.setString(1, t.getTicketID().toString());
+			ps.setString(2, t.getRouteID().toString());
+			ps.setString(3, t.getTicketID().toString());
+			ps.setString(4, t.getDate().toString());
+			ps.setString(5, t.getValidFrom().toString());
+			ps.setString(6, t.getValidUntil().toString());
+			ps.setLong(7, t.getUnixTimestamp());
 
 			// api call
 
@@ -52,13 +56,13 @@ public class TypeTicketDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<TypeTicket> selectAllSync() {
-		ArrayList<TypeTicket> list = null;
+	public ArrayList<Ticket> selectAllSync() {
+		ArrayList<Ticket> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM TypeTicket";
+		String sql = "SELECT * FROM Ticket";
 
 		try {
 
@@ -68,7 +72,7 @@ public class TypeTicketDAO extends BaseDAO {
 			ps = getConnection().prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			list = new ArrayList<TypeTicket>();
+			list = new ArrayList<Ticket>();
 
 			while (rs.next()) {
 				list.add(resultToModel(rs));
@@ -92,15 +96,22 @@ public class TypeTicketDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<TypeTicket> selectAll() {
-		ArrayList<TypeTicket> list = null;
+	public ArrayList<Ticket> selectAll() {
+		ArrayList<Ticket> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypeTicketID, t.Name, t.Price, t.ComfortClass, t.LastUpdated as TypeTikcetLastUpdated"
-				+ "FROM TypeTicket t;";
-
+		String sql = "SELECT t.TicketID, r.RouteID, r.DepartureStation as DepartStation, r.ArrivalStation as ArrivalStation, a.AddressID, a.Street,"
+				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
+				+ " s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
+				+ "r.LastUpdated as RouteLastUpdated"
+				+ "ty.TypeTicketID, ty.Name,ty.Price,ty.ComfortClass, ty.LastUpdated"
+				+ "t.Date,t.ValidFrom,t.ValidUntil,t.LastUpdated as TicketLastUpdated" + " FROM Ticket t"
+				+ "INNER JOIN Route r ON r.RouteID = t.RouteID"
+				+ "INNER JOIN TypeTicket ty ON ty.TypeTicket = t.TypeTicket"
+				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID;";
 		try {
 
 			if (getConnection().isClosed()) {
@@ -109,7 +120,7 @@ public class TypeTicketDAO extends BaseDAO {
 			ps = getConnection().prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			list = new ArrayList<TypeTicket>();
+			list = new ArrayList<Ticket>();
 
 			while (rs.next()) {
 				list.add(resultToModel(rs));
@@ -133,13 +144,20 @@ public class TypeTicketDAO extends BaseDAO {
 
 	}
 
-	public TypeTicket selectOne(String typePassID) {
+	public Ticket selectOne(String ticketID) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypeTicketID, t.Name, t.Price, t.ComfortClass, "
-				+ "t.LastUpdated as TypeTikcetLastUpdated FROM TypeTicket t" + "WHERE TypeTicketID = ?;";
-
+		String sql = "SELECT t.TicketID, r.RouteID, r.DepartureStation as DepartStation, r.ArrivalStation as ArrivalStation, a.AddressID, a.Street,"
+				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
+				+ " s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
+				+ "r.LastUpdated as RouteLastUpdated"
+				+ "ty.TypeTicketID, ty.Name,ty.Price,ty.ComfortClass, ty.LastUpdated"
+				+ "t.Date,t.ValidFrom,t.ValidUntil,t.LastUpdated as TicketLastUpdated" + " FROM Ticket t"
+				+ "INNER JOIN Route r ON r.RouteID = t.RouteID"
+				+ "INNER JOIN TypeTicket ty ON ty.TypeTicket = t.TypeTicket"
+				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID" + "WHERE t.TicketID=?;";
 		try {
 
 			if (getConnection().isClosed()) {
@@ -147,7 +165,7 @@ public class TypeTicketDAO extends BaseDAO {
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, typePassID);
+			ps.setString(1, ticketID);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);
@@ -169,14 +187,18 @@ public class TypeTicketDAO extends BaseDAO {
 		}
 	}
 
-	private TypeTicket resultToModel(ResultSet rs) throws SQLException {
-		TypeTicket t = new TypeTicket();
+	static Ticket resultToModel(ResultSet rs) throws SQLException {
+		Ticket t = new Ticket();
+		TypeTicket ty = TypeTicketDAO.resultToModel(rs);
+		Route r = RouteDAO.resultToModel(rs);
 
-		t.setTypeTicketID(UUID.fromString(rs.getString("TypeTicketID")));
-		t.setName(rs.getString("Name"));
-		t.setPrice(rs.getDouble("Price"));
-		t.setComfortClass(rs.getInt("ComfortClass"));
-		t.setLastUpdated(rs.getLong("TypePassLastUpdated"));
+		t.setTicketID(UUID.fromString(rs.getString("TicketID")));
+		t.setRouteID(r.getRouteID());
+		t.setTicketID(ty.getTypeTicketID());
+		t.setDate(rs.getDate("Date"));
+		t.setValidFrom(rs.getDate("ValidFrom"));
+		t.setValidUntil(rs.getDate("ValidUntil"));
+		t.setLastUpdated(rs.getLong("TicketLastUpdated"));
 
 		return t;
 	}
@@ -185,12 +207,13 @@ public class TypeTicketDAO extends BaseDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS `TypeTicket` (  "
-				+ "`TypeTicketID` varchar(36) NOT NULL DEFAULT '0',  "
-				+ "`Name` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,  "
-				+ "`Price` double NOT NULL,  `ComfortClass` int(11) NOT NULL,  "
-				+ "`LastUpdated` bigint(14) DEFAULT NULL,  PRIMARY KEY (`TypeTicketID`)) "
-				+ "ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+		String sql = "CREATE TABLE IF NOT EXISTS `Ticket` (" + "`TicketID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0'," + "`TypeTicketID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`Date` varchar(20) NOT NULL," + "`ValidFrom` varchar(20) NOT NULL,"
+				+ "`ValidUntil` varchar(20) NOT NULL," + "`LastUpdated` bigint(14) DEFAULT NULL,"
+				+ "PRIMARY KEY (`TicketID`)," + "KEY `RouteID` (`RouteID`)," + "KEY `TypeTicketID` (`TypeTicketID`)"
+				+ ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+		;
 
 		try {
 
@@ -214,4 +237,5 @@ public class TypeTicketDAO extends BaseDAO {
 			}
 		}
 	}
+
 }
