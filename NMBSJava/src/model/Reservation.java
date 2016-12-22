@@ -8,6 +8,7 @@ public class Reservation {
 	private int passengerCount;
 	private UUID trainID;
 	private double price;
+	private String reservationDate;
 	private UUID routeID;
 	private long unixTimestamp;
 	private Route route;
@@ -88,5 +89,13 @@ public class Reservation {
 
 	public Route getRoute() {
 		return route;
+	}
+
+	public String getReservationDate() {
+		return this.reservationDate;
+	}
+	
+	public void setReservationDate(String reservationDate) {
+		this.reservationDate = reservationDate;
 	}
 }

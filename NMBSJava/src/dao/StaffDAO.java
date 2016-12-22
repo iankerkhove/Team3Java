@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import model.Address;
 import model.Staff;
 
 public class StaffDAO extends BaseDAO {
@@ -25,7 +26,7 @@ public class StaffDAO extends BaseDAO {
 				throw new IllegalStateException("error unexpected");
 			}
 			ps = getConnection().prepareStatement(sql);
-			
+
 			ps.setString(1, s.getStaffID().toString());
 			ps.setString(2, s.getAddressID().toString());
 			ps.setString(3, s.getStationID().toString());
@@ -36,7 +37,7 @@ public class StaffDAO extends BaseDAO {
 			ps.setInt(8, s.getRights());
 			ps.setString(9, s.getBirthDate().toString());
 			ps.setString(10, s.getEmail());
-			ps.setString(1, s.getApiToken());
+			ps.setString(11, s.getApiToken());
 			ps.setLong(12, s.getUnixTimestamp());
 
 			// api call
@@ -59,13 +60,13 @@ public class StaffDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Reservation> selectAllSync() {
-		ArrayList<Reservation> list = null;
+	public ArrayList<Staff> selectAllSync() {
+		ArrayList<Staff> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Reservation";
+		String sql = "SELECT * FROM Staff";
 
 		try {
 
@@ -75,7 +76,7 @@ public class StaffDAO extends BaseDAO {
 			ps = getConnection().prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			list = new ArrayList<Reservation>();
+			list = new ArrayList<Staff>();
 
 			while (rs.next()) {
 				list.add(resultToModel(rs));
@@ -99,19 +100,19 @@ public class StaffDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Reservation> selectAll() {
-		ArrayList<Reservation> list = null;
+	public ArrayList<Staff> selectAll() {
+		ArrayList<Staff> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
-				+ " s.Name, s.CoX,s.CoY, s.LastUpdated as StationLastUpdated, "
-				+ "r.LastUpdated as RouteLastUpdated, re.ReservationID, re.PassengerCount, re.TrainID, re.Price, re.LastUpdated as ReservationLastUpdated FROM Reservation re"
-				+ "INNER JOIN Route r ON r.RouteID = re.RouteID"
-				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID;";
+		String sql = "SELECT s.StaffID, s.AddressID, a.Street, a.Number, a.City,"
+				+ "a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, s.StationID,"
+				+ "st.Name, st.CoX, st.CoY, st.LastUpdated as StationLastUpdated"
+				+ "s.FirstName, s.LastName, s.UserName, s.Password, s.Rights, s.BirthDate,"
+				+ "s.Email, s.Api_token, s.LastUpdated as StaffLastUpdated FROM Staff s"
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID"
+				+ "INNER JOIN Station st ON st.StationID = s.StationID;";
 
 		try {
 
@@ -121,7 +122,7 @@ public class StaffDAO extends BaseDAO {
 			ps = getConnection().prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			list = new ArrayList<Reservation>();
+			list = new ArrayList<Staff>();
 
 			while (rs.next()) {
 				list.add(resultToModel(rs));
@@ -145,17 +146,17 @@ public class StaffDAO extends BaseDAO {
 
 	}
 
-	public Reservation selectOne(String reservationID) {
+	public Staff selectOne(String staffID) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
-				+ " s.Name, s.CoX,s.CoY, s.LastUpdated as StationLastUpdated, "
-				+ "r.LastUpdated as RouteLastUpdated, re.ReservationID, re.PassengerCount, re.TrainID, re.Price, re.LastUpdated as ReservationLastUpdated FROM Reservation re"
-				+ "INNER JOIN Route r ON r.RouteID = re.RouteID"
-				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID" + "WHERE re.ReservationID = ?;";
+		String sql = "SELECT s.StaffID, s.AddressID, a.Street, a.Number, a.City,"
+				+ "a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, s.StationID,"
+				+ "st.Name, st.CoX, st.CoY, st.LastUpdated as StationLastUpdated"
+				+ "s.FirstName, s.LastName, s.UserName, s.Password, s.Rights, s.BirthDate,"
+				+ "s.Email, s.Api_token, s.LastUpdated as StaffLastUpdated FROM Staff s"
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID"
+				+ "INNER JOIN Station st ON st.StationID = s.StationID" + "WHERE StaffID = ?;";
 
 		try {
 
@@ -164,7 +165,7 @@ public class StaffDAO extends BaseDAO {
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, reservationID);
+			ps.setString(1, staffID);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);
@@ -186,30 +187,56 @@ public class StaffDAO extends BaseDAO {
 		}
 	}
 
-	private Reservation resultToModel(ResultSet rs) throws SQLException {
-		Reservation re = new Reservation();
+	private Staff resultToModel(ResultSet rs) throws SQLException {
+		Staff s = new Staff();
+		Address a = new Address();
 
-		Route r = RouteDAO.resultToModel(rs);
-		re.setReservationID(UUID.fromString(rs.getString("ReservationID")));
-		re.setPassengerCount(rs.getInt("PassengerCount"));
-		re.setTrainID(UUID.fromString(rs.getString("TrainID")));
-		re.setPrice(rs.getDouble("Price"));
-		re.setRoute(r);
-		re.setLastUpdated(rs.getLong("ReservationLastUpdated"));
+		a.setAddressID(UUID.fromString(rs.getString("AddressID")));
+		a.setStreet(rs.getString("Street"));
+		a.setNumber(rs.getInt("Number"));
+		a.setCity(rs.getString("City"));
+		a.setZipCode(rs.getInt("ZipCode"));
+		a.setCoordinates(rs.getString("Coordinates"));
+		a.setLastUpdated(rs.getLong("AddressLastUpdated"));
 
-		return re;
+		s.setStaffID(UUID.fromString(rs.getString("StaffID")));
+		s.setAddressID(a.getAddressID());
+		s.setAddress(a);
+		s.setStationID(UUID.fromString(rs.getString("StationID")));
+		s.setFirstName(rs.getString("FirstName"));
+		s.setLastName(rs.getString("LastName"));
+		s.setUserName(rs.getString("UserName"));
+		s.setPassword(rs.getString("Password"));
+		s.setRights(rs.getInt("Rights"));
+		s.setBirthDate(rs.getString("BirthDate"));
+		s.setEmail(rs.getString("Email"));
+		s.setApiToken(rs.getString("Api_token"));
+		s.setLastUpdated(rs.getLong("StaffLastUpdated"));
+
+		// Long met een grote L eh Jonas î
+
+		// Ian zegt: "Over Quotes achterlaten eh Jonas!"
+
+		// Oké Ian.
+
+		return s;
 	}
 
 	public static void createTable() {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS `Reservation` (  "
-				+ "`ReservationID` varchar(36) NOT NULL DEFAULT '0', " + "`PassengerCount` int(11) NOT NULL,  "
-				+ "`TrainID` varchar(36) NOT NULL DEFAULT '0',  "
-				+ "`Price` double NOT NULL,  `RouteID` varchar(36) NOT NULL DEFAULT '0',  "
-				+ "`LastUpdated` bigint(14) DEFAULT NULL,  PRIMARY KEY (`ReservationID`), "
-				+ "KEY `routeID` (`RouteID`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+		String sql = "CREATE TABLE IF NOT EXISTS `Staff` (  `StaffID` varchar(36) "
+				+ "NOT NULL DEFAULT '0',  `AddressID` varchar(36) NOT NULL DEFAULT '0',  "
+				+ "`StationID` varchar(36) NOT NULL DEFAULT '0', "
+				+ " `FirstName` varchar(20) NOT NULL,  `LastName` varchar(20) NOT NULL,  "
+				+ "`UserName` varchar(512) NOT NULL,  `Password` varchar(512) NOT NULL,  "
+				+ "`Rights` int(1) NOT NULL,  `BirthDate` int(11) NOT NULL,  "
+				+ "`Email` varchar(50) NOT NULL,  `Api_token` varchar(60) DEFAULT NULL,  "
+				+ "`LastUpdated` bigint(14) DEFAULT NULL,  PRIMARY KEY (`StaffID`),  "
+				+ "UNIQUE KEY `UserName` (`UserName`), UNIQUE KEY `api_token` (`Api_token`),  "
+				+ "KEY `AddressID` (`AddressID`),  KEY `StationID` (`StationID`)) "
+				+ "ENGINE=InnoDB DEFAULT CHARSET=latin1;";
 
 		try {
 
