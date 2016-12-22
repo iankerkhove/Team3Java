@@ -7,19 +7,18 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import model.Address;
-import model.Route;
-import model.Station;
+import model.Staff;
 
-public class RouteDAO extends BaseDAO {
+public class StaffDAO extends BaseDAO {
 
-	public RouteDAO() {
-
+	public StaffDAO() {
+		// TODO Auto-generated constructor stub
 	}
 
-	public int insert(Route r) {
+	public int insert(Staff s) {
 		PreparedStatement ps = null;
 
-		String sql = "INSERT INTO Route VALUES(?,?,?,?)";
+		String sql = "INSERT INTO Staff VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		try {
 
@@ -28,10 +27,18 @@ public class RouteDAO extends BaseDAO {
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, r.getRouteID().toString());
-			ps.setString(2, r.getDepartureStationID().toString());
-			ps.setString(3, r.getArrivalStationID().toString());
-			ps.setLong(4, r.getUnixTimestamp());
+			ps.setString(1, s.getStaffID().toString());
+			ps.setString(2, s.getAddressID().toString());
+			ps.setString(3, s.getStationID().toString());
+			ps.setString(4, s.getFirstName());
+			ps.setString(5, s.getLastName());
+			ps.setString(6, s.getUserName());
+			ps.setString(7, s.getPassword());
+			ps.setInt(8, s.getRights());
+			ps.setString(9, s.getBirthDate().toString());
+			ps.setString(10, s.getEmail());
+			ps.setString(11, s.getApiToken());
+			ps.setLong(12, s.getUnixTimestamp());
 
 			// api call
 
@@ -53,13 +60,13 @@ public class RouteDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Route> selectAllSync() {
-		ArrayList<Route> list = null;
+	public ArrayList<Staff> selectAllSync() {
+		ArrayList<Staff> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Route";
+		String sql = "SELECT * FROM Staff";
 
 		try {
 
@@ -69,7 +76,7 @@ public class RouteDAO extends BaseDAO {
 			ps = getConnection().prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			list = new ArrayList<Route>();
+			list = new ArrayList<Staff>();
 
 			while (rs.next()) {
 				list.add(resultToModel(rs));
@@ -93,18 +100,19 @@ public class RouteDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Route> selectAll() {
-		ArrayList<Route> list = null;
+	public ArrayList<Staff> selectAll() {
+		ArrayList<Staff> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT r.RouteID, r.DepartureStationID as DepartStation, r.ArrivalStationID as ArrivalStation, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
-				+ " s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
-				+ "r.LastUpdated as RouteLastUpdated" + " FROM Route r"
-				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID;";
+		String sql = "SELECT s.StaffID, s.AddressID, a.Street, a.Number, a.City,"
+				+ "a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, s.StationID,"
+				+ "st.Name, st.CoX, st.CoY, st.LastUpdated as StationLastUpdated"
+				+ "s.FirstName, s.LastName, s.UserName, s.Password, s.Rights, s.BirthDate,"
+				+ "s.Email, s.Api_token, s.LastUpdated as StaffLastUpdated FROM Staff s"
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID"
+				+ "INNER JOIN Station st ON st.StationID = s.StationID;";
 
 		try {
 
@@ -114,7 +122,7 @@ public class RouteDAO extends BaseDAO {
 			ps = getConnection().prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			list = new ArrayList<Route>();
+			list = new ArrayList<Staff>();
 
 			while (rs.next()) {
 				list.add(resultToModel(rs));
@@ -138,16 +146,18 @@ public class RouteDAO extends BaseDAO {
 
 	}
 
-	public Route selectOne(String routeID) {
+	public Staff selectOne(String staffID) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
-				+ " s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
-				+ "r.LastUpdated as RouteLastUpdated" + " FROM Route r"
-				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID" + "WHERE r.RouteID=?;";
+		String sql = "SELECT s.StaffID, s.AddressID, a.Street, a.Number, a.City,"
+				+ "a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, s.StationID,"
+				+ "st.Name, st.CoX, st.CoY, st.LastUpdated as StationLastUpdated"
+				+ "s.FirstName, s.LastName, s.UserName, s.Password, s.Rights, s.BirthDate,"
+				+ "s.Email, s.Api_token, s.LastUpdated as StaffLastUpdated FROM Staff s"
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID"
+				+ "INNER JOIN Station st ON st.StationID = s.StationID" + "WHERE StaffID = ?;";
+
 		try {
 
 			if (getConnection().isClosed()) {
@@ -155,7 +165,7 @@ public class RouteDAO extends BaseDAO {
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, routeID);
+			ps.setString(1, staffID);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);
@@ -177,12 +187,9 @@ public class RouteDAO extends BaseDAO {
 		}
 	}
 
-	static Route resultToModel(ResultSet rs) throws SQLException {
-		Route r = new Route();
-		Station s = new Station();
-		Station s2 = new Station();
+	private Staff resultToModel(ResultSet rs) throws SQLException {
+		Staff s = new Staff();
 		Address a = new Address();
-		Address a2 = new Address();
 
 		a.setAddressID(UUID.fromString(rs.getString("AddressID")));
 		a.setStreet(rs.getString("Street"));
@@ -192,46 +199,38 @@ public class RouteDAO extends BaseDAO {
 		a.setCoordinates(rs.getString("Coordinates"));
 		a.setLastUpdated(rs.getLong("AddressLastUpdated"));
 
-		s.setStationID(UUID.fromString(rs.getString("StationID")));
+		s.setStaffID(UUID.fromString(rs.getString("StaffID")));
+		s.setAddressID(a.getAddressID());
 		s.setAddress(a);
-		s.setStationName(rs.getString("Name"));
-		s.setCox(rs.getString("CoX"));
-		s.setCoy(rs.getString("CoY"));
-		s.setLastUpdated(rs.getLong("StationLasUpdated"));
+		s.setStationID(UUID.fromString(rs.getString("StationID")));
+		s.setFirstName(rs.getString("FirstName"));
+		s.setLastName(rs.getString("LastName"));
+		s.setUserName(rs.getString("UserName"));
+		s.setPassword(rs.getString("Password"));
+		s.setRights(rs.getInt("Rights"));
+		s.setBirthDate(rs.getString("BirthDate"));
+		s.setEmail(rs.getString("Email"));
+		s.setApiToken(rs.getString("Api_token"));
+		s.setLastUpdated(rs.getLong("StaffLastUpdated"));
 
-		a2.setAddressID(UUID.fromString(rs.getString("AddressID")));
-		a2.setStreet(rs.getString("Street"));
-		a2.setNumber(rs.getInt("Number"));
-		a2.setCity(rs.getString("City"));
-		a2.setZipCode(rs.getInt("ZipCode"));
-		a2.setCoordinates(rs.getString("Coordinates"));
-		a2.setLastUpdated(rs.getLong("AddressLastUpdated"));
-
-		s2.setStationID(UUID.fromString(rs.getString("StationID")));
-		s2.setAddress(a2);
-		s2.setStationName(rs.getString("Name"));
-		s2.setCox(rs.getString("CoX"));
-		s2.setCoy(rs.getString("CoY"));
-		s2.setLastUpdated(rs.getLong("StationLasUpdated"));
-
-		r.setRouteID(UUID.fromString(rs.getString("RouteID")));
-		r.setDepartureStation(s);
-		r.setArrivalStation(s2);
-		r.setLastUpdated(rs.getLong("RouteLastUpdated"));
-
-		return r;
+		return s;
 	}
 
 	public static void createTable() {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS `Route` (" + "`RouteID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`DepartureStationID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`ArrivalStationID` varchar(36) NOT NULL DEFAULT '0'," + "`LastUpdated` bigint(14) DEFAULT NULL,"
-				+ "PRIMARY KEY (`RouteID`),"
-				+ "UNIQUE KEY `uq_route` (`DepartureStationID`,`ArrivalStationID`) USING BTREE,"
-				+ "KEY `fk_arrivStat` (`ArrivalStationID`)" + ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+		String sql = "CREATE TABLE IF NOT EXISTS `Staff` (  `StaffID` varchar(36) "
+				+ "NOT NULL DEFAULT '0',  `AddressID` varchar(36) NOT NULL DEFAULT '0',  "
+				+ "`StationID` varchar(36) NOT NULL DEFAULT '0', "
+				+ " `FirstName` varchar(20) NOT NULL,  `LastName` varchar(20) NOT NULL,  "
+				+ "`UserName` varchar(512) NOT NULL,  `Password` varchar(512) NOT NULL,  "
+				+ "`Rights` int(1) NOT NULL,  `BirthDate` int(11) NOT NULL,  "
+				+ "`Email` varchar(50) NOT NULL,  `Api_token` varchar(60) DEFAULT NULL,  "
+				+ "`LastUpdated` bigint(14) DEFAULT NULL,  PRIMARY KEY (`StaffID`),  "
+				+ "UNIQUE KEY `UserName` (`UserName`), UNIQUE KEY `api_token` (`Api_token`),  "
+				+ "KEY `AddressID` (`AddressID`),  KEY `StationID` (`StationID`)) "
+				+ "ENGINE=InnoDB DEFAULT CHARSET=latin1;";
 
 		try {
 
@@ -255,5 +254,4 @@ public class RouteDAO extends BaseDAO {
 			}
 		}
 	}
-
 }
