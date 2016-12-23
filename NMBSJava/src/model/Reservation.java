@@ -113,5 +113,4 @@ public class Reservation
 	{
 		this.lastUpdated = Instant.now().getEpochSecond();
 	}
-	
 }
