@@ -215,8 +215,6 @@ public class StaffDAO extends BaseDAO
 
 	private Staff resultToModel(ResultSet rs) throws SQLException
 	{
-		DateFormat df = new SimpleDateFormat("ddMMyyyy");
-		
 		Staff staff = new Staff();
 		Address a = AddressDAO.resultToModel(rs);
 		Station s = StationDAO.resultToModel(rs);
@@ -230,13 +228,10 @@ public class StaffDAO extends BaseDAO
 		staff.setPassword(rs.getString("Password"));
 		staff.setRights(rs.getInt("Rights"));
 		staff.setEmail(rs.getString("Email"));
+		staff.setBirthDate(rs.getDate("BirthDate"));
 		staff.setApiToken(rs.getString("Api_token"));
 		staff.setLastUpdated(rs.getLong("LastUpdated"));
-		
-		try {
-			staff.setBirthDate(df.parse(rs.getString("BirthDate")));
-		}
-		catch (ParseException e) {}
+
 
 		return staff;
 	}
