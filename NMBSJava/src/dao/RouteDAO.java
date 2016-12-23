@@ -238,7 +238,7 @@ public class RouteDAO extends BaseDAO
 				+ "`DepartureStationID` varchar(36) NOT NULL DEFAULT '0',"
 				+ "`ArrivalStationID` varchar(36) NOT NULL DEFAULT '0'," 
 				+ "`LastUpdated` bigint(14) DEFAULT NULL,"
-				+ "UNIQUE(`DepartureStationID`,`ArrivalStationID`) ON CONFLIC IGNORE,"
+				+ "UNIQUE(`DepartureStationID`,`ArrivalStationID`),"
 				+ "PRIMARY KEY (`RouteID`),"
 				+ "FOREIGN KEY (`DepartureStationID`) REFERENCES `Station`(`StationID`),"
 				+ "FOREIGN KEY (`ArrivalStationID`) REFERENCES `Station`(`StationID`)"

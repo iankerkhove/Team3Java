@@ -223,7 +223,7 @@ public class ReservationDAO extends BaseDAO
 				+ "`ReservationID` varchar(36) NOT NULL DEFAULT '0', " 
 				+ "`PassengerCount` int(11) NOT NULL,  "
 				+ "`TrainID` varchar(36) NOT NULL DEFAULT '0',  "
-				+ "`Price` double NOT NULL,  `RouteID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`Price` double NOT NULL, "
 				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0',"
 				+ "`LastUpdated` bigint(14) DEFAULT NULL, "
 				+ "PRIMARY KEY (`ReservationID`),"
