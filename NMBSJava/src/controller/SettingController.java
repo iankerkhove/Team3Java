@@ -8,8 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
-import dao.InitDatabase;
 import model.SettingsSingleton;
+import services.InitDatabaseRunnable;
 
 /**
  * 
@@ -41,12 +41,14 @@ public class SettingController
 			
 			//Set settings from file to singleton here
 			
+			if (firstTime != null)
+				if (firstTime.equals("True"))
+					return;
 			
-			if (firstTime == "True")
-				return;
+			Thread initdb = new Thread(new InitDatabaseRunnable());
+			initdb.run();				
 			
-			InitDatabase.init();
-			settings.setFirstTime("True");
+			
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
