@@ -14,10 +14,18 @@ public class AddressDAO extends BaseDAO
 {
 
 	public AddressDAO()
+	{}
+
+	public int insertOrUpdate(Address a)
 	{
+		Address exists = this.selectOne(a.getAddressID().toString());
 
+		if (exists == null)
+			return this.insert(a);
+		else
+			return this.update(a);
 	}
-
+	
 	public int insert(Address a)
 	{
 		PreparedStatement ps = null;
@@ -40,6 +48,49 @@ public class AddressDAO extends BaseDAO
 			ps.setLong(7, a.getLastUpdated());
 
 			// api call
+			System.out.println("addressdao");
+			return ps.executeUpdate();
+
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+
+	}
+	
+	public int update(Address a)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "UPDATE Address SET `Street`=?, `Number`=?,`City`=?,`ZipCode`=?,`Coordinates`=?,`LastUpdated`=? WHERE `AddressID`=?";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, a.getStreet());
+			ps.setInt(2, a.getNumber());
+			ps.setString(3, a.getCity());
+			ps.setInt(4, a.getZipCode());
+			ps.setString(5, a.getCoordinates());
+			ps.setLong(6, a.getLastUpdated());
+			ps.setString(7, a.getAddressID().toString());
+
+			// api call
 
 			return ps.executeUpdate();
 
@@ -52,7 +103,6 @@ public class AddressDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
-
 			}
 			catch (SQLException e) {
 				System.out.println(e.getMessage());
