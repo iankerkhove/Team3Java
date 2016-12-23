@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,13 +10,16 @@ import java.util.UUID;
 import model.Reservation;
 import model.Route;
 
-public class ReservationDAO extends BaseDAO {
+public class ReservationDAO extends BaseDAO
+{
 
-	public ReservationDAO() {
+	public ReservationDAO()
+	{
 
 	}
 
-	public int insert(Reservation r) {
+	public int insert(Reservation r)
+	{
 		PreparedStatement ps = null;
 
 		String sql = "INSERT INTO Reservation VALUES(?,?,?,?,?,?,?)";
@@ -31,23 +35,27 @@ public class ReservationDAO extends BaseDAO {
 			ps.setInt(2, r.getPassengerCount());
 			ps.setString(3, r.getTrainID().toString());
 			ps.setDouble(4, r.getPrice());
-			ps.setString(5, r.getReservationDate());
-			ps.setString(6, r.getRouteID().toString());
-			ps.setLong(7, r.getUnixTimestamp());
+			ps.setString(5, r.getReservationDate().toString());
+			ps.setString(5, r.getRouteID().toString());
+			ps.setLong(6, r.getLastUpdated());
+
 
 			// api call
 
 			return ps.executeUpdate();
 
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -55,7 +63,8 @@ public class ReservationDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Reservation> selectAllSync() {
+	public ArrayList<Reservation> selectAllSync()
+	{
 		ArrayList<Reservation> list = null;
 
 		PreparedStatement ps = null;
@@ -78,16 +87,19 @@ public class ReservationDAO extends BaseDAO {
 			}
 
 			return list;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -95,7 +107,8 @@ public class ReservationDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Reservation> selectAll() {
+	public ArrayList<Reservation> selectAll()
+	{
 		ArrayList<Reservation> list = null;
 
 		PreparedStatement ps = null;
@@ -125,16 +138,19 @@ public class ReservationDAO extends BaseDAO {
 			}
 
 			return list;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -142,7 +158,8 @@ public class ReservationDAO extends BaseDAO {
 
 	}
 
-	public Reservation selectOne(String reservationID) {
+	public Reservation selectOne(String reservationID)
+	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
@@ -168,29 +185,33 @@ public class ReservationDAO extends BaseDAO {
 				return resultToModel(rs);
 			else
 				return null;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
 		}
 	}
 
-	private Reservation resultToModel(ResultSet rs) throws SQLException {
+	private Reservation resultToModel(ResultSet rs) throws SQLException
+	{
 		Reservation re = new Reservation();
 
 		Route r = RouteDAO.resultToModel(rs);
 		re.setReservationID(UUID.fromString(rs.getString("ReservationID")));
 		re.setPassengerCount(rs.getInt("PassengerCount"));
-		re.setTrainID(UUID.fromString(rs.getString("TrainID")));
+		re.setTrainID(rs.getString("TrainID"));
 		re.setPrice(rs.getDouble("Price"));
 		re.setReservationDate(rs.getString("ReservationDate"));
 		re.setRoute(r);
@@ -199,34 +220,40 @@ public class ReservationDAO extends BaseDAO {
 		return re;
 	}
 
-	public static void createTable() {
+	public static void createTable(Connection con)
+	{
 		PreparedStatement ps = null;
-		ResultSet rs = null;
 
 		String sql = "CREATE TABLE IF NOT EXISTS `Reservation` (  "
-				+ "`ReservationID` varchar(36) NOT NULL DEFAULT '0', `PassengerCount` int(11) NOT NULL,  "
+				+ "`ReservationID` varchar(36) NOT NULL DEFAULT '0', " 
+				+ "`PassengerCount` int(11) NOT NULL,  "
 				+ "`TrainID` varchar(36) NOT NULL DEFAULT '0',  "
-				+ "`Price` double NOT NULL, `ReservationDate` varchar(40) NOT NULL, `RouteID` varchar(36) NOT NULL DEFAULT '0',  "
-				+ "`LastUpdated` bigint(14) DEFAULT NULL,  PRIMARY KEY (`ReservationID`), "
-				+ "KEY `routeID` (`RouteID`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+				+ "`Price` double NOT NULL, "
+				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`LastUpdated` bigint(14) DEFAULT NULL, "
+				+ "PRIMARY KEY (`ReservationID`),"
+				+ "FOREIGN KEY (`RouteID`) REFERENCES `Route`(`RouteID`)"
+				+ ");";
+
 
 		try {
 
-			if (getConnection().isClosed()) {
+			if (con.isClosed()) {
 				throw new IllegalStateException("error unexpected");
 			}
-			ps = getConnection().prepareStatement(sql);
-			rs = ps.executeQuery();
-		} catch (SQLException e) {
+			ps = con.prepareStatement(sql);
+			ps.executeUpdate();
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
-				if (rs != null)
-					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}

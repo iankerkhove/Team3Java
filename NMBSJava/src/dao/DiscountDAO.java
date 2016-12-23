@@ -9,13 +9,17 @@ import java.util.UUID;
 
 import model.Discount;
 
-public class DiscountDAO extends BaseDAO {
 
-	public DiscountDAO() {
+public class DiscountDAO extends BaseDAO
+{
+
+	public DiscountDAO()
+	{
 
 	}
 
-	public int insert(Discount d) {
+	public int insert(Discount d)
+	{
 		PreparedStatement ps = null;
 
 		String sql = "INSERT INTO Discount VALUES(?,?,?,?)";
@@ -30,7 +34,7 @@ public class DiscountDAO extends BaseDAO {
 			ps.setString(1, d.getDiscountID().toString());
 			ps.setString(2, d.getName());
 			ps.setDouble(3, d.getAmount());
-			ps.setLong(4, d.getUnixTimestamp());
+			ps.setLong(4, d.getLastUpdated());
 
 			// api call
 
@@ -49,10 +53,10 @@ public class DiscountDAO extends BaseDAO {
 				throw new RuntimeException("error.unexpected");
 			}
 		}
-
 	}
 
-	public ArrayList<Discount> selectAll() {
+	public ArrayList<Discount> selectAll()
+	{
 		ArrayList<Discount> list = null;
 
 		PreparedStatement ps = null;
@@ -75,16 +79,21 @@ public class DiscountDAO extends BaseDAO {
 			}
 
 			return list;
-		} catch (SQLException e) {
+
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
+
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -92,7 +101,9 @@ public class DiscountDAO extends BaseDAO {
 
 	}
 
-	public Discount selectOne(String discountID) {
+
+	public Discount selectOne(String discountID)
+	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
@@ -111,23 +122,30 @@ public class DiscountDAO extends BaseDAO {
 				return resultToModel(rs);
 			else
 				return null;
-		} catch (SQLException e) {
+
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
+
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
 		}
 	}
 
-	private Discount resultToModel(ResultSet rs) throws SQLException {
+
+	private Discount resultToModel(ResultSet rs) throws SQLException
+	{
 		Discount d = new Discount();
 		d.setDiscountID(UUID.fromString(rs.getString("DiscountID")));
 		d.setName(rs.getString("Name"));
@@ -137,32 +155,38 @@ public class DiscountDAO extends BaseDAO {
 		return d;
 	}
 
-	public static void createTable() {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS `Discount` (" + "`DiscountID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`Name` varchar(20) NOT NULL," + "`Amount` double NOT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," + "PRIMARY KEY (`DiscountID`)"
-				+ ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+	public static void createTable(Connection con)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "CREATE TABLE IF NOT EXISTS `Discount` (" 
+				+ "`DiscountID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`Name` varchar(20) NOT NULL," 
+				+ "`Amount` double NOT NULL,"
+				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
+				+ "PRIMARY KEY (`DiscountID`)"
+				+ ");";
 
 		try {
 
-			if (getConnection().isClosed()) {
+			if (con.isClosed()) {
 				throw new IllegalStateException("error unexpected");
 			}
-			ps = getConnection().prepareStatement(sql);
-			rs = ps.executeQuery();
-		} catch (SQLException e) {
+			ps = con.prepareStatement(sql);
+			ps.executeUpdate();
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
-				if (rs != null)
-					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
+
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}

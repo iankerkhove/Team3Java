@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,13 +9,16 @@ import java.util.UUID;
 
 import model.TypeTicket;
 
-public class TypeTicketDAO extends BaseDAO {
+public class TypeTicketDAO extends BaseDAO
+{
 
-	public TypeTicketDAO() {
+	public TypeTicketDAO()
+	{
 
 	}
 
-	public int insert(TypeTicket t) {
+	public int insert(TypeTicket t)
+	{
 		PreparedStatement ps = null;
 
 		String sql = "INSERT INTO TypeTicket VALUES(?,?,?,?,?)";
@@ -30,21 +34,24 @@ public class TypeTicketDAO extends BaseDAO {
 			ps.setString(2, t.getName());
 			ps.setDouble(3, t.getPrice());
 			ps.setInt(4, t.getComfortClass());
-			ps.setLong(5, t.getUnixTimestamp());
+			ps.setLong(5, t.getLastUpdated());
 
 			// api call
 
 			return ps.executeUpdate();
 
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -52,13 +59,14 @@ public class TypeTicketDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<TypeTicket> selectAllSync() {
+	public ArrayList<TypeTicket> selectAllSync()
+	{
 		ArrayList<TypeTicket> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM TypeTicket";
+		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, t.LastUpdated as TypeTikcetLastUpdated";
 
 		try {
 
@@ -75,16 +83,19 @@ public class TypeTicketDAO extends BaseDAO {
 			}
 
 			return list;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -92,13 +103,14 @@ public class TypeTicketDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<TypeTicket> selectAll() {
+	public ArrayList<TypeTicket> selectAll()
+	{
 		ArrayList<TypeTicket> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypeTicketID, t.Name, t.Price, t.ComfortClass, t.LastUpdated as TypeTikcetLastUpdated"
+		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, t.LastUpdated as TypeTikcetLastUpdated"
 				+ "FROM TypeTicket t;";
 
 		try {
@@ -116,16 +128,19 @@ public class TypeTicketDAO extends BaseDAO {
 			}
 
 			return list;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -133,7 +148,8 @@ public class TypeTicketDAO extends BaseDAO {
 
 	}
 
-	public TypeTicket selectOne(String typePassID) {
+	public TypeTicket selectOne(String typePassID)
+	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
@@ -153,62 +169,69 @@ public class TypeTicketDAO extends BaseDAO {
 				return resultToModel(rs);
 			else
 				return null;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
 		}
 	}
 
-	static TypeTicket resultToModel(ResultSet rs) throws SQLException {
+	public static TypeTicket resultToModel(ResultSet rs) throws SQLException
+	{
 		TypeTicket t = new TypeTicket();
 
 		t.setTypeTicketID(UUID.fromString(rs.getString("TypeTicketID")));
-		t.setName(rs.getString("Name"));
+		t.setName(rs.getString("TypeTicketName"));
 		t.setPrice(rs.getDouble("Price"));
 		t.setComfortClass(rs.getInt("ComfortClass"));
-		t.setLastUpdated(rs.getLong("TypePassLastUpdated"));
+		t.setLastUpdated(rs.getLong("TypeTicketLastUpdated"));
 
 		return t;
 	}
 
-	public static void createTable() {
+	public static void createTable(Connection con)
+	{
 		PreparedStatement ps = null;
-		ResultSet rs = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS `TypeTicket` (  "
-				+ "`TypeTicketID` varchar(36) NOT NULL DEFAULT '0',  "
-				+ "`Name` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,  "
-				+ "`Price` double NOT NULL,  `ComfortClass` int(11) NOT NULL,  "
-				+ "`LastUpdated` bigint(14) DEFAULT NULL,  PRIMARY KEY (`TypeTicketID`)) "
-				+ "ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+		String sql = "CREATE TABLE IF NOT EXISTS `TypeTicket` ("
+				+ "`TypeTicketID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`Name` varchar(50) NOT NULL,"
+				+ "`Price` double NOT NULL,"
+				+ "`ComfortClass` int(11) NOT NULL,  "
+				+ "`LastUpdated` bigint(14) DEFAULT NULL,  "
+				+ "PRIMARY KEY (`TypeTicketID`)"
+				+ ");";
 
 		try {
 
-			if (getConnection().isClosed()) {
+			if (con.isClosed()) {
 				throw new IllegalStateException("error unexpected");
 			}
-			ps = getConnection().prepareStatement(sql);
-			rs = ps.executeQuery();
-		} catch (SQLException e) {
+			ps = con.prepareStatement(sql);
+			ps.executeUpdate();
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
-				if (rs != null)
-					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}

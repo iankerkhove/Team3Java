@@ -1,27 +1,31 @@
 package dao;
 
-	import java.sql.Connection;
-	import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
-	public class BaseDAO {
+public abstract class BaseDAO
+{
+	private Connection connection;
 
-		private static Connection connection;
+	protected Connection getConnection()
+	{
+		return connection;
+	}
 
-		public static Connection getConnection() {
-			return connection;
+	protected void setConnection(Connection connection)
+	{
+		this.connection = connection;
+	}
+
+	public BaseDAO()
+	{
+		try {
+			setConnection(DatabaseSingleton.getDatabaseSingleton().getConnection(true));
+
 		}
-
-		public void setConnection(Connection connection) {
-			this.connection = connection;
-		}
-		
-		public BaseDAO(){
-			try {
-				setConnection(DatabaseSingleton.getDatabaseSingleton().getConnection(true));
-				
-			}catch(SQLException e){
-				e.printStackTrace();
-			}
+		catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
+}
 

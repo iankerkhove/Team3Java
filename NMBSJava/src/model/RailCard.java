@@ -4,57 +4,70 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class RailCard {
+public class RailCard
+{
 	private UUID railCardID;
 	private ArrayList<Subscription> subscriptions;
-	private long unixTimestamp;
-	
+	private long lastUpdated;
 
-	public RailCard() {
-		subscriptions = new ArrayList ();
+	public RailCard()
+	{
+		subscriptions = new ArrayList<Subscription>();
 		railCardID = UUID.randomUUID();
-		unixTimestamp = Instant.now().getEpochSecond();
+		lastUpdated = Instant.now().getEpochSecond();
 	}
 
-	public long getUnixTimestamp() {
-		return unixTimestamp;
-	}
 
-	public void update() {
-		this.unixTimestamp = Instant.now().getEpochSecond();
-	}
-	
-	public void setLastUpdated(long unixTimestamp){
-		this.unixTimestamp = unixTimestamp;
-	}
-	public UUID getRailCardID() {
+	public UUID getRailCardID()
+	{
 		return railCardID;
 	}
 
-	public void setRailCardID(UUID railCardID) {
+	public void setRailCardID(UUID railCardID)
+	{
 		this.railCardID = railCardID;
 	}
 
-	public ArrayList<Subscription> getSubscriptions() {
+	public ArrayList<Subscription> getSubscriptions()
+	{
 		return subscriptions;
 	}
 
-	public void setSubscriptions(ArrayList<Subscription> subscriptions) {
+	public void setSubscriptions(ArrayList<Subscription> subscriptions)
+	{
 		this.subscriptions = subscriptions;
 	}
-	
-	public void addSubscription (Subscription s) {
-		 if (s != null) {
-			 subscriptions.add(s);
-		 }
+
+	public void addSubscription(Subscription s)
+	{
+		if (s != null) {
+			subscriptions.add(s);
+		}
 	}
-	public void deleteSubscription (int subscriptionID) {
+
+	public void deleteSubscription(int subscriptionID)
+	{
 		try {
-		subscriptions.remove(subscriptionID);
+			subscriptions.remove(subscriptionID);
 		}
 		catch (IndexOutOfBoundsException oob) {
 			System.out.println("Abonnement met id " + subscriptionID + " bestaat niet");
 		}
+	}
+
+	public long getLastUpdated()
+	{
+		return lastUpdated;
+	}
+	
+	public void setLastUpdated(long lastUpdated)
+	{
+		this.lastUpdated = lastUpdated;
+	}
+	
+	public void update()
+	{
+		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 	
 }

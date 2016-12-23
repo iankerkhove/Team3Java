@@ -3,64 +3,89 @@ package model;
 import java.time.Instant;
 import java.util.UUID;
 
-public class Route {
+public class Route
+{
 	private UUID routeID;
 	private UUID departureStationID;
 	private UUID arrivalStationID;
-	private long unixTimestamp;
 	private Station departureStation;
 	private Station arrivalStation;
-	public Route(UUID routeID, UUID departureStationID, UUID arrivalStationID) {
-		super();
+	private long lastUpdated;
+	
+	public Route()
+	{}
+
+	public Route(UUID routeID, UUID departureStationID, UUID arrivalStationID)
+	{
 		this.routeID = routeID;
 		this.departureStationID = departureStationID;
 		this.arrivalStationID = arrivalStationID;
+		this.lastUpdated = Instant.now().getEpochSecond();
 	}
-	public Route() {
-		
-	}
-	public UUID getRouteID() {
+
+	public UUID getRouteID()
+	{
 		return routeID;
 	}
-	public void setRouteID(UUID routeID) {
+
+	public void setRouteID(UUID routeID)
+	{
 		this.routeID = routeID;
 	}
-	public UUID getDepartureStationID() {
+
+	public UUID getDepartureStationID()
+	{
 		return departureStationID;
 	}
-	public void setDepartureStationID(UUID departureStationID) {
+
+	public void setDepartureStationID(UUID departureStationID)
+	{
 		this.departureStationID = departureStationID;
 	}
-	public UUID getArrivalStationID() {
+
+	public UUID getArrivalStationID()
+	{
 		return arrivalStationID;
 	}
-	public void setArrivalStationID(UUID arrivalStationID) {
+
+	public void setArrivalStationID(UUID arrivalStationID)
+	{
 		this.arrivalStationID = arrivalStationID;
 	}
-	public void update() {
-		this.unixTimestamp = Instant.now().getEpochSecond();
-	}
-	public void setLastUpdated(long unixTimestamp){
-		this.unixTimestamp = unixTimestamp;
-	}
-	public long getUnixTimestamp() {
-		return unixTimestamp;
-	}
-	public void setDepartureStation(Station s) {
-		this.departureStation = s;
-		
-	}
-	public void setArrivalStation(Station s) {
-		this.arrivalStation = s;
-		
-	}
-	public Station getDepartureStation() {
+
+	public Station getDepartureStation()
+	{
 		return departureStation;
 	}
-	public Station getArrivalStation() {
+
+	public void setDepartureStation(Station departureStation)
+	{
+		this.departureStation = departureStation;
+	}
+
+	public Station getArrivalStation()
+	{
 		return arrivalStation;
 	}
 
-	
-	
+	public void setArrivalStation(Station arrivalStation)
+	{
+		this.arrivalStation = arrivalStation;
+	}
+
+	public long getLastUpdated()
+	{
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(long lastUpdated)
+	{
+		this.lastUpdated = lastUpdated;
+	}
+
+	public void update()
+	{
+		this.lastUpdated = Instant.now().getEpochSecond();
+	}
+
 }
