@@ -17,5 +17,6 @@ public class InitDatabase {
 		TicketDAO.createTable();
 		TypePassDAO.createTable();
 		TypeTicketDAO.createTable();
+		
 	}
 }
