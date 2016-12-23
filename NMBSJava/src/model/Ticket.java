@@ -4,92 +4,132 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
-public class Ticket {
+public class Ticket
+{
 	// members
 	private UUID routeID;
+	private Route route;
 	private Date date;
 	private double price;
 	private Date validFrom;
 	private Date validUntil;
 	private UUID ticketID;
-	private long unixTimestamp;
+	private long lastUpdated;
+	private ComfortClass comfortClass;
+
 	// enumeratie
-	public enum ComfortClass{
+	public enum ComfortClass
+	{
 		First, Second
 	}
-	private ComfortClass comfortClass;
+
+	public Ticket()
+	{}
 	
-	//getters en setters
-	
-	public UUID getTicketID() {
-		return ticketID;
-	}
-	public long getUnixTimestamp() {
-		return unixTimestamp;
-	}
-	public void update() {
-		this.unixTimestamp = Instant.now().getEpochSecond();
-	}
-	public void setTicketID(UUID ticketID) {
-		this.ticketID = ticketID;
-	}
-	public UUID getRouteID() {
-		return routeID;
-	}
-	public void setRouteID(UUID routeID) {
-		this.routeID = routeID;
-	}
-	public Date getDate() {
-		return date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	public double getPrice() {
-		return price;
-	}
-	public void setPrice(double price) {
-		this.price = price;
-	}
-	public Date getValidFrom() {
-		return validFrom;
-	}
-	public void setValidFrom(Date validFrom) {
-		this.validFrom = validFrom;
-	}
-	public Date getValidUntil() {
-		return validUntil;
-	}
-	public void setValidUntil(Date validUntil) {
-		this.validUntil = validUntil;
-	}
-	public ComfortClass getComfortClass() {
-		return comfortClass;
-	}
-	public void setComfortClass(ComfortClass comfortClass) {
-		this.comfortClass = comfortClass;
-	}
-	public Ticket(UUID routeID, Date date, double price, Date validFrom, Date validUntil, ComfortClass comfortClass) {
-		super();
+	public Ticket(UUID routeID, Date date, double price, Date validFrom, Date validUntil, ComfortClass comfortClass)
+	{
 		this.date = date;
 		this.price = price;
 		this.validFrom = validFrom;
 		this.validUntil = validUntil;
 		this.comfortClass = comfortClass;
 		this.routeID = UUID.randomUUID();
-		this.unixTimestamp = Instant.now().getEpochSecond();
-	}
-	public Ticket() {
-		
-	}
-	public void setUnixTimestamp(long unixTimestamp) {
-		this.unixTimestamp = unixTimestamp;
-	}
-	public void setLastUpdated(long unixTimestamp){
-		this.unixTimestamp = unixTimestamp;
+		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 	
-	//functies en methoden
+	public Route getRoute()
+	{
+		return route;
+	}
+
+	public void setRoute(Route route)
+	{
+		this.route = route;
+	}
+
+	public void setRouteID(UUID routeID)
+	{
+		this.routeID = routeID;
+	}
+
+	public void setTicketID(UUID ticketID)
+	{
+		this.ticketID = ticketID;
+	}
+
+	public UUID getTicketID()
+	{
+		return ticketID;
+	}
+
+	public Date getDate()
+	{
+		return date;
+	}
+
+	public void setDate(Date date)
+	{
+		this.date = date;
+	}
+
+	public double getPrice()
+	{
+		return price;
+	}
+
+	public void setPrice(double price)
+	{
+		this.price = price;
+	}
+
+	public Date getValidFrom()
+	{
+		return validFrom;
+	}
+
+	public void setValidFrom(Date validFrom)
+	{
+		this.validFrom = validFrom;
+	}
+
+	public Date getValidUntil()
+	{
+		return validUntil;
+	}
+
+	public void setValidUntil(Date validUntil)
+	{
+		this.validUntil = validUntil;
+	}
+
+	public long getLastUpdated()
+	{
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(long lastUpdated)
+	{
+		this.lastUpdated = lastUpdated;
+	}
+
+	public ComfortClass getComfortClass()
+	{
+		return comfortClass;
+	}
+
+	public void setComfortClass(ComfortClass comfortClass)
+	{
+		this.comfortClass = comfortClass;
+	}
+
+	public UUID getRouteID()
+	{
+		return routeID;
+	}
 	
-	
+	public void update()
+	{
+		this.lastUpdated = Instant.now().getEpochSecond();
+	}
+
 }
