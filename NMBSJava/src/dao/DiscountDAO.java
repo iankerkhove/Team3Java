@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import model.Discount;
 
+
 public class DiscountDAO extends BaseDAO
 {
 
@@ -39,23 +40,19 @@ public class DiscountDAO extends BaseDAO
 
 			return ps.executeUpdate();
 
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		}
-		finally {
+		} finally {
 			try {
 				if (ps != null)
 					ps.close();
 
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
 		}
-
 	}
 
 	public ArrayList<Discount> selectAll()
@@ -82,6 +79,7 @@ public class DiscountDAO extends BaseDAO
 			}
 
 			return list;
+
 		}
 		catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -95,12 +93,14 @@ public class DiscountDAO extends BaseDAO
 					rs.close();
 			}
 			catch (SQLException e) {
+
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
 		}
 
 	}
+
 
 	public Discount selectOne(String discountID)
 	{
@@ -122,6 +122,7 @@ public class DiscountDAO extends BaseDAO
 				return resultToModel(rs);
 			else
 				return null;
+
 		}
 		catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -135,11 +136,13 @@ public class DiscountDAO extends BaseDAO
 					rs.close();
 			}
 			catch (SQLException e) {
+
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
 		}
 	}
+
 
 	private Discount resultToModel(ResultSet rs) throws SQLException
 	{
@@ -151,6 +154,7 @@ public class DiscountDAO extends BaseDAO
 
 		return d;
 	}
+
 
 	public static void createTable(Connection con)
 	{
@@ -182,6 +186,7 @@ public class DiscountDAO extends BaseDAO
 					ps.close();
 			}
 			catch (SQLException e) {
+
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
