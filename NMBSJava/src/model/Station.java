@@ -1,42 +1,81 @@
 package model;
 
-import java.util.ArrayList;
+import java.time.Instant;
+import java.util.UUID;
 
-public class Station {
-	private int stationID;
-	private Address address;
+public class Station
+{
+	private UUID stationID;
 	private String stationName;
-	
-	public Station(Address address, String stationName) {
-		this.address = address;
+	private String cox;
+	private String coy;
+	private long lastUpdated;
+
+	public Station()
+	{}
+
+	public Station(String stationName, String cox, String coy)
+	{
 		this.stationName = stationName;
-		
-	}
-	
-	public Address getAddress() {
-		return address;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
+		this.cox = cox;
+		this.coy = coy;
+		this.stationID = UUID.randomUUID();
+		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 
-	public int getStationID() {
+	public UUID getStationID()
+	{
 		return stationID;
 	}
 
-	public void setStationID(int stationID) {
+	public void setStationID(UUID stationID)
+	{
 		this.stationID = stationID;
 	}
 
-	public String getStationName() {
+	public String getStationName()
+	{
 		return stationName;
 	}
 
-	public void setStationName(String stationName) {
+	public void setStationName(String stationName)
+	{
 		this.stationName = stationName;
 	}
 
+	public String getCox()
+	{
+		return cox;
+	}
+
+	public void setCox(String cox)
+	{
+		this.cox = cox;
+	}
+
+	public String getCoy()
+	{
+		return coy;
+	}
+
+	public void setCoy(String coy)
+	{
+		this.coy = coy;
+	}
+
+	public long getLastUpdated()
+	{
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(long lastUpdated)
+	{
+		this.lastUpdated = lastUpdated;
+	}
 	
-	
+	public void update()
+	{
+		this.lastUpdated = Instant.now().getEpochSecond();
+	}
+
 }
