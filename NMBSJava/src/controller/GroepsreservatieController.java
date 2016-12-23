@@ -10,7 +10,9 @@ import api.TimeSelector;
 import gui.GUIDateFormat;
 //import model.Groepsreservatie;
 import panels.GroepsReservatiePanel;
-public class GroepsreservatieController {
+
+public class GroepsreservatieController
+{
 
 	private static String van;
 	private static String naar;
@@ -23,12 +25,15 @@ public class GroepsreservatieController {
 	private static String doortime;
 	private static String terugtime;
 	private static TimeSelector timeSel;
-	
-	public static void startListening(GroepsReservatiePanel reservatie) {
+
+	public static void startListening(GroepsReservatiePanel reservatie)
+	{
 		EventQueue.invokeLater(new Runnable() {
-			public void run() {
+			public void run()
+			{
 				reservatie.getDoorTerug().addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(ActionEvent e)
+					{
 						if (reservatie.getDoorTerug().isSelected()) {
 							reservatie.getDteTerugDatum().getJFormattedTextField().setText(GUIDateFormat.getDate());
 							reservatie.getDteTerugDatum().setEnabled(true);
@@ -38,7 +43,8 @@ public class GroepsreservatieController {
 					}
 				});
 				reservatie.getBtnPrint().addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(ActionEvent e)
+					{
 						van = (String) reservatie.getTxtVan().getSelectedItem();
 						naar = (String) reservatie.getTxtVan().getSelectedItem();
 						doordatum = reservatie.getDteGaanDatum().getJFormattedTextField().getText();
@@ -46,9 +52,9 @@ public class GroepsreservatieController {
 						naam = reservatie.getTxtGroepsnaam().getText();
 						verantwoordelijke = reservatie.getTxtNaamVerantwoordelijke().getText();
 						trein = reservatie.getCboTrein().getSelectedItem().toString();
-						aantalReizigers =(String) reservatie.getPersonen().getValue();
-						doortime= reservatie.getTimeGaan().getText();
-						terugtime= reservatie.getTimeTerug().getText();
+						aantalReizigers = (String) reservatie.getPersonen().getValue();
+						doortime = reservatie.getTimeGaan().getText();
+						terugtime = reservatie.getTimeTerug().getText();
 
 						if (!van.equals("") && !naar.equals("") && DateTimeConverter.checkDate(doordatum)
 								&& DateTimeConverter.checkDate(terugdatum) && !naam.equals("")
@@ -62,14 +68,18 @@ public class GroepsreservatieController {
 		});
 
 	}
-	public static void ReadID(){
+
+	public static void ReadID()
+	{
 		KoopBiljetController.readRouteID();
-	
+
 	}
-	public static void fillCombobox(){
-		RouteberekeningAPI r = new RouteberekeningAPI(van, naar, doordatum,doortime,timeSel);
-		for(int i=0;i<r.treinID().size();i++){
-			GroepsReservatiePanel.getCboTrein();
+
+	public static void fillCombobox()
+	{
+		RouteberekeningAPI r = new RouteberekeningAPI(van, naar, doordatum, doortime, timeSel);
+		for (int i = 0; i < r.treinID().size(); i++) {
+			//GroepsReservatiePanel.getCboTrein();
 		}
 	}
 }

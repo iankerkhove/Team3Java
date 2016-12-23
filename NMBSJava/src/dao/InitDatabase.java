@@ -12,20 +12,27 @@ public class InitDatabase {
 		
 			//setup tables
 			AddressDAO.createTable(con);
-			RailCardDAO.createTable(con);
-			CustomerDAO.createTable(con);
-			DiscountDAO.createTable(con);
+			StationDAO.createTable(con);
+			
 			RouteDAO.createTable(con);
-			LineDAO.createTable(con);
-			LostObjectDAO.createTable(con);
+			DiscountDAO.createTable(con);
+			SubscriptionDAO.createTable(con);
+			RailCardDAO.createTable(con);
+			
+			TypeTicketDAO.createTable(con);
+			TicketDAO.createTable(con);
+			
 			TypePassDAO.createTable(con);
 			PassDAO.createTable(con);
-			ReservationDAO.createTable(con);
-			StaffDAO.createTable(con);
-			SubscriptionDAO.createTable(con);
 			
-			//setup constraints
-			AddConstraints.add(con);
+			LineDAO.createTable(con);
+			LostObjectDAO.createTable(con);
+			
+			ReservationDAO.createTable(con);
+			
+			CustomerDAO.createTable(con);
+			StaffDAO.createTable(con);
+						
 		}
 		catch (SQLException e) {
 			// TODO Auto-generated catch block
