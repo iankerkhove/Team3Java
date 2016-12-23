@@ -1,92 +1,117 @@
 package model;
 
+import java.util.Date;
 import java.time.Instant;
 import java.util.UUID;
 
-public class Reservation {
+public class Reservation
+{
 	private UUID reservationID;
 	private int passengerCount;
-	private UUID trainID;
+	private String trainID;
+	private Date reservationDate;
 	private double price;
-	private UUID routeID;
-	private long unixTimestamp;
 	private Route route;
+	private UUID routeID;
+	private long lastUpdated;
 
-	public Reservation() {
+	public Reservation()
+	{}
 
-	}
-
-	public Reservation(int passengerCount, UUID trainID, double price, UUID routeID) {
-		super();
+	public Reservation(int passengerCount, String trainID, double price, Date reservationDate, UUID routeID)
+	{
 		this.reservationID = UUID.randomUUID();
 		this.passengerCount = passengerCount;
 		this.trainID = trainID;
 		this.price = price;
+		this.reservationDate = reservationDate;
 		this.routeID = routeID;
-		this.unixTimestamp = Instant.now().getEpochSecond();
+		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 
-	public UUID getReservationID() {
+	public UUID getReservationID()
+	{
 		return reservationID;
 	}
 
-	public void setReservationID(UUID reservationID) {
+	public void setReservationID(UUID reservationID)
+	{
 		this.reservationID = reservationID;
 	}
 
-	public int getPassengerCount() {
+	public int getPassengerCount()
+	{
 		return passengerCount;
 	}
 
-	public void setPassengerCount(int passengerCount) {
+	public void setPassengerCount(int passengerCount)
+	{
 		this.passengerCount = passengerCount;
 	}
 
-	public UUID getTrainID() {
+	public String getTrainID()
+	{
 		return trainID;
 	}
 
-	public void setTrainID(UUID trainID) {
+	public void setTrainID(String trainID)
+	{
 		this.trainID = trainID;
 	}
 
-	public double getPrice() {
+	public Date getReservationDate()
+	{
+		return reservationDate;
+	}
+
+	public void setReservationDate(Date reservationDate)
+	{
+		this.reservationDate = reservationDate;
+	}
+
+	public double getPrice()
+	{
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(double price)
+	{
 		this.price = price;
 	}
 
-	public UUID getRouteID() {
+	public Route getRoute()
+	{
+		return route;
+	}
+
+	public void setRouteID(UUID routeID)
+	{
+		this.routeID = routeID;
+	}
+	
+	public UUID getRouteID()
+	{
 		return routeID;
 	}
 
-	public void setRouteID(UUID routeID) {
-		this.routeID = routeID;
+	public void setRoute(Route route)
+	{
+		this.route = route;
 	}
 
-	public void setUnixTimestamp(long unixTimestamp) {
-		this.unixTimestamp = unixTimestamp;
+	public long getLastUpdated()
+	{
+		return lastUpdated;
 	}
 
-	public long getUnixTimestamp() {
-		return unixTimestamp;
+	public void setLastUpdated(long lastUpdated)
+	{
+		this.lastUpdated = lastUpdated;
 	}
 
-	public void update() {
-		this.unixTimestamp = Instant.now().getEpochSecond();
+	public void update()
+	{
+		this.lastUpdated = Instant.now().getEpochSecond();
 	}
-
-	public void setLastUpdated(long unixTimestamp) {
-		this.unixTimestamp = unixTimestamp;
-	}
-
-	public void setRoute(Route r) {
-		this.route = r;
-	}
-
-	public Route getRoute() {
-		return route;
-	}
+	
 }
