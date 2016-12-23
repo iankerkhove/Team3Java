@@ -1,238 +1,253 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-
 import model.Pass;
 import model.TypePass;
-public class PassDAO extends BaseDAO {
-	
-			public PassDAO() {
 
-							}
+public class PassDAO extends BaseDAO
+{
 
-							public int insert(Pass p) {
-								PreparedStatement ps = null;
+	public PassDAO()
+	{
 
-								String sql = "INSERT INTO Pass VALUES(?,?,?,?,?,?)";
+	}
 
-								try {
+	public int insert(Pass p)
+	{
+		PreparedStatement ps = null;
 
-									if (getConnection().isClosed()) {
-										throw new IllegalStateException("error unexpected");
-									}
-									ps = getConnection().prepareStatement(sql);
+		String sql = "INSERT INTO Pass VALUES(?,?,?,?,?,?)";
 
-									ps.setString(1,p.getPassID().toString());
-									ps.setString(2,p.getTypePassID().toString());
-									ps.setString(3, p.getDate().toString());
-									ps.setString(4, p.getStartDate().toString());
-									ps.setInt(5, p.getComfortClass());
-									ps.setLong(6, p.getUnixTimestamp());
-									
-									//api call
-									
-									
-									return ps.executeUpdate();
-									
-								
-									
-								} catch (SQLException e) {
-									System.out.println(e.getMessage());
-									throw new RuntimeException(e.getMessage());
-								} finally {
-									try {
-										if (ps != null)
-											ps.close();
+		try {
 
-									} catch (SQLException e) {
-										System.out.println(e.getMessage());
-										throw new RuntimeException("error.unexpected");
-									}
-								}
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
 
-							}
-							public ArrayList<Pass> selectAllSync() {
-								ArrayList<Pass> list = null;
+			ps.setString(1, p.getPassID().toString());
+			ps.setString(2, p.getTypePassID().toString());
+			ps.setString(3, p.getDate().toString());
+			ps.setString(4, p.getStartDate().toString());
+			ps.setInt(5, p.getComfortClass());
+			ps.setLong(6, p.getLastUpdated());
 
-								PreparedStatement ps = null;
-								ResultSet rs = null;
+			// api call
 
-								String sql = "SELECT * FROM Pass";
+			return ps.executeUpdate();
 
-								try {
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
 
-									if (getConnection().isClosed()) {
-										throw new IllegalStateException("error unexpected");
-									}
-									ps = getConnection().prepareStatement(sql);
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
 
-									rs = ps.executeQuery();
-									list = new ArrayList<Pass>();
+	}
 
-									while (rs.next()) {
-										list.add(resultToModel(rs));
-									}
+	public ArrayList<Pass> selectAllSync()
+	{
+		ArrayList<Pass> list = null;
 
-									return list;
-								} catch (SQLException e) {
-									System.out.println(e.getMessage());
-									throw new RuntimeException(e.getMessage());
-								} finally {
-									try {
-										if (ps != null)
-											ps.close();
-										if (rs != null)
-											rs.close();
-									} catch (SQLException e) {
-										System.out.println(e.getMessage());
-										throw new RuntimeException("error.unexpected");
-									}
-								}
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-							}
+		String sql = "SELECT * FROM Pass";
 
-							public ArrayList<Pass> selectAll() {
-								ArrayList<Pass> list = null;
+		try {
 
-								PreparedStatement ps = null;
-								ResultSet rs = null;
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
 
-								String sql = "SELECT p.PassID, t.TypePassID, t.Name, t.Price,t.LastUpdated as TypePassLastUpdated,"+
-										 " p.Date,p.StartDate,p.ComfortClass, p.LastUpdated as PassLastUpdated"+
-										 " FROM Pass p"+
-										 "INNER JOIN TypePass t ON p.TypePassID = t.TypePassID;";
+			rs = ps.executeQuery();
+			list = new ArrayList<Pass>();
 
-								try {
+			while (rs.next()) {
+				list.add(resultToModel(rs));
+			}
 
-									if (getConnection().isClosed()) {
-										throw new IllegalStateException("error unexpected");
-									}
-									ps = getConnection().prepareStatement(sql);
+			return list;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
 
-									rs = ps.executeQuery();
-									list = new ArrayList<Pass>();
+	}
 
-									while (rs.next()) {
-										list.add(resultToModel(rs));
-									}
+	public ArrayList<Pass> selectAll()
+	{
+		ArrayList<Pass> list = null;
 
-									return list;
-								} catch (SQLException e) {
-									System.out.println(e.getMessage());
-									throw new RuntimeException(e.getMessage());
-								} finally {
-									try {
-										if (ps != null)
-											ps.close();
-										if (rs != null)
-											rs.close();
-									} catch (SQLException e) {
-										System.out.println(e.getMessage());
-										throw new RuntimeException("error.unexpected");
-									}
-								}
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-							}
+		String sql = "SELECT p.PassID, t.TypePassID, t.Name, t.Price,t.LastUpdated as TypePassLastUpdated,"
+				+ " p.Date,p.StartDate,p.ComfortClass, p.LastUpdated as PassLastUpdated" + " FROM Pass p"
+				+ "INNER JOIN TypePass t ON p.TypePassID = t.TypePassID;";
 
-							public Pass selectOne(String passID) {
-								PreparedStatement ps = null;
-								ResultSet rs = null;
+		try {
 
-								String sql = 
-										"SELECT p.PassID, t.TypePassID, t.Name, t.Price,t.LastUpdated as TypePassLastUpdated,"+
-												 " p.Date,p.StartDate,p.ComfortClass, p.LastUpdated as PassLastUpdated"+
-												 " FROM Pass p"+
-												 "INNER JOIN TypePass t ON p.TypePassID = t.TypePassID"+
-												  "WHERE p.PassID=?;";
-								try {
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
 
-									if (getConnection().isClosed()) {
-										throw new IllegalStateException("error unexpected");
-									}
-									ps = getConnection().prepareStatement(sql);
+			rs = ps.executeQuery();
+			list = new ArrayList<Pass>();
 
-									ps.setString(1, passID);
-									rs = ps.executeQuery();
-									if (rs.next())
-										return resultToModel(rs);
-									else
-										return null;
-								} catch (SQLException e) {
-									System.out.println(e.getMessage());
-									throw new RuntimeException(e.getMessage());
-								} finally {
-									try {
-										if (ps != null)
-											ps.close();
-										if (rs != null)
-											rs.close();
-									} catch (SQLException e) {
-										System.out.println(e.getMessage());
-										throw new RuntimeException("error.unexpected");
-									}
-								}
-							}
+			while (rs.next()) {
+				list.add(resultToModel(rs));
+			}
 
-							static Pass resultToModel(ResultSet rs) throws SQLException {
-								Pass p= new Pass();
-								TypePass t = new TypePass();
-								
-								t.setTypePassID(UUID.fromString(rs.getString("TypePassID")));
-								t.setName(rs.getString("Name"));
-								t.setPrice(rs.getDouble("Price"));
-								t.setLastUpdated(rs.getLong("TypePassLastUpdated"));
-								
-								p.setPassID(UUID.fromString(rs.getString("PassID")));
-								p.setTypePass(t);
-								p.setDate(rs.getDate("Date"));
-								p.setStartDate(rs.getDate("StartDate"));
-								p.setComfortClass(rs.getInt("ComfortClass"));
-								p.setLastUpdated(rs.getLong("PassLastUpdated"));
-								
-								return p;
-							}
+			return list;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
 
-							public static void createTable(){
-								PreparedStatement ps = null;
-								ResultSet rs = null;
+	}
 
-								String sql = "CREATE TABLE IF NOT EXISTS `Pass` ("+
-											"`PassID` varchar(36) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',"+
-											"`TypePassID` varchar(36) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',"+
-											"`Date` varchar(11) COLLATE utf8_unicode_ci NOT NULL,"+
-											"`StartDate` varchar(11) COLLATE utf8_unicode_ci NOT NULL,"+
-											"`ComfortClass` int(11) NOT NULL,"+
-											"`LastUpdated` bigint(14) DEFAULT NULL,"+
-											"PRIMARY KEY (`PassID`),"+
-											"KEY `TypePassID` (`TypePassID`)"+
-											") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+	public Pass selectOne(String passID)
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-								try {
+		String sql = "SELECT p.PassID, t.TypePassID, t.Name, t.Price,t.LastUpdated as TypePassLastUpdated,"
+				+ " p.Date,p.StartDate,p.ComfortClass, p.LastUpdated as PassLastUpdated" + " FROM Pass p"
+				+ "INNER JOIN TypePass t ON p.TypePassID = t.TypePassID" + "WHERE p.PassID=?;";
+		try {
 
-									if (getConnection().isClosed()) {
-										throw new IllegalStateException("error unexpected");
-									}
-									ps = getConnection().prepareStatement(sql);
-									rs = ps.executeQuery();
-								} catch (SQLException e) {
-									System.out.println(e.getMessage());
-									throw new RuntimeException(e.getMessage());
-								} finally {
-									try {
-										if (ps != null)
-											ps.close();
-										if (rs != null)
-											rs.close();
-									} catch (SQLException e) {
-										System.out.println(e.getMessage());
-										throw new RuntimeException("error.unexpected");
-									}
-								}
-							}
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
 
-					}
+			ps.setString(1, passID);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return resultToModel(rs);
+			else
+				return null;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+
+	static Pass resultToModel(ResultSet rs) throws SQLException
+	{
+		Pass p = new Pass();
+		TypePass t = new TypePass();
+
+		t.setTypePassID(UUID.fromString(rs.getString("TypePassID")));
+		t.setName(rs.getString("Name"));
+		t.setPrice(rs.getDouble("Price"));
+		t.setLastUpdated(rs.getLong("TypePassLastUpdated"));
+
+		p.setPassID(UUID.fromString(rs.getString("PassID")));
+		p.setTypePass(t);
+		p.setDate(rs.getDate("Date"));
+		p.setStartDate(rs.getDate("StartDate"));
+		p.setComfortClass(rs.getInt("ComfortClass"));
+		p.setLastUpdated(rs.getLong("PassLastUpdated"));
+
+		return p;
+	}
+
+	public static void createTable(Connection con)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "CREATE TABLE IF NOT EXISTS `Pass` ("
+				+ "`PassID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`TypePassID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`Date` varchar(11) NOT NULL,"
+				+ "`StartDate` varchar(11) NOT NULL," 
+				+ "`ComfortClass` int(11) NOT NULL,"
+				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
+				+ "PRIMARY KEY (`PassID`)"
+				+ "FOREIGN KEY (`TypePassID`) REFERENCES `TypePass`(`TypePassID`)"
+				+ ");";
+
+		try {
+
+			if (con.isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = con.prepareStatement(sql);
+			ps.executeUpdate();
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+
+}
