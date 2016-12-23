@@ -1,7 +1,7 @@
 package services;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -47,20 +47,25 @@ public class SyncStaffRunnable implements Runnable
 			ArrayList<Staff> localList = sDAO.selectAll();
 			ArrayList<Staff> mainList = new ArrayList<Staff>();
 			
+			SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
+			
 			for(int i = 0; i < mainJsonList.length(); i++)
 			{
 				JSONObject obj = mainJsonList.getJSONObject(i);
 				Staff s = new Staff();
 				
-				s.setStaffID(UUID.fromString(obj.getString("StaffID")));
-				s.setAddressID(UUID.fromString(obj.getString("AddressID")));
-				s.setStationID(UUID.fromString(obj.getString("StationID")));
+//				s.setStaffID(UUID.fromString(obj.getString("StaffID")));
+//				s.setAddressID(UUID.fromString(obj.getString("AddressID")));
+//				s.setStationID(UUID.fromString(obj.getString("StationID")));
+				s.setStaffID(UUID.randomUUID());
+				s.setAddressID(UUID.randomUUID());
+				s.setStationID(UUID.randomUUID());
 				s.setFirstName(obj.getString("FirstName"));
 				s.setLastName(obj.getString("LastName"));
 				s.setUserName(obj.getString("UserName"));
 				s.setPassword(obj.getString("Password"));
 				s.setRights(obj.getInt("Rights"));
-				s.setBirthDate((Date) obj.get("birthDate"));
+				s.setBirthDate(formatter.parse(obj.getString("BirthDate")));
 				s.setEmail(obj.getString("Email"));
 				s.setApiToken(obj.getString("Api_token"));
 				s.setLastUpdated(obj.getLong("LastUpdated"));
