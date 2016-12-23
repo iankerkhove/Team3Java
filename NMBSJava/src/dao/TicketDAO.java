@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,13 +11,16 @@ import model.Route;
 import model.Ticket;
 import model.TypeTicket;
 
-public class TicketDAO extends BaseDAO {
+public class TicketDAO extends BaseDAO
+{
 
-	public TicketDAO() {
+	public TicketDAO()
+	{
 
 	}
 
-	public int insert(Ticket t) {
+	public int insert(Ticket t)
+	{
 		PreparedStatement ps = null;
 
 		String sql = "INSERT INTO Ticket VALUES(?,?,?,?,?,?,?)";
@@ -34,21 +38,24 @@ public class TicketDAO extends BaseDAO {
 			ps.setString(4, t.getDate().toString());
 			ps.setString(5, t.getValidFrom().toString());
 			ps.setString(6, t.getValidUntil().toString());
-			ps.setLong(7, t.getUnixTimestamp());
+			ps.setLong(7, t.getLastUpdated());
 
 			// api call
 
 			return ps.executeUpdate();
 
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -56,7 +63,8 @@ public class TicketDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Ticket> selectAllSync() {
+	public ArrayList<Ticket> selectAllSync()
+	{
 		ArrayList<Ticket> list = null;
 
 		PreparedStatement ps = null;
@@ -79,16 +87,19 @@ public class TicketDAO extends BaseDAO {
 			}
 
 			return list;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -96,22 +107,27 @@ public class TicketDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Ticket> selectAll() {
+	public ArrayList<Ticket> selectAll()
+	{
 		ArrayList<Ticket> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TicketID, r.RouteID, r.DepartureStation as DepartStation, r.ArrivalStation as ArrivalStation, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
-				+ " s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
-				+ "r.LastUpdated as RouteLastUpdated"
-				+ "ty.TypeTicketID, ty.Name,ty.Price,ty.ComfortClass, ty.LastUpdated"
-				+ "t.Date,t.ValidFrom,t.ValidUntil,t.LastUpdated as TicketLastUpdated" + " FROM Ticket t"
-				+ "INNER JOIN Route r ON r.RouteID = t.RouteID"
-				+ "INNER JOIN TypeTicket ty ON ty.TypeTicket = t.TypeTicket"
-				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID;";
+		String sql = "SELECT "
+                + "r.RouteID, s1.StationID as DepartureStationID, s1.Name as DepartureName, "
+				+ "s1.CoX as DepartureCoX, s1.CoY as DepartureCoY, s1.LastUpdated as DepartureLastUpdated, "
+				+ "s2.StationID as ArrivalStationID, s2.Name as ArrivalName, "
+				+ "s2.CoX as ArrivalCoX, s2.CoY as ArrivalCoY, s2.LastUpdated as ArrivalLastUpdated, r.LastUpdated as RouteLastUpdated, "
+				+ "ty.TypeTicketID, ty.Name as TypeTicketName, ty.Price, ty.ComfortClass, ty.LastUpdated "
+				+ "t.Date,t.ValidFrom, t.ValidUntil, t.LastUpdated as TicketLastUpdated" 
+                + "FROM Ticket t"
+				
+                + "INNER JOIN Route r ON r.RouteID = t.RouteID "
+				+ "INNER JOIN TypeTicket ty ON ty.TypeTicket = t.TypeTicket "
+				+ "INNER JOIN Station s1 on s1.StationID = r.DepartureStationID "
+				+ "INNER JOIN Station s2 on s2.StationID = r.ArrivalStationID;";
+
 		try {
 
 			if (getConnection().isClosed()) {
@@ -127,16 +143,19 @@ public class TicketDAO extends BaseDAO {
 			}
 
 			return list;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -144,20 +163,26 @@ public class TicketDAO extends BaseDAO {
 
 	}
 
-	public Ticket selectOne(String ticketID) {
+	public Ticket selectOne(String ticketID)
+	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TicketID, r.RouteID, r.DepartureStation as DepartStation, r.ArrivalStation as ArrivalStation, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
-				+ " s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
-				+ "r.LastUpdated as RouteLastUpdated"
-				+ "ty.TypeTicketID, ty.Name,ty.Price,ty.ComfortClass, ty.LastUpdated"
-				+ "t.Date,t.ValidFrom,t.ValidUntil,t.LastUpdated as TicketLastUpdated" + " FROM Ticket t"
-				+ "INNER JOIN Route r ON r.RouteID = t.RouteID"
-				+ "INNER JOIN TypeTicket ty ON ty.TypeTicket = t.TypeTicket"
-				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID" + "WHERE t.TicketID=?;";
+		String sql = "SELECT "
+                + "r.RouteID, s1.StationID as DepartureStationID, s1.Name as DepartureName, "
+				+ "s1.CoX as DepartureCoX, s1.CoY as DepartureCoY, s1.LastUpdated as DepartureLastUpdated, "
+				+ "s2.StationID as ArrivalStationID, s2.Name as ArrivalName, "
+				+ "s2.CoX as ArrivalCoX, s2.CoY as ArrivalCoY, s2.LastUpdated as ArrivalLastUpdated, r.LastUpdated as RouteLastUpdated, "
+				+ "ty.TypeTicketID, ty.Name as TypeTicketName, ty.Price, ty.ComfortClass, ty.LastUpdated "
+				+ "t.Date,t.ValidFrom, t.ValidUntil, t.LastUpdated as TicketLastUpdated" 
+                + "FROM Ticket t"
+				
+                + "INNER JOIN Route r ON r.RouteID = t.RouteID "
+				+ "INNER JOIN TypeTicket ty ON ty.TypeTicket = t.TypeTicket "
+				+ "INNER JOIN Station s1 on s1.StationID = r.DepartureStationID "
+				+ "INNER JOIN Station s2 on s2.StationID = r.ArrivalStationID "
+                
+				+ "WHERE t.TicketID=?;";
 		try {
 
 			if (getConnection().isClosed()) {
@@ -171,29 +196,33 @@ public class TicketDAO extends BaseDAO {
 				return resultToModel(rs);
 			else
 				return null;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
 		}
 	}
 
-	static Ticket resultToModel(ResultSet rs) throws SQLException {
+	static Ticket resultToModel(ResultSet rs) throws SQLException
+	{
 		Ticket t = new Ticket();
 		TypeTicket ty = TypeTicketDAO.resultToModel(rs);
 		Route r = RouteDAO.resultToModel(rs);
 
 		t.setTicketID(UUID.fromString(rs.getString("TicketID")));
-		t.setRouteID(r.getRouteID());
+		t.setRoute(r);
 		t.setTicketID(ty.getTypeTicketID());
 		t.setDate(rs.getDate("Date"));
 		t.setValidFrom(rs.getDate("ValidFrom"));
@@ -203,39 +232,48 @@ public class TicketDAO extends BaseDAO {
 		return t;
 	}
 
-	public static void createTable() {
+	public static void createTable(Connection con)
+	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS `Ticket` (" + "`TicketID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0'," + "`TypeTicketID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`Date` varchar(20) NOT NULL," + "`ValidFrom` varchar(20) NOT NULL,"
-				+ "`ValidUntil` varchar(20) NOT NULL," + "`LastUpdated` bigint(14) DEFAULT NULL,"
-				+ "PRIMARY KEY (`TicketID`)," + "KEY `RouteID` (`RouteID`)," + "KEY `TypeTicketID` (`TypeTicketID`)"
-				+ ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+		String sql = "CREATE TABLE IF NOT EXISTS `Ticket` (" 
+				+ "`TicketID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0'," 
+				+ "`TypeTicketID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`Date` varchar(20) NOT NULL," 
+				+ "`ValidFrom` varchar(20) NOT NULL,"
+				+ "`ValidUntil` varchar(20) NOT NULL," 
+				+ "`LastUpdated` bigint(14) DEFAULT NULL,"
+				+ "PRIMARY KEY (`TicketID`),"
+				+ "FOREIGN KEY (`RouteID`) REFERENCES `Route`(`RouteID`)"
+				+ "FOREIGN KEY (`TypeTicketID`) REFERENCES `TypeTicket`(`TypeTicketID`)"
+				+ ");";
 		;
 
 		try {
 
-			if (getConnection().isClosed()) {
+			if (con.isClosed()) {
 				throw new IllegalStateException("error unexpected");
 			}
-			ps = getConnection().prepareStatement(sql);
-			rs = ps.executeQuery();
-		} catch (SQLException e) {
+			ps = con.prepareStatement(sql);
+			ps.executeUpdate();
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
 		}
 	}
-
 }

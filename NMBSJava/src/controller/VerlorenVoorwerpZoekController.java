@@ -12,27 +12,32 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
-
-import api.StationAPI;
 import panels.VerlorenVoorwerpZoekPanel;
 
 public class VerlorenVoorwerpZoekController {
-	
+
 	private static ArrayList<String> desc;
-	
+
 	private static JSONArray json;
-	
+
 	public static void startListening(VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				verlorenVoorwerpZoek.getBtnToonAlles().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						readUrl();
+
+						int station = verlorenVoorwerpZoek.getTxtStation().getSelectedIndex()+1;
+
 						desc = new ArrayList<String>();
 						for (int i = 0;i<json.length();i++) {
-							String v = json.getJSONObject(i).getString("TrainID") + " " +json.getJSONObject(i).getString("Description") +" "+ json.getJSONObject(i).getString("Date");
-							desc.add(v);
+							if (json.getJSONObject(i).getJSONObject("Station").getInt("StationID") == station) {
+								String v = json.getJSONObject(i).getJSONObject("Station").getString("Name")+ " " + json.getJSONObject(i).getString("TrainID") + " " +json.getJSONObject(i).getString("Description") +" "+ json.getJSONObject(i).getString("Date");
+								desc.add(v);
+							}
+							else {
+								verlorenVoorwerpZoek.getLblResultat().setText("Er werd geen voorwerp in deze station teruggevonden!");
+							}
 						}
 						String ss = "";
 						for (String v: desc) {
@@ -42,47 +47,42 @@ public class VerlorenVoorwerpZoekController {
 								+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>").replaceAll("_", " ")
 								+ "</html>");
 					}
+
+
+
 				});
-				
+
 				verlorenVoorwerpZoek.getBtnZoek().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						readUrl();
-						
-						//int station = verlorenVoorwerpZoek.getTxtStation().getSelectedIndex()+1;
+
+
+						int station = verlorenVoorwerpZoek.getTxtStation().getSelectedIndex()+1;
 						String treinNummer = verlorenVoorwerpZoek.getTxtTreinNummer().getText();
 						String datum = verlorenVoorwerpZoek.getDatePicker().getJFormattedTextField().getText();
-						
-						
+
 						String ss=null;
 						String error ="Er werd geen voorwerp teruggevonden!";
 						for (int i = 0;i<json.length();i++) {
-						if (json.getJSONObject(i).getString("TrainID").equals(treinNummer) && json.getJSONObject(i).getString("Date").equals(datum) /*&& json.getJSONObject(i).getString("StationID").equals(station)*/) {
-								ss = json.getJSONObject(i).getString("TrainID") + " " +json.getJSONObject(i).getString("Description") +" "+ json.getJSONObject(i).getString("Date");							
-							verlorenVoorwerpZoek.getLblResultat().setText("<html>"
+							if (json.getJSONObject(i).getString("TrainID").equals(treinNummer) && json.getJSONObject(i).getString("Date").equals(datum) && json.getJSONObject(i).getJSONObject("Station").getInt("StationID") == station) {
+								ss = json.getJSONObject(i).getJSONObject("Station").getString("Name")+ " " + json.getJSONObject(i).getString("TrainID") + " " +json.getJSONObject(i).getString("Description") +" "+ json.getJSONObject(i).getString("Date");							
+								verlorenVoorwerpZoek.getLblResultat().setText("<html>"
 										+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>").replaceAll("_", " ")
 										+ "</html>");
-								System.out.println(ss);
 							}
 						}
-						
+
 						if (ss == null){
 							verlorenVoorwerpZoek.getLblResultat().setText("<html>"
 									+ error.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
 									+ "</html>");
-
 						}
-						System.out.println(datum);
 					}
 				});
-				
-				
-				
-				
-				
 			}
 		});
 	}
-	
+
 	private static void readUrl() {
 
 		BufferedReader reader = null;
@@ -105,8 +105,8 @@ public class VerlorenVoorwerpZoekController {
 				buffer.append(chars, 0, read);
 
 			json = new JSONArray(buffer.toString());
-			
-			
+
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
