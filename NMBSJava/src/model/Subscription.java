@@ -4,105 +4,146 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
-public class Subscription {
+public class Subscription
+{
 	private UUID subscriptionID;
 	private UUID railID;
 	private UUID routeID;
 	private UUID discountID;
 	private Date validFrom;
 	private Date validUntil;
-	private long unixTimestamp;
-	private RailCard r;
+	private RailCard railcard;
 	private Route route;
 	private Discount discount;
-	public Subscription(UUID railID, UUID routeID, UUID discountID, Date validFrom, Date validUntil) {
-		super();
+	private long lastUpdated;
+	
+	public Subscription()
+	{}
+
+	public Subscription(UUID railID, UUID routeID, Date validFrom, Date validUntil)
+	{
+		this.railID = railID;
+		this.routeID = routeID;
+		this.validFrom = validFrom;
+		this.validUntil = validUntil;
+		this.subscriptionID = UUID.randomUUID();
+		this.lastUpdated = Instant.now().getEpochSecond();
+	}
+
+	public Subscription(UUID railID, UUID routeID, UUID discountID, Date validFrom, Date validUntil)
+	{
 		this.railID = railID;
 		this.routeID = routeID;
 		this.discountID = discountID;
 		this.validFrom = validFrom;
 		this.validUntil = validUntil;
 		this.subscriptionID = UUID.randomUUID();
-		this.unixTimestamp = Instant.now().getEpochSecond();
+		this.lastUpdated = Instant.now().getEpochSecond();
 	}
-	public Subscription(UUID railID, UUID routeID, Date validFrom, Date validUntil) {
-		super();
-		this.railID = railID;
-		this.routeID = routeID;
-		this.validFrom = validFrom;
-		this.validUntil = validUntil;
-		this.subscriptionID = UUID.randomUUID();
-		this.unixTimestamp = Instant.now().getEpochSecond();
-	}
-	public Subscription() {
 
-	}
-	public void setUnixTimestamp(long unixTimestamp) {
-		this.unixTimestamp = unixTimestamp;
-	}
-	public void setLastUpdated(long unixTimestamp){
-		this.unixTimestamp = unixTimestamp;
-	}
-	public long getUnixTimestamp() {
-		return unixTimestamp;
-	}
-	public void update() {
-		this.unixTimestamp = Instant.now().getEpochSecond();
-	}
-	//getters en setters
-	public UUID getSubscriptionID() {
+	public UUID getSubscriptionID()
+	{
 		return subscriptionID;
 	}
-	public void setSubscriptionID(UUID subscriptionID) {
+
+	public void setSubscriptionID(UUID subscriptionID)
+	{
 		this.subscriptionID = subscriptionID;
 	}
-	public UUID getRailID() {
+
+	public UUID getRailID()
+	{
 		return railID;
 	}
-	public void setRailID(UUID railID) {
+
+	public void setRailID(UUID railID)
+	{
 		this.railID = railID;
 	}
-	public UUID getRouteID() {
+
+	public UUID getRouteID()
+	{
 		return routeID;
 	}
-	public void setRouteID(UUID routeID) {
+
+	public void setRouteID(UUID routeID)
+	{
 		this.routeID = routeID;
 	}
-	public UUID getDiscountID() {
+
+	public UUID getDiscountID()
+	{
 		return discountID;
 	}
-	public void setDiscountID(UUID discountID) {
+
+	public void setDiscountID(UUID discountID)
+	{
 		this.discountID = discountID;
 	}
-	public Date getValidFrom() {
+
+	public Date getValidFrom()
+	{
 		return validFrom;
 	}
-	public void setValidFrom(Date validFrom) {
+
+	public void setValidFrom(Date validFrom)
+	{
 		this.validFrom = validFrom;
 	}
-	public Date getValidUntil() {
+
+	public Date getValidUntil()
+	{
 		return validUntil;
 	}
-	public void setValidUntil(Date validUntil) {
+
+	public void setValidUntil(Date validUntil)
+	{
 		this.validUntil = validUntil;
 	}
-	public RailCard getRailCard() {
-		return r;
+
+	public RailCard getRailcard()
+	{
+		return railcard;
 	}
 
-	public void setRailCard(RailCard r) {
-		this.r = r;
+	public void setRailcard(RailCard railcard)
+	{
+		this.railcard = railcard;
 	}
-	public void setRoute(Route r) {
-		this.route = r;
+
+	public Route getRoute()
+	{
+		return route;
 	}
-	public Route getRoute(){
-		return this.route;
+
+	public void setRoute(Route route)
+	{
+		this.route = route;
 	}
-	public void setDiscount(Discount d) {
-		this.discount = d;
+
+	public Discount getDiscount()
+	{
+		return discount;
 	}
-	public Discount getDiscount(){
-		return this.discount;
+
+	public void setDiscount(Discount discount)
+	{
+		this.discount = discount;
 	}
+
+	public long getLastUpdated()
+	{
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(long lastUpdated)
+	{
+		this.lastUpdated = lastUpdated;
+	}
+
+	public void update()
+	{
+		this.lastUpdated = Instant.now().getEpochSecond();
+	}
+
 }
