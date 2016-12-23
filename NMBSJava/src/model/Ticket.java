@@ -8,6 +8,7 @@ public class Ticket
 {
 	// members
 	private UUID routeID;
+	private Route route;
 	private Date date;
 	private double price;
 	private Date validFrom;
@@ -36,6 +37,26 @@ public class Ticket
 		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 	
+	public Route getRoute()
+	{
+		return route;
+	}
+
+	public void setRoute(Route route)
+	{
+		this.route = route;
+	}
+
+	public void setRouteID(UUID routeID)
+	{
+		this.routeID = routeID;
+	}
+
+	public void setTicketID(UUID ticketID)
+	{
+		this.ticketID = ticketID;
+	}
+
 	public Date getDate()
 	{
 		return date;

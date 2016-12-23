@@ -7,7 +7,7 @@ import java.util.UUID;
 public class Subscription
 {
 	private UUID subscriptionID;
-	private UUID railID;
+	private UUID railCardID;
 	private UUID routeID;
 	private UUID discountID;
 	private Date validFrom;
@@ -22,7 +22,7 @@ public class Subscription
 
 	public Subscription(UUID railID, UUID routeID, Date validFrom, Date validUntil)
 	{
-		this.railID = railID;
+		this.railCardID = railID;
 		this.routeID = routeID;
 		this.validFrom = validFrom;
 		this.validUntil = validUntil;
@@ -32,7 +32,7 @@ public class Subscription
 
 	public Subscription(UUID railID, UUID routeID, UUID discountID, Date validFrom, Date validUntil)
 	{
-		this.railID = railID;
+		this.railCardID = railID;
 		this.routeID = routeID;
 		this.discountID = discountID;
 		this.validFrom = validFrom;
@@ -51,14 +51,14 @@ public class Subscription
 		this.subscriptionID = subscriptionID;
 	}
 
-	public UUID getRailID()
+	public UUID getRailCardID()
 	{
-		return railID;
+		return railCardID;
 	}
 
-	public void setRailID(UUID railID)
+	public void setRailCardID(UUID railCardID)
 	{
-		this.railID = railID;
+		this.railCardID = railCardID;
 	}
 
 	public UUID getRouteID()
