@@ -8,7 +8,9 @@ public class Staff
 {
 	private UUID staffID;
 	private UUID addressID;
+	private Address address;
 	private UUID stationID;
+	private Station station;
 	private String firstName;
 	private String lastName;
 	private String userName;
@@ -18,6 +20,9 @@ public class Staff
 	private String email;
 	private String apiToken;
 	private long lastUpdated;
+	
+	public Staff()
+	{}
 
 	public Staff(UUID addressID, UUID stationID, String firstName, String lastName, String userName, String password,
 			int rights, Date birthDate, String email)
@@ -44,6 +49,26 @@ public class Staff
 	public void setStaffID(UUID staffID)
 	{
 		this.staffID = staffID;
+	}
+
+	public Address getAddress()
+	{
+		return address;
+	}
+
+	public void setAddress(Address address)
+	{
+		this.address = address;
+	}
+
+	public Station getStation()
+	{
+		return station;
+	}
+
+	public void setStation(Station station)
+	{
+		this.station = station;
 	}
 
 	public UUID getAddressID()
