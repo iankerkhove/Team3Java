@@ -12,7 +12,7 @@ public class Subscription
 	private UUID discountID;
 	private Date validFrom;
 	private Date validUntil;
-	private RailCard railcard;
+	private RailCard railCard;
 	private Route route;
 	private Discount discount;
 	private long lastUpdated;
@@ -101,14 +101,14 @@ public class Subscription
 		this.validUntil = validUntil;
 	}
 
-	public RailCard getRailcard()
+	public RailCard getRailCard()
 	{
-		return railcard;
+		return railCard;
 	}
 
-	public void setRailcard(RailCard railcard)
+	public void setRailCard(RailCard railCard)
 	{
-		this.railcard = railcard;
+		this.railCard = railCard;
 	}
 
 	public Route getRoute()
