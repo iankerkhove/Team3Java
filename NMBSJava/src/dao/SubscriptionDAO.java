@@ -1,7 +1,6 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,9 +8,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import model.Discount;
-import model.RailCard;
 import model.Route;
-import model.Station;
 import model.Subscription;
 
 public class SubscriptionDAO extends BaseDAO
