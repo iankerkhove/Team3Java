@@ -22,7 +22,7 @@ public class ReservationDAO extends BaseDAO
 	{
 		PreparedStatement ps = null;
 
-		String sql = "INSERT INTO Reservation VALUES(?,?,?,?,?,?)";
+		String sql = "INSERT INTO Reservation VALUES(?,?,?,?,?,?,?)";
 
 		try {
 
@@ -35,8 +35,10 @@ public class ReservationDAO extends BaseDAO
 			ps.setInt(2, r.getPassengerCount());
 			ps.setString(3, r.getTrainID().toString());
 			ps.setDouble(4, r.getPrice());
+			ps.setString(5, r.getReservationDate().toString());
 			ps.setString(5, r.getRouteID().toString());
 			ps.setLong(6, r.getLastUpdated());
+
 
 			// api call
 
@@ -115,7 +117,8 @@ public class ReservationDAO extends BaseDAO
 		String sql = "SELECT r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"
 				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
 				+ " s.Name, s.CoX,s.CoY, s.LastUpdated as StationLastUpdated, "
-				+ "r.LastUpdated as RouteLastUpdated, re.ReservationID, re.PassengerCount, re.TrainID, re.Price, re.LastUpdated as ReservationLastUpdated FROM Reservation re"
+				+ "r.LastUpdated as RouteLastUpdated, re.ReservationID, re.PassengerCount, re.TrainID, "
+				+ "re.Price, re.ReservationDate, re.LastUpdated as ReservationLastUpdated FROM Reservation re"
 				+ "INNER JOIN Route r ON r.RouteID = re.RouteID"
 				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
 				+ "INNER JOIN Address a ON a.AddressID = s.AddressID;";
@@ -160,10 +163,11 @@ public class ReservationDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"
+		String sql = "SELECT r.RouteID, r.DepartureStationID as DepartStation, r.ArrivalStationID as ArrivalStation, a.AddressID, a.Street,"
 				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
 				+ " s.Name, s.CoX,s.CoY, s.LastUpdated as StationLastUpdated, "
-				+ "r.LastUpdated as RouteLastUpdated, re.ReservationID, re.PassengerCount, re.TrainID, re.Price, re.LastUpdated as ReservationLastUpdated FROM Reservation re"
+				+ "r.LastUpdated as RouteLastUpdated, re.ReservationID, re.PassengerCount, re.TrainID, re.Price, "
+				+ "re.ReservationDate, re.LastUpdated as ReservationLastUpdated FROM Reservation re"
 				+ "INNER JOIN Route r ON r.RouteID = re.RouteID"
 				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
 				+ "INNER JOIN Address a ON a.AddressID = s.AddressID" + "WHERE re.ReservationID = ?;";
@@ -209,6 +213,7 @@ public class ReservationDAO extends BaseDAO
 		re.setPassengerCount(rs.getInt("PassengerCount"));
 		re.setTrainID(rs.getString("TrainID"));
 		re.setPrice(rs.getDouble("Price"));
+		re.setReservationDate(rs.getString("ReservationDate"));
 		re.setRoute(r);
 		re.setLastUpdated(rs.getLong("ReservationLastUpdated"));
 
@@ -229,6 +234,7 @@ public class ReservationDAO extends BaseDAO
 				+ "PRIMARY KEY (`ReservationID`),"
 				+ "FOREIGN KEY (`RouteID`) REFERENCES `Route`(`RouteID`)"
 				+ ");";
+
 
 		try {
 

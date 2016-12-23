@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import model.Address;
-import model.Reservation;
 import model.Staff;
 import model.Station;
 
@@ -79,7 +78,7 @@ public class StaffDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Reservation";
+		String sql = "SELECT * FROM Staff";
 
 		try {
 

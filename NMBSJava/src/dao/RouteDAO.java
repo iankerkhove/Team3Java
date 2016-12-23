@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import model.Address;
 import model.Route;
 import model.Station;
 
@@ -15,9 +14,7 @@ public class RouteDAO extends BaseDAO
 {
 
 	public RouteDAO()
-	{
-
-	}
+	{}
 
 	public int insert(Route r)
 	{
@@ -37,9 +34,11 @@ public class RouteDAO extends BaseDAO
 			ps.setString(3, r.getArrivalStationID().toString());
 			ps.setLong(4, r.getLastUpdated());
 
+
 			// api call
 
 			return ps.executeUpdate();
+
 
 		}
 		catch (SQLException e) {
@@ -47,6 +46,7 @@ public class RouteDAO extends BaseDAO
 			throw new RuntimeException(e.getMessage());
 		}
 		finally {
+
 			try {
 				if (ps != null)
 					ps.close();
@@ -59,6 +59,7 @@ public class RouteDAO extends BaseDAO
 		}
 
 	}
+
 
 	public ArrayList<Route> selectAllSync()
 	{
@@ -104,12 +105,14 @@ public class RouteDAO extends BaseDAO
 
 	}
 
+
 	public ArrayList<Route> selectAll()
 	{
 		ArrayList<Route> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+
 
 		String sql = "SELECT "
 				+ "r.RouteID, s1.StationID as DepartureStationID, s1.Name as DepartureName, "
@@ -146,6 +149,7 @@ public class RouteDAO extends BaseDAO
 					ps.close();
 				if (rs != null)
 					rs.close();
+
 			}
 			catch (SQLException e) {
 				System.out.println(e.getMessage());
@@ -183,6 +187,7 @@ public class RouteDAO extends BaseDAO
 				return resultToModel(rs);
 			else
 				return null;
+			
 		}
 		catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -202,7 +207,8 @@ public class RouteDAO extends BaseDAO
 		}
 	}
 
-	static Route resultToModel(ResultSet rs) throws SQLException
+
+	public static Route resultToModel(ResultSet rs) throws SQLException
 	{
 		Route r = new Route();
 		Station s = new Station();
@@ -268,4 +274,6 @@ public class RouteDAO extends BaseDAO
 		}
 	}
 
+
 }
+

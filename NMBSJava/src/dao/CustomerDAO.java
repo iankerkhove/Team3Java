@@ -37,7 +37,7 @@ public class CustomerDAO extends BaseDAO
 
 			ps.setString(1, c.getCustomerID().toString());
 			ps.setString(2, c.getRailCard().toString());
-			ps.setString(3, c.getAddress().getAddressID().toString());
+			ps.setString(3, c.getAddress().toString());
 			ps.setString(4, c.getFirstName());
 			ps.setString(5, c.getLastName());
 			ps.setString(6, c.getBirthDate().toString());
