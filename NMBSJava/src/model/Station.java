@@ -7,18 +7,18 @@ public class Station
 {
 	private UUID stationID;
 	private String stationName;
-	private String cox;
-	private String coy;
+	private String coX;
+	private String coY;
 	private long lastUpdated;
 
 	public Station()
 	{}
 
-	public Station(String stationName, String cox, String coy)
+	public Station(String stationName, String coX, String coY)
 	{
 		this.stationName = stationName;
-		this.cox = cox;
-		this.coy = coy;
+		this.coX = coX;
+		this.coY = coY;
 		this.stationID = UUID.randomUUID();
 		this.lastUpdated = Instant.now().getEpochSecond();
 	}
@@ -43,24 +43,24 @@ public class Station
 		this.stationName = stationName;
 	}
 
-	public String getCox()
+	public String getCoX()
 	{
-		return cox;
+		return coX;
 	}
 
-	public void setCox(String cox)
+	public void setCoX(String coX)
 	{
-		this.cox = cox;
+		this.coX = coX;
 	}
 
-	public String getCoy()
+	public String getCoY()
 	{
-		return coy;
+		return coY;
 	}
 
-	public void setCoy(String coy)
+	public void setCoY(String coY)
 	{
-		this.coy = coy;
+		this.coY = coY;
 	}
 
 	public long getLastUpdated()
@@ -76,6 +76,13 @@ public class Station
 	public void update()
 	{
 		this.lastUpdated = Instant.now().getEpochSecond();
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Station [stationID=" + stationID + ", stationName=" + stationName + ", coX=" + coX + ", coY=" + coY
+				+ ", lastUpdated=" + lastUpdated + "]";
 	}
 
 }

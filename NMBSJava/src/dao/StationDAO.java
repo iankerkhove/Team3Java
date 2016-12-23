@@ -14,10 +14,18 @@ public class StationDAO extends BaseDAO
 {
 
 	public StationDAO()
+	{}
+
+	public int insertOrUpdate(Station s)
 	{
+		Station exists = this.selectOne(s.getStationID().toString());
 
+		if (exists == null)
+			return this.insert(s);
+		else
+			return this.update(s);
 	}
-
+	
 	public int insert(Station s)
 	{
 		PreparedStatement ps = null;
@@ -33,8 +41,8 @@ public class StationDAO extends BaseDAO
 
 			ps.setString(1, s.getStationID().toString());
 			ps.setString(2, s.getStationName());
-			ps.setString(2, s.getCox());
-			ps.setString(2, s.getCoy());
+			ps.setString(3, s.getCoX());
+			ps.setString(4, s.getCoY());
 			ps.setLong(5, s.getLastUpdated());
 
 			// api call
@@ -60,6 +68,48 @@ public class StationDAO extends BaseDAO
 
 	}
 
+	public int update(Station s)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "UPDATE `Station` SET `Name`=?,`CoX`=?,`CoY`=?,`LastUpdated`=? WHERE `StationID`=?";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, s.getStationName());
+			ps.setString(2, s.getCoX());
+			ps.setString(3, s.getCoY());
+			ps.setLong(4, s.getLastUpdated());
+			ps.setString(5, s.getStationID().toString());
+
+			// api call
+
+			return ps.executeUpdate();
+
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+
+	}
+	
 	public ArrayList<Station> selectAll()
 	{
 		ArrayList<Station> list = null;
@@ -67,7 +117,7 @@ public class StationDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Station";
+		String sql = "SELECT s.StationID, s.Name, s.CoX, s.CoY, s.LastUpdated as StationLastUpdated FROM Station s";
 
 		try {
 
@@ -153,7 +203,7 @@ public class StationDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Station WHERE StationID=?";
+		String sql = "SELECT s.StationID, s.Name, s.CoX, s.CoY, s.LastUpdated as StationLastUpdated FROM Station s WHERE s.StationID=?";
 
 		try {
 
@@ -189,12 +239,13 @@ public class StationDAO extends BaseDAO
 
 	public static Station resultToModel(ResultSet rs) throws SQLException
 	{
+		System.out.println(rs.getString("CoY"));
 		Station s = new Station();
 		
 		s.setStationID(UUID.fromString(rs.getString("StationID")));
 		s.setStationName(rs.getString("Name"));
-		s.setCox(rs.getString("CoX"));
-		s.setCoy(rs.getString("CoY"));
+		s.setCoX(rs.getString("CoX"));
+		s.setCoY(rs.getString("CoY"));
 		s.setLastUpdated(rs.getLong("StationLastUpdated"));
 		
 		return s;
@@ -206,7 +257,8 @@ public class StationDAO extends BaseDAO
 
 		String sql = "CREATE TABLE IF NOT EXISTS `Station` ("
 				+ "`StationID` VARCHAR(36) NOT NULL DEFAULT 0,"
-				+ "`AddressID` VARCHAR(36) NOT NULL DEFAULT 0,"
+				+ "`CoX` varchar(30) DEFAULT NULL,"
+				+ "`CoY` varchar(30) DEFAULT NULL,"
 				+ "`Name` varchar(100) DEFAULT NULL UNIQUE,"
 				+ "`LastUpdated` bigint(14) DEFAULT NULL,"
 				+ "PRIMARY KEY (`StationID`)"

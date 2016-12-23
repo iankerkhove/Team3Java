@@ -71,10 +71,6 @@ public class LoginController
 						}
 
 						if (statuscode == 200) {
-							// start syncing on hourly-base
-							SyncController.Start();
-							
-							
 							l.getLblResult().setText("");
 							GUIController.getFrame().getContentPane().removeAll();
 							GUIController.showApp();

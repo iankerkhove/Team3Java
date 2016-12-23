@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -16,9 +18,11 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class APIController
 {
@@ -35,7 +39,7 @@ public class APIController
 
 	public enum RequestType
 	{
-		GET, POST, PUT, DELETE
+		GET, POST, PUT, DELETE, MASSPUT
 	}
 
 	public enum APIUrl
@@ -78,6 +82,10 @@ public class APIController
 		case PUT:
 			response = this.putRequest();
 			break;
+			
+		case MASSPUT:
+			response = this.massPutRequest();
+			break;
 
 		case DELETE:
 			break;
@@ -105,6 +113,11 @@ public class APIController
 		else
 			resultStr = result.toString();
 
+		System.out.println(url);
+		System.out.println(resultStr);
+		System.out.println("   -apicontroller:21");
+		System.out.println("  ");
+		
 		return new JSONArray(resultStr);
 	}
 
@@ -173,7 +186,42 @@ public class APIController
 			urlParameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
 		}
 
-		put.setEntity(new UrlEncodedFormEntity(urlParameters));
+		 put.setEntity(new UrlEncodedFormEntity(urlParameters));
+
+		return client.execute(put);
+	}
+	
+	private HttpResponse massPutRequest() throws ClientProtocolException, IOException
+	{
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpPut put = new HttpPut(this.base_url + url);
+
+		// add header
+		put.setHeader("User-Agent", USER_AGENT);
+		put.setHeader("Authorization", "Bearer " + LoginController.getToken());
+		put.setHeader("Content-Type", "application/json");
+
+		JSONArray list = new JSONArray();
+		JSONObject urlParameters = new JSONObject();
+		
+		
+		for (Entry<String, String> entry : this.params.entrySet()) 
+		{
+			list = new JSONArray(entry.getValue());
+			urlParameters = new JSONObject();
+			urlParameters.append(entry.getKey(),  list.get(0));
+			break;
+		}
+		
+
+
+		System.out.println("  ");
+		System.out.println("urlparams");
+		System.out.println(urlParameters.toString());
+		System.out.println("  ");
+		
+		// put.setEntity(new UrlEncodedFormEntity(urlParameters));
+		put.setEntity(new StringEntity(urlParameters.toString()));
 
 		return client.execute(put);
 	}
