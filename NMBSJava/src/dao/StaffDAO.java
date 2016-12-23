@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,14 +9,18 @@ import java.util.UUID;
 
 import model.Address;
 import model.Staff;
+import model.Station;
 
-public class StaffDAO extends BaseDAO {
+public class StaffDAO extends BaseDAO
+{
 
-	public StaffDAO() {
+	public StaffDAO()
+	{
 		// TODO Auto-generated constructor stub
 	}
 
-	public int insert(Staff s) {
+	public int insert(Staff s)
+	{
 		PreparedStatement ps = null;
 
 		String sql = "INSERT INTO Staff VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -37,22 +42,25 @@ public class StaffDAO extends BaseDAO {
 			ps.setInt(8, s.getRights());
 			ps.setString(9, s.getBirthDate().toString());
 			ps.setString(10, s.getEmail());
-			ps.setString(11, s.getApiToken());
-			ps.setLong(12, s.getUnixTimestamp());
+			ps.setString(1, s.getApiToken());
+			ps.setLong(12, s.getLastUpdated());
 
 			// api call
 
 			return ps.executeUpdate();
 
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -60,7 +68,8 @@ public class StaffDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Staff> selectAllSync() {
+	public ArrayList<Staff> selectAllSync()
+	{
 		ArrayList<Staff> list = null;
 
 		PreparedStatement ps = null;
@@ -83,16 +92,19 @@ public class StaffDAO extends BaseDAO {
 			}
 
 			return list;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -100,19 +112,21 @@ public class StaffDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Staff> selectAll() {
+	public ArrayList<Staff> selectAll()
+	{
 		ArrayList<Staff> list = null;
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT s.StaffID, s.AddressID, a.Street, a.Number, a.City,"
-				+ "a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, s.StationID,"
-				+ "st.Name, st.CoX, st.CoY, st.LastUpdated as StationLastUpdated"
-				+ "s.FirstName, s.LastName, s.UserName, s.Password, s.Rights, s.BirthDate,"
-				+ "s.Email, s.Api_token, s.LastUpdated as StaffLastUpdated FROM Staff s"
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID"
-				+ "INNER JOIN Station st ON st.StationID = s.StationID;";
+		String sql = "SELECT Staff.StaffID, "
+				+ "a.AddressID, a.Street, a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
+				+ "s.StationID, s.Name, s.CoX, s.CoY, s.LastUpdated as StationLastUpdated, "
+				+ "Staff.FirstName, Staff.LastName, Staff.UserName, Staff.Password, Staff.Rights, "
+				+ "Staff.BirthDate, Staff.Email, Staff.Api_token, Staff.LastUpdated as StaffLastUpdated "
+				+ "FROM Staff "
+				+ "INNER JOIN Address a on a.AddressID = Staff.AddressID "
+				+ "INNER JOIN Station s on s.StationID = Staff.StationID;";
 
 		try {
 
@@ -129,16 +143,19 @@ public class StaffDAO extends BaseDAO {
 			}
 
 			return list;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -146,17 +163,20 @@ public class StaffDAO extends BaseDAO {
 
 	}
 
-	public Staff selectOne(String staffID) {
+	public Staff selectOne(String staffID)
+	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT s.StaffID, s.AddressID, a.Street, a.Number, a.City,"
-				+ "a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, s.StationID,"
-				+ "st.Name, st.CoX, st.CoY, st.LastUpdated as StationLastUpdated"
-				+ "s.FirstName, s.LastName, s.UserName, s.Password, s.Rights, s.BirthDate,"
-				+ "s.Email, s.Api_token, s.LastUpdated as StaffLastUpdated FROM Staff s"
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID"
-				+ "INNER JOIN Station st ON st.StationID = s.StationID" + "WHERE StaffID = ?;";
+		String sql = "SELECT Staff.StaffID, "
+				+ "a.AddressID, a.Street, a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
+				+ "s.StationID, s.Name, s.CoX, s.CoY, s.LastUpdated as StationLastUpdated, "
+				+ "Staff.FirstName, Staff.LastName, Staff.UserName, Staff.Password, Staff.Rights, "
+				+ "Staff.BirthDate, Staff.Email, Staff.Api_token, Staff.LastUpdated as StaffLastUpdated "
+				+ "FROM Staff "
+				+ "INNER JOIN Address a on a.AddressID = Staff.AddressID "
+				+ "INNER JOIN Station s on s.StationID = Staff.StationID"
+				+ "WHERE StafID=?;";
 
 		try {
 
@@ -171,84 +191,88 @@ public class StaffDAO extends BaseDAO {
 				return resultToModel(rs);
 			else
 				return null;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
 		}
 	}
 
-	private Staff resultToModel(ResultSet rs) throws SQLException {
-		Staff s = new Staff();
-		Address a = new Address();
+	private Staff resultToModel(ResultSet rs) throws SQLException
+	{
+		Staff staff = new Staff();
+		Address a = AddressDAO.resultToModel(rs);
+		Station s = StationDAO.resultToModel(rs);
+		
+		staff.setStaffID(UUID.fromString(rs.getString("StafID")));
+		staff.setAddress(a);
+		staff.setStation(s);
+		staff.setFirstName(rs.getString("FirstName"));
+		staff.setLastName(rs.getString("LastName"));
+		staff.setUserName(rs.getString("UserName"));
+		staff.setPassword(rs.getString("Password"));
+		staff.setRights(rs.getInt("Rights"));
+		staff.setEmail(rs.getString("Email"));
+		staff.setBirthDate(rs.getDate("BirthDate"));
+		staff.setApiToken(rs.getString("Api_token"));
+		staff.setLastUpdated(rs.getLong("LastUpdated"));
 
-		a.setAddressID(UUID.fromString(rs.getString("AddressID")));
-		a.setStreet(rs.getString("Street"));
-		a.setNumber(rs.getInt("Number"));
-		a.setCity(rs.getString("City"));
-		a.setZipCode(rs.getInt("ZipCode"));
-		a.setCoordinates(rs.getString("Coordinates"));
-		a.setLastUpdated(rs.getLong("AddressLastUpdated"));
 
-		s.setStaffID(UUID.fromString(rs.getString("StaffID")));
-		s.setAddressID(a.getAddressID());
-		s.setAddress(a);
-		s.setStationID(UUID.fromString(rs.getString("StationID")));
-		s.setFirstName(rs.getString("FirstName"));
-		s.setLastName(rs.getString("LastName"));
-		s.setUserName(rs.getString("UserName"));
-		s.setPassword(rs.getString("Password"));
-		s.setRights(rs.getInt("Rights"));
-		s.setBirthDate(rs.getString("BirthDate"));
-		s.setEmail(rs.getString("Email"));
-		s.setApiToken(rs.getString("Api_token"));
-		s.setLastUpdated(rs.getLong("StaffLastUpdated"));
-
-		return s;
+		return staff;
 	}
 
-	public static void createTable() {
+	public static void createTable(Connection con)
+	{
 		PreparedStatement ps = null;
-		ResultSet rs = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS `Staff` (  `StaffID` varchar(36) "
-				+ "NOT NULL DEFAULT '0',  `AddressID` varchar(36) NOT NULL DEFAULT '0',  "
-				+ "`StationID` varchar(36) NOT NULL DEFAULT '0', "
-				+ " `FirstName` varchar(20) NOT NULL,  `LastName` varchar(20) NOT NULL,  "
-				+ "`UserName` varchar(512) NOT NULL,  `Password` varchar(512) NOT NULL,  "
-				+ "`Rights` int(1) NOT NULL,  `BirthDate` int(11) NOT NULL,  "
-				+ "`Email` varchar(50) NOT NULL,  `Api_token` varchar(60) DEFAULT NULL,  "
-				+ "`LastUpdated` bigint(14) DEFAULT NULL,  PRIMARY KEY (`StaffID`),  "
-				+ "UNIQUE KEY `UserName` (`UserName`), UNIQUE KEY `api_token` (`Api_token`),  "
-				+ "KEY `AddressID` (`AddressID`),  KEY `StationID` (`StationID`)) "
-				+ "ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+		String sql = "CREATE TABLE IF NOT EXISTS `Staff` ("
+				+ "`StaffID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`AddressID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`StationID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`FirstName` varchar(20) NOT NULL,"
+				+ "`LastName` varchar(20) NOT NULL,"
+				+ "`UserName` varchar(512) NOT NULL UNIQUE,"
+				+ "`Password` varchar(512) NOT NULL,"
+				+ "`Rights` int(1) NOT NULL,"
+				+ "`BirthDate` varchar(40) NOT NULL,"
+				+ "`Email` varchar(50) NOT NULL,"
+				+ "`Api_token` varchar(60) DEFAULT NULL UNIQUE,"
+				+ "`LastUpdated` bigint(14) DEFAULT NULL,"
+				+ "PRIMARY KEY (`StaffID`),"
+				+ "FOREIGN KEY (`AddressID`) REFERENCES `Address`(`AddressID`),"
+				+ "FOREIGN KEY (`StationID`) REFERENCES `Station`(`StationID`)"
+				+ ");";
 
 		try {
 
-			if (getConnection().isClosed()) {
+			if (con.isClosed()) {
 				throw new IllegalStateException("error unexpected");
 			}
-			ps = getConnection().prepareStatement(sql);
-			rs = ps.executeQuery();
-		} catch (SQLException e) {
+			ps = con.prepareStatement(sql);
+			ps.executeUpdate();
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
-				if (rs != null)
-					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}

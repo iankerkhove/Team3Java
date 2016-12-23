@@ -3,98 +3,121 @@ package controller;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.SwingWorker;
+
 import org.json.JSONObject;
+
+import controller.UrlConWorker.APIUrl;
+import controller.UrlConWorker.RequestType;
 import panels.LoginPanel;
 
-public class LoginController {
+public class LoginController
+{
 
 	private static int staffID;
 	private static String token;
 	private static int statuscode;
-	private static JSONObject json;
 
-	public static void login(LoginPanel l) {
+	private static UrlConWorker urlConWorker;
+
+	public static void login(LoginPanel l)
+	{
 		EventQueue.invokeLater(new Runnable() {
-			public void run() {
+			public void run()
+			{
 				l.getBtnLogin().addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(ActionEvent e)
+					{
 						readUrl(l);
-						if (statuscode == 200) {
-							l.getLblResult().setText("");
-							GUIController.getFrame().getContentPane().removeAll();
-							GUIController.showApp();
-							CacheExistingSations.cache();
-							CacheTicketTypes.cache();
-							CachePassTypes.cache();
-						} else {
-							l.getLblResult().setText("Fout, probeer opnieuw!");
-							l.getTxtUsername().setText("");
-							l.getTxtPassword().setText("");
-						}
+
 					}
 				});
 			}
 		});
 	}
 
-	private static void readUrl(LoginPanel l) {
+	private static void readUrl(LoginPanel l)
+	{
 		String usrn = l.getTxtUsername().getText().replaceAll("&", "%26");
 		String password = l.getTxtPassword().getText().replaceAll("&", "%26");
 		// boolean chAdmin = l.getChAdmin().isSelected();
 
-		BufferedReader reader = null;
-		try {
-			URL url = new URL("http://nmbs-team.tk/api/staff/login?username=" + usrn + "&password=" + password);
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("username", usrn);
+		params.put("password", password);
 
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		urlConWorker = new UrlConWorker(APIUrl.G3, "staff/login", RequestType.POST, params);
 
-			connection.setRequestMethod("POST");
+		urlConWorker.addPropertyChangeListener(new PropertyChangeListener() {
 
-			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setRequestProperty("User-Agent",
-					"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.29 Safari/537.36");
-			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			StringBuffer buffer = new StringBuffer();
-			int read;
-			char[] chars = new char[1024];
-			while ((read = reader.read(chars)) != -1)
-				buffer.append(chars, 0, read);
+			@Override
+			public void propertyChange(PropertyChangeEvent evt)
+			{
 
-			json = new JSONObject(buffer.toString());
-			statuscode = json.getInt("StatusCode");
-			if (statuscode == 200) {
-				token = json.getString("Api_token");
-				staffID = json.getInt("StaffID");
+				if ("state".equals(evt.getPropertyName()) && SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
+
+					try {
+						JSONObject json = urlConWorker.get();
+
+						statuscode = json.getInt("StatusCode");
+						if (statuscode == 200) {
+							token = json.getString("Api_token");
+							staffID = json.getInt("StaffID");
+						}
+
+						if (statuscode == 200) {
+							// start syncing on hourly-base
+							SyncController.Start();
+							
+							
+							l.getLblResult().setText("");
+							GUIController.getFrame().getContentPane().removeAll();
+							GUIController.showApp();
+							CacheExistingSations.cache();
+							CacheTicketTypes.cache();
+							CachePassTypes.cache();
+						}
+						else {
+							l.getLblResult().setText("Fout, probeer opnieuw!");
+							l.getTxtUsername().setText("");
+							l.getTxtPassword().setText("");
+						}
+					}
+					catch (InterruptedException | ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+
+		});
+
+		urlConWorker.execute();
 	}
 
-	public static int getStaffID() {
+	public static int getStaffID()
+	{
 		return staffID;
 	}
 
-	public static String getToken() {
+	public static String getToken()
+	{
 		return token;
 	}
 
-	public static int getStatuscode() {
+	public static int getStatuscode()
+	{
 		return statuscode;
 	}
 
-	public static void clearCreds() {
+	public static void clearCreds()
+	{
 		token = "";
 		staffID = 0;
 	}

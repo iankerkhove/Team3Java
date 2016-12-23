@@ -1,4 +1,6 @@
 package dao;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,203 +8,222 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import model.RailCard;
-public class RailCardDAO extends BaseDAO{
-			
-		public RailCardDAO() {
+
+public class RailCardDAO extends BaseDAO
+{
+
+	public RailCardDAO()
+	{
+
+	}
+
+	public int insert(RailCard r)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "INSERT INTO RailCard VALUES(?,?)";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, r.getRailCardID().toString());
+			ps.setLong(2, r.getLastUpdated());
+
+			// api call
+
+			return ps.executeUpdate();
 
 		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
 
-						public int insert(RailCard r) {
-							PreparedStatement ps = null;
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
 
-							String sql = "INSERT INTO RailCard VALUES(?,?)";
+	}
 
-							try {
+	public ArrayList<RailCard> selectAllSync()
+	{
+		ArrayList<RailCard> list = null;
 
-								if (getConnection().isClosed()) {
-									throw new IllegalStateException("error unexpected");
-								}
-								ps = getConnection().prepareStatement(sql);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-								ps.setString(1, r.getRailCardID().toString());
-								ps.setLong(2, r.getUnixTimestamp());
-								
-								//api call
-								
-								
-								return ps.executeUpdate();
-								
-							
-								
-							} catch (SQLException e) {
-								System.out.println(e.getMessage());
-								throw new RuntimeException(e.getMessage());
-							} finally {
-								try {
-									if (ps != null)
-										ps.close();
+		String sql = "SELECT * FROM RailCard";
 
-								} catch (SQLException e) {
-									System.out.println(e.getMessage());
-									throw new RuntimeException("error.unexpected");
-								}
-							}
+		try {
 
-						}
-						public ArrayList<RailCard> selectAllSync() {
-							ArrayList<RailCard> list = null;
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
 
-							PreparedStatement ps = null;
-							ResultSet rs = null;
+			rs = ps.executeQuery();
+			list = new ArrayList<RailCard>();
 
-							String sql = "SELECT * FROM RailCard";
+			while (rs.next()) {
+				list.add(resultToModel(rs));
+			}
 
-							try {
+			return list;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
 
-								if (getConnection().isClosed()) {
-									throw new IllegalStateException("error unexpected");
-								}
-								ps = getConnection().prepareStatement(sql);
+	}
 
-								rs = ps.executeQuery();
-								list = new ArrayList<RailCard>();
+	public ArrayList<RailCard> selectAll()
+	{
+		ArrayList<RailCard> list = null;
 
-								while (rs.next()) {
-									list.add(resultToModel(rs));
-								}
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-								return list;
-							} catch (SQLException e) {
-								System.out.println(e.getMessage());
-								throw new RuntimeException(e.getMessage());
-							} finally {
-								try {
-									if (ps != null)
-										ps.close();
-									if (rs != null)
-										rs.close();
-								} catch (SQLException e) {
-									System.out.println(e.getMessage());
-									throw new RuntimeException("error.unexpected");
-								}
-							}
+		String sql = "SELECT * FROM RailCard";
 
-						}
+		try {
 
-						public ArrayList<RailCard> selectAll() {
-							ArrayList<RailCard> list = null;
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
 
-							PreparedStatement ps = null;
-							ResultSet rs = null;
+			rs = ps.executeQuery();
+			list = new ArrayList<RailCard>();
 
-							String sql = "SELECT * FROM RailCard";
+			while (rs.next()) {
+				list.add(resultToModel(rs));
+			}
 
-							try {
+			return list;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
 
-								if (getConnection().isClosed()) {
-									throw new IllegalStateException("error unexpected");
-								}
-								ps = getConnection().prepareStatement(sql);
+	}
 
-								rs = ps.executeQuery();
-								list = new ArrayList<RailCard>();
+	public RailCard selectOne(String cardID)
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-								while (rs.next()) {
-									list.add(resultToModel(rs));
-								}
+		String sql = "SELECT * FROM RailCard WHERE l.ObjectID=?;";
+		try {
 
-								return list;
-							} catch (SQLException e) {
-								System.out.println(e.getMessage());
-								throw new RuntimeException(e.getMessage());
-							} finally {
-								try {
-									if (ps != null)
-										ps.close();
-									if (rs != null)
-										rs.close();
-								} catch (SQLException e) {
-									System.out.println(e.getMessage());
-									throw new RuntimeException("error.unexpected");
-								}
-							}
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
 
-						}
+			ps.setString(1, cardID);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return resultToModel(rs);
+			else
+				return null;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
 
-						public RailCard selectOne(String cardID) {
-							PreparedStatement ps = null;
-							ResultSet rs = null;
+	private RailCard resultToModel(ResultSet rs) throws SQLException
+	{
+		RailCard r = new RailCard();
 
-							String sql ="SELECT * FROM RailCard WHERE l.ObjectID=?;";
-							try {
+		r.setRailCardID(UUID.fromString(rs.getString("CardID")));
+		r.setLastUpdated(rs.getLong("LastUpdated"));
 
-								if (getConnection().isClosed()) {
-									throw new IllegalStateException("error unexpected");
-								}
-								ps = getConnection().prepareStatement(sql);
+		return r;
+	}
 
-								ps.setString(1, cardID);
-								rs = ps.executeQuery();
-								if (rs.next())
-									return resultToModel(rs);
-								else
-									return null;
-							} catch (SQLException e) {
-								System.out.println(e.getMessage());
-								throw new RuntimeException(e.getMessage());
-							} finally {
-								try {
-									if (ps != null)
-										ps.close();
-									if (rs != null)
-										rs.close();
-								} catch (SQLException e) {
-									System.out.println(e.getMessage());
-									throw new RuntimeException("error.unexpected");
-								}
-							}
-						}
+	public static void createTable(Connection con)
+	{
+		PreparedStatement ps = null;
 
-						private RailCard resultToModel(ResultSet rs) throws SQLException {
-							RailCard r= new RailCard();
-							
-							r.setRailCardID(UUID.fromString(rs.getString("CardID")));
-							r.setLastUpdated(rs.getLong("LastUpdated"));
-							
-							return r;
-						}
+		String sql = "CREATE TABLE IF NOT EXISTS `RailCard` (" 
+				+ "`CardID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
+				+ "PRIMARY KEY (`CardID`)"
+				+ ");";
 
-						public static void createTable(){
-							PreparedStatement ps = null;
-							ResultSet rs = null;
+		try {
 
-							String sql = "CREATE TABLE IF NOT EXISTS `RailCard` ("+
-										"`CardID` varchar(36) NOT NULL DEFAULT '0',"+
-										"`LastUpdated` bigint(14) DEFAULT NULL,"+
-										"PRIMARY KEY (`CardID`)"+
-										") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+			if (con.isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = con.prepareStatement(sql);
+			ps.executeUpdate();
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
 
-							try {
-
-								if (getConnection().isClosed()) {
-									throw new IllegalStateException("error unexpected");
-								}
-								ps = getConnection().prepareStatement(sql);
-								rs = ps.executeQuery();
-							} catch (SQLException e) {
-								System.out.println(e.getMessage());
-								throw new RuntimeException(e.getMessage());
-							} finally {
-								try {
-									if (ps != null)
-										ps.close();
-									if (rs != null)
-										rs.close();
-								} catch (SQLException e) {
-									System.out.println(e.getMessage());
-									throw new RuntimeException("error.unexpected");
-								}
-							}
-						}
-
-				}
+}

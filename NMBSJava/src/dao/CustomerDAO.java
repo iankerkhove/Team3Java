@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,13 +11,16 @@ import model.Address;
 import model.Customer;
 import model.RailCard;
 
-public class CustomerDAO extends BaseDAO {
+public class CustomerDAO extends BaseDAO
+{
 
-	public CustomerDAO() {
+	public CustomerDAO()
+	{
 
 	}
 
-	public int insert(Customer c) {
+	public int insert(Customer c)
+	{
 		PreparedStatement ps = null;
 
 		String sql = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?)";
@@ -38,21 +42,24 @@ public class CustomerDAO extends BaseDAO {
 			ps.setString(5, c.getLastName());
 			ps.setString(6, c.getBirthDate().toString());
 			ps.setString(7, c.getEmailAddress());
-			ps.setLong(8, c.getUnixTimestamp());
+			ps.setLong(8, c.getLastUpdated());
 
 			// api call
 
 			return ps.executeUpdate();
 
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -60,7 +67,8 @@ public class CustomerDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Customer> selectAllSync() {
+	public ArrayList<Customer> selectAllSync()
+	{
 		ArrayList<Customer> list = null;
 
 		PreparedStatement ps = null;
@@ -83,16 +91,19 @@ public class CustomerDAO extends BaseDAO {
 			}
 
 			return list;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -100,7 +111,8 @@ public class CustomerDAO extends BaseDAO {
 
 	}
 
-	public ArrayList<Customer> selectAll() {
+	public ArrayList<Customer> selectAll()
+	{
 		ArrayList<Customer> list = null;
 
 		PreparedStatement ps = null;
@@ -127,16 +139,19 @@ public class CustomerDAO extends BaseDAO {
 			}
 
 			return list;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -144,7 +159,8 @@ public class CustomerDAO extends BaseDAO {
 
 	}
 
-	public Customer selectOne(String customerID) {
+	public Customer selectOne(String customerID)
+	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
@@ -167,23 +183,27 @@ public class CustomerDAO extends BaseDAO {
 				return resultToModel(rs);
 			else
 				return null;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
 		}
 	}
 
-	private Customer resultToModel(ResultSet rs) throws SQLException {
+	private Customer resultToModel(ResultSet rs) throws SQLException
+	{
 		Address a = new Address();
 		Customer c = new Customer();
 		RailCard r = new RailCard();
@@ -210,35 +230,42 @@ public class CustomerDAO extends BaseDAO {
 		return c;
 	}
 
-	public static void createTable() {
+	public static void createTable(Connection con)
+	{
 		PreparedStatement ps = null;
-		ResultSet rs = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS `Customer` (" + "`CustomerID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`RailCardID` varchar(36) NOT NULL DEFAULT '0'," + "`AddressID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`FirstName` varchar(20) NOT NULL," + "`LastName` varchar(20) NOT NULL,"
-				+ "`BirthDate` varchar(20) NOT NULL," + "`Email` varchar(50) NOT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," + "PRIMARY KEY (`CustomerID`),"
-				+ "KEY `AddressID` (`AddressID`)," + "KEY `RailCardID` (`RailCardID`)"
-				+ ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+		String sql = "CREATE TABLE IF NOT EXISTS `Customer` (" 
+				+ "`CustomerID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`RailCardID` varchar(36) NOT NULL DEFAULT '0'," 
+				+ "`AddressID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`FirstName` varchar(20) NOT NULL," 
+				+ "`LastName` varchar(20) NOT NULL,"
+				+ "`BirthDate` varchar(20) NOT NULL," 
+				+ "`Email` varchar(50) NOT NULL,"
+				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
+				+ "PRIMARY KEY (`CustomerID`),"
+				+ "FOREIGN KEY (`AddressID`) REFERENCES `Address`(`AddressID`),"
+				+ "FOREIGN KEY (`RailCardID`) REFERENCES `RailCard`(`RailCardID`)"
+				+ ");";
 
 		try {
 
-			if (getConnection().isClosed()) {
+			if (con.isClosed()) {
 				throw new IllegalStateException("error unexpected");
 			}
-			ps = getConnection().prepareStatement(sql);
-			rs = ps.executeQuery();
-		} catch (SQLException e) {
+			ps = con.prepareStatement(sql);
+			ps.executeUpdate();
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null)
 					ps.close();
-				if (rs != null)
-					rs.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
