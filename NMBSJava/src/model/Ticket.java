@@ -57,6 +57,11 @@ public class Ticket
 		this.ticketID = ticketID;
 	}
 
+	public UUID getTicketID()
+	{
+		return ticketID;
+	}
+
 	public Date getDate()
 	{
 		return date;
@@ -122,11 +127,6 @@ public class Ticket
 		return routeID;
 	}
 	
-	public UUID getTicketID()
-	{
-		return ticketID;
-	}
-
 	public void update()
 	{
 		this.lastUpdated = Instant.now().getEpochSecond();
