@@ -32,7 +32,7 @@ public class StaffDAO extends BaseDAO
 	{
 		PreparedStatement ps = null;
 
-		String sql = "INSERT INTO Staff VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO Staff VALUES(?,?,?,?,?,?,?,?,?,?,?,?);";
 
 		try {
 
@@ -83,7 +83,7 @@ public class StaffDAO extends BaseDAO
 
 		String sql = "UPDATE `Staff` SET `AddressID`=?,`StationID`=?,`FirstName`=?,"
 				+ "`LastName`=?,`UserName`=?,`Password`=?,`Rights`=?,`BirthDate`=?,`Email`=?,`Api_token`=?,`LastUpdated`=? "
-				+ "WHERE `StaffID`=?";
+				+ "WHERE `StaffID`=?;";
 
 		try {
 
@@ -138,7 +138,7 @@ public class StaffDAO extends BaseDAO
 		String sql = "SELECT s.StaffID, s.AddressID, "
 				+ "s.StationID, s.FirstName, s.LastName, s.UserName, s.Password, s.Rights, "
 				+ "s.BirthDate, s.Email, s.Api_token, s.LastUpdated as StaffLastUpdated "
-				+ "FROM Staff s ";
+				+ "FROM Staff s;";
 
 		try {
 
@@ -239,7 +239,7 @@ public class StaffDAO extends BaseDAO
 				+ "FROM Staff "
 				+ "INNER JOIN Address a on a.AddressID = Staff.AddressID "
 				+ "INNER JOIN Station s on s.StationID = Staff.StationID"
-				+ "WHERE StafID=?;";
+				+ "WHERE StaffID=?;";
 
 		try {
 
@@ -323,7 +323,7 @@ public class StaffDAO extends BaseDAO
 		Address a = AddressDAO.resultToModel(rs);
 		Station s = StationDAO.resultToModel(rs);
 		
-		staff.setStaffID(UUID.fromString(rs.getString("StafID")));
+		staff.setStaffID(UUID.fromString(rs.getString("StaffID")));
 		staff.setAddress(a);
 		staff.setAddressID(a.getAddressID());
 		staff.setStation(s);

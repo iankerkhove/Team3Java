@@ -51,7 +51,8 @@ public class SyncStationRunnable implements Runnable
 				JSONObject obj = mainJsonList.getJSONObject(i);
 				Station s = new Station();
 				
-				s.setStationID(UUID.fromString(obj.getString("StationID")));
+//				s.setStationID(UUID.fromString(obj.getString("StationID")));
+				s.setStationID(UUID.randomUUID());
 				s.setStationName(obj.getString("Name"));
 				s.setCoX(obj.getString("CoX"));
 				s.setCoY(obj.getString("CoY"));
