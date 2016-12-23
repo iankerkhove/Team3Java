@@ -213,7 +213,7 @@ public class ReservationDAO extends BaseDAO
 		re.setPassengerCount(rs.getInt("PassengerCount"));
 		re.setTrainID(rs.getString("TrainID"));
 		re.setPrice(rs.getDouble("Price"));
-		re.setReservationDate(rs.getString("ReservationDate"));
+		re.setReservationDate(rs.getDate("ReservationDate"));
 		re.setRoute(r);
 		re.setLastUpdated(rs.getLong("ReservationLastUpdated"));
 
