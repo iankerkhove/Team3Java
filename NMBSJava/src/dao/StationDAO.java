@@ -239,7 +239,6 @@ public class StationDAO extends BaseDAO
 
 	public static Station resultToModel(ResultSet rs) throws SQLException
 	{
-		System.out.println(rs.getString("CoY"));
 		Station s = new Station();
 		
 		s.setStationID(UUID.fromString(rs.getString("StationID")));
