@@ -1,6 +1,7 @@
 package services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -11,12 +12,12 @@ import org.json.JSONObject;
 import controller.APIController;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
-import dao.StationDAO;
-import model.Station;
+import dao.StaffDAO;
+import model.Staff;
 
-public class SyncStationRunnable implements Runnable
+public class SyncStaffRunnable implements Runnable
 {
-	private StationDAO sDAO;
+	private StaffDAO sDAO;
 	private APIController g3API;
 	
 	@Override
@@ -26,8 +27,8 @@ public class SyncStationRunnable implements Runnable
 
 			//check if has to update
 			HashMap<String, String> params = new HashMap<String, String>();
-			g3API = new APIController(APIUrl.G3, "station/massUpdateStatus", RequestType.GET, params);
-			sDAO = new StationDAO();
+			g3API = new APIController(APIUrl.G3, "staff/massUpdateStatus", RequestType.GET, params);
+			sDAO = new StaffDAO();
 
 			JSONObject mainStatus = g3API.getJsonResult().getJSONObject(0);
 			TreeMap<String, String> localStatus = sDAO.updateStatus();
@@ -35,34 +36,41 @@ public class SyncStationRunnable implements Runnable
 			if (localStatus.get("Count").equals(mainStatus.getString("Count"))
 					&& localStatus.get("LastUpdated").equals(mainStatus.getString("LastUpdated"))) {
 				
-				System.out.println("Stations up to date");
+				System.out.println("Staff' up to date");
 				return;
 			}
 			
 			//get main table values
-			g3API.setUrl("station");
+			g3API.setUrl("staff");
 			JSONArray mainJsonList = g3API.getJsonResult();
 			
-			ArrayList<Station> localList = sDAO.selectAll();
-			ArrayList<Station> mainList = new ArrayList<Station>();
+			ArrayList<Staff> localList = sDAO.selectAll();
+			ArrayList<Staff> mainList = new ArrayList<Staff>();
 			
 			for(int i = 0; i < mainJsonList.length(); i++)
 			{
 				JSONObject obj = mainJsonList.getJSONObject(i);
-				Station s = new Station();
+				Staff s = new Staff();
 				
+				s.setStaffID(UUID.fromString(obj.getString("StaffID")));
+				s.setAddressID(UUID.fromString(obj.getString("AddressID")));
 				s.setStationID(UUID.fromString(obj.getString("StationID")));
-				s.setStationName(obj.getString("Name"));
-				s.setCoX(obj.getString("CoX"));
-				s.setCoY(obj.getString("CoY"));
+				s.setFirstName(obj.getString("FirstName"));
+				s.setLastName(obj.getString("LastName"));
+				s.setUserName(obj.getString("UserName"));
+				s.setPassword(obj.getString("Password"));
+				s.setRights(obj.getInt("Rights"));
+				s.setBirthDate((Date) obj.get("birthDate"));
+				s.setEmail(obj.getString("Email"));
+				s.setApiToken(obj.getString("Api_token"));
 				s.setLastUpdated(obj.getLong("LastUpdated"));
-				
+
 				mainList.add(s);
 			}
 			
 			//update tables
-			ArrayList<Station> smallerList = new ArrayList<Station>();
-			ArrayList<Station> biggerList = new ArrayList<Station>();
+			ArrayList<Staff> smallerList = new ArrayList<Staff>();
+			ArrayList<Staff> biggerList = new ArrayList<Staff>();
 			
 			boolean localIsBigger = false;
 			
@@ -81,7 +89,7 @@ public class SyncStationRunnable implements Runnable
 			
 			for (int i = 0; i < smallerList.size(); i++)
 			{
-				Station tmpS = new Station();
+				Staff tmpS = new Staff();
 				tmpS = smallerList.get(i);
 				
 				if (biggerList.contains(tmpS))
@@ -107,37 +115,37 @@ public class SyncStationRunnable implements Runnable
 
 		}
 		catch (Exception e) {
-			System.out.println("SyncStationError");
+			System.out.println("SyncStaffError");
 			System.out.println(e);
-			e.printStackTrace();
 		}
 		finally
 		{
-			System.out.println("---- Stations ----");
+			System.out.println("---- Staff ----");
 		}
 	}
 	
-	private void updateLocal(ArrayList<Station> stationList)
+	private void updateLocal(ArrayList<Staff> addressList)
 	{
-		for (int i = 0; i < stationList.size(); i++)
+		for (int i = 0; i < addressList.size(); i++)
 		{
-			sDAO.insertOrUpdate(stationList.get(i));		
+			sDAO.insertOrUpdate(addressList.get(i));		
 		}
 	}
 	
-	private void updateMain(ArrayList<Station> stationList)
+	private void updateMain(ArrayList<Staff> staffList)
 	{
 		try {
+			if (staffList.isEmpty())
+				return;
+			
 			HashMap<String, String> params = new HashMap<String, String>();
 			
-			JSONArray stationListJSON = new JSONArray(stationList);
+			JSONArray addressListJSON = new JSONArray(staffList);
 			
-			params.put("stationList", stationListJSON.toString());
-			
-			System.out.println(params);
+			params.put("staffList", addressListJSON.toString());
 			
 			
-			g3API.setUrl("station/massUpdate");
+			g3API.setUrl("staff/massUpdate");
 			g3API.setRequestType(RequestType.MASSPUT);
 			g3API.setParams(params);
 			g3API.getJsonResult();

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import model.Address;
@@ -15,10 +16,18 @@ public class StaffDAO extends BaseDAO
 {
 
 	public StaffDAO()
-	{
-		// TODO Auto-generated constructor stub
-	}
+	{}
 
+	public int insertOrUpdate(Staff s)
+	{
+		Staff exists = this.selectOne(s.getStaffID().toString());
+
+		if (exists == null)
+			return this.insert(s);
+		else
+			return this.update(s);
+	}
+	
 	public int insert(Staff s)
 	{
 		PreparedStatement ps = null;
@@ -42,8 +51,59 @@ public class StaffDAO extends BaseDAO
 			ps.setInt(8, s.getRights());
 			ps.setString(9, s.getBirthDate().toString());
 			ps.setString(10, s.getEmail());
-			ps.setString(1, s.getApiToken());
+			ps.setString(11, s.getApiToken());
 			ps.setLong(12, s.getLastUpdated());
+
+			// api call
+
+			return ps.executeUpdate();
+
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+
+	}
+	
+	public int update(Staff s)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "UPDATE `Staff` SET `AddressID`=?,`StationID`=?,`FirstName`=?,"
+				+ "`LastName`=?,`UserName`=?,`Password`=?,`Rights`=?,`BirthDate`=?,`Email`=?,`Api_token`=?,`LastUpdated`=? "
+				+ "WHERE `StaffID`=?";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, s.getAddressID().toString());
+			ps.setString(2, s.getStationID().toString());
+			ps.setString(3, s.getFirstName());
+			ps.setString(4, s.getLastName());
+			ps.setString(5, s.getUserName());
+			ps.setString(6, s.getPassword());
+			ps.setInt(7, s.getRights());
+			ps.setString(8, s.getBirthDate().toString());
+			ps.setString(9, s.getEmail());
+			ps.setString(10, s.getApiToken());
+			ps.setLong(11, s.getLastUpdated());
+			ps.setString(12, s.getStaffID().toString());
 
 			// api call
 
@@ -75,7 +135,10 @@ public class StaffDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Staff";
+		String sql = "SELECT s.StaffID, s.AddressID, "
+				+ "s.StationID, s.FirstName, s.LastName, s.UserName, s.Password, s.Rights, "
+				+ "s.BirthDate, s.Email, s.Api_token, s.LastUpdated as StaffLastUpdated "
+				+ "FROM Staff s ";
 
 		try {
 
@@ -210,6 +273,50 @@ public class StaffDAO extends BaseDAO
 		}
 	}
 
+	public TreeMap<String, String> updateStatus()
+	{
+		TreeMap<String, String> map = null;
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT COUNT(DISTINCT StaffID) as Count, MAX(LastUpdated) as LastUpdated FROM Staff";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			rs = ps.executeQuery();
+			map = new TreeMap<String, String>();
+
+			while (rs.next()) {
+				map.put("Count", rs.getString("Count"));
+				map.put("LastUpdated", rs.getString("LastUpdated"));
+			}
+
+			return map;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+	
 	private Staff resultToModel(ResultSet rs) throws SQLException
 	{
 		Staff staff = new Staff();
@@ -218,7 +325,9 @@ public class StaffDAO extends BaseDAO
 		
 		staff.setStaffID(UUID.fromString(rs.getString("StafID")));
 		staff.setAddress(a);
+		staff.setAddressID(a.getAddressID());
 		staff.setStation(s);
+		staff.setStaffID(s.getStationID());
 		staff.setFirstName(rs.getString("FirstName"));
 		staff.setLastName(rs.getString("LastName"));
 		staff.setUserName(rs.getString("UserName"));
