@@ -18,7 +18,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class APIController
 {
@@ -62,7 +62,7 @@ public class APIController
 		}
 	}
 	
-	public JSONObject getJsonResult() throws UnsupportedOperationException, IOException
+	public JSONArray getJsonResult() throws UnsupportedOperationException, IOException
 	{
 		HttpResponse response = null;
 
@@ -87,7 +87,7 @@ public class APIController
 	}
 
 
-	private JSONObject httpToJson(HttpResponse response) throws UnsupportedOperationException, IOException
+	private JSONArray httpToJson(HttpResponse response) throws UnsupportedOperationException, IOException
 	{
 
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -97,14 +97,21 @@ public class APIController
 		while ((line = rd.readLine()) != null) {
 			result.append(line);
 		}
+		
+		String resultStr = "";
+		
+		if (!result.substring(0, 1).equals("["))
+			resultStr = "[" + result.toString() + "]";
+		else
+			resultStr = result.toString();
 
-		return new JSONObject(result.toString());
+		return new JSONArray(resultStr);
 	}
 
 	private HttpResponse getRequest() throws ClientProtocolException, IOException
 	{
 		HttpClient client = HttpClientBuilder.create().build();
-		HttpGet get = new HttpGet(this.base_url + "?" + url);
+		HttpGet get = new HttpGet(this.base_url + url);
 
 		// add header
 		get.setHeader("User-Agent", USER_AGENT);
@@ -120,7 +127,7 @@ public class APIController
 
 		for (Map.Entry<String, String> entry : this.params.entrySet()) {
 			if (firstItt) {
-				url += entry.getKey() + "=" + entry.getValue();
+				url += "?" + entry.getKey() + "=" + entry.getValue();
 				firstItt = false;
 			}
 			else {

@@ -32,4 +32,14 @@ public class SettingsSingleton
 		this.firstTime = firstTime;
 		SettingController.save();
 	}
+	
+	public void setRole(int role)
+	{
+		this.role = role;
+	}
+	
+	public int getRole()
+	{
+		return this.role;
+	}
 }
