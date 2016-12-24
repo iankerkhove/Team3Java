@@ -24,6 +24,7 @@ public class SyncController
 	public static void SyncAddress()
 	{
 		Thread t = new Thread(new SyncAddressRunnable());
+		t.run();
 	}
 	
 	
