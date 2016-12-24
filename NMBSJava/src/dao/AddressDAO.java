@@ -48,7 +48,6 @@ public class AddressDAO extends BaseDAO
 			ps.setLong(7, a.getLastUpdated());
 
 			// api call
-			System.out.println("addressdao");
 			return ps.executeUpdate();
 
 		}

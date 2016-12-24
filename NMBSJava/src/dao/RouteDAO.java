@@ -217,14 +217,14 @@ public class RouteDAO extends BaseDAO
 
 		s.setStationID(UUID.fromString(rs.getString("DepartureStationID")));
 		s.setStationName(rs.getString("DepartureName"));
-		s.setCox(rs.getString("DepartureCoX"));
-		s.setCoy(rs.getString("DepartureCoY"));
+		s.setCoX(rs.getString("DepartureCoX"));
+		s.setCoY(rs.getString("DepartureCoY"));
 		s.setLastUpdated(rs.getLong("DepartureLastUpdated"));
 
 		s2.setStationID(UUID.fromString(rs.getString("ArrivalStationID")));
 		s2.setStationName(rs.getString("ArrivalName"));
-		s2.setCox(rs.getString("ArrivalCoX"));
-		s2.setCoy(rs.getString("ArrivalCoY"));
+		s2.setCoX(rs.getString("ArrivalCoX"));
+		s2.setCoY(rs.getString("ArrivalCoY"));
 		s2.setLastUpdated(rs.getLong("ArrivalStationLastUpdated"));
 
 		r.setRouteID(UUID.fromString(rs.getString("RouteID")));

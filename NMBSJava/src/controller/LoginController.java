@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
@@ -19,7 +20,7 @@ import panels.LoginPanel;
 public class LoginController
 {
 
-	private static int staffID;
+	private static UUID staffID;
 	private static String token;
 	private static int statuscode;
 
@@ -67,14 +68,10 @@ public class LoginController
 						statuscode = json.getInt("StatusCode");
 						if (statuscode == 200) {
 							token = json.getString("Api_token");
-							staffID = json.getInt("StaffID");
+							staffID = UUID.fromString(json.getString("StaffID"));
 						}
 
 						if (statuscode == 200) {
-							// start syncing on hourly-base
-							SyncController.Start();
-							
-							
 							l.getLblResult().setText("");
 							GUIController.getFrame().getContentPane().removeAll();
 							GUIController.showApp();
@@ -101,7 +98,7 @@ public class LoginController
 		urlConWorker.execute();
 	}
 
-	public static int getStaffID()
+	public static UUID getStaffID()
 	{
 		return staffID;
 	}
@@ -119,6 +116,6 @@ public class LoginController
 	public static void clearCreds()
 	{
 		token = "";
-		staffID = 0;
+		staffID = UUID.randomUUID();
 	}
 }
