@@ -256,9 +256,9 @@ public class StationDAO extends BaseDAO
 
 		String sql = "CREATE TABLE IF NOT EXISTS `Station` ("
 				+ "`StationID` VARCHAR(36) NOT NULL DEFAULT 0,"
+				+ "`Name` varchar(100) DEFAULT NULL UNIQUE,"
 				+ "`CoX` varchar(30) DEFAULT NULL,"
 				+ "`CoY` varchar(30) DEFAULT NULL,"
-				+ "`Name` varchar(100) DEFAULT NULL UNIQUE,"
 				+ "`LastUpdated` bigint(14) DEFAULT NULL,"
 				+ "PRIMARY KEY (`StationID`)"
 				+ ");";

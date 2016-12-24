@@ -238,7 +238,7 @@ public class StaffDAO extends BaseDAO
 				+ "Staff.BirthDate, Staff.Email, Staff.Api_token, Staff.LastUpdated as StaffLastUpdated "
 				+ "FROM Staff "
 				+ "INNER JOIN Address a on a.AddressID = Staff.AddressID "
-				+ "INNER JOIN Station s on s.StationID = Staff.StationID"
+				+ "INNER JOIN Station s on s.StationID = Staff.StationID "
 				+ "WHERE StaffID=?;";
 
 		try {
