@@ -11,13 +11,12 @@ import org.json.JSONObject;
 import controller.APIController;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
-import dao.AddressDAO;
-import model.Address;
+import dao.StationDAO;
+import model.Station;
 
-public class SyncAddressRunnable implements Runnable
+public class SyncStationRunnable implements Runnable
 {
-
-	private AddressDAO aDAO;
+	private StationDAO sDAO;
 	private APIController g3API;
 	
 	@Override
@@ -27,45 +26,43 @@ public class SyncAddressRunnable implements Runnable
 
 			//check if has to update
 			HashMap<String, String> params = new HashMap<String, String>();
-			g3API = new APIController(APIUrl.G3, "address/massUpdateStatus", RequestType.GET, params);
-			aDAO = new AddressDAO();
+			g3API = new APIController(APIUrl.G3, "station/massUpdateStatus", RequestType.GET, params);
+			sDAO = new StationDAO();
 
 			JSONObject mainStatus = g3API.getJsonResult().getJSONObject(0);
-			TreeMap<String, String> localStatus = aDAO.updateStatus();
+			TreeMap<String, String> localStatus = sDAO.updateStatus();
 
 			if (localStatus.get("Count").equals(mainStatus.getString("Count"))
 					&& localStatus.get("LastUpdated").equals(mainStatus.getString("LastUpdated"))) {
 				
-				System.out.println("Address' up to date");
+				System.out.println("Stations up to date");
 				return;
 			}
 			
 			//get main table values
-			g3API.setUrl("address");
+			g3API.setUrl("station");
 			JSONArray mainJsonList = g3API.getJsonResult();
 			
-			ArrayList<Address> localList = aDAO.selectAll();
-			ArrayList<Address> mainList = new ArrayList<Address>();
+			ArrayList<Station> localList = sDAO.selectAll();
+			ArrayList<Station> mainList = new ArrayList<Station>();
 			
 			for(int i = 0; i < mainJsonList.length(); i++)
 			{
 				JSONObject obj = mainJsonList.getJSONObject(i);
-				Address a = new Address();
+				Station s = new Station();
 				
-				a.setAddressID(UUID.fromString(obj.getString("AddressID")));
-				a.setStreet(obj.getString("Street"));
-				a.setNumber(obj.getInt("Number"));
-				a.setCity(obj.getString("City"));
-				a.setZipCode(obj.getInt("ZipCode"));
-				a.setCoordinates(obj.getString("Coordinates"));
-				a.setLastUpdated(obj.getLong("LastUpdated"));
+				s.setStationID(UUID.fromString(obj.getString("StationID")));
+				s.setStationName(obj.getString("Name"));
+				s.setCoX(obj.getString("CoX"));
+				s.setCoY(obj.getString("CoY"));
+				s.setLastUpdated(obj.getLong("LastUpdated"));
 				
-				mainList.add(a);
+				mainList.add(s);
 			}
 			
 			//update tables
-			ArrayList<Address> smallerList = new ArrayList<Address>();
-			ArrayList<Address> biggerList = new ArrayList<Address>();
+			ArrayList<Station> smallerList = new ArrayList<Station>();
+			ArrayList<Station> biggerList = new ArrayList<Station>();
 			
 			boolean localIsBigger = false;
 			
@@ -84,13 +81,13 @@ public class SyncAddressRunnable implements Runnable
 			
 			for (int i = 0; i < smallerList.size(); i++)
 			{
-				Address tmpA = new Address();
-				tmpA = smallerList.get(i);
+				Station tmpS = new Station();
+				tmpS = smallerList.get(i);
 				
-				if (biggerList.contains(tmpA))
+				if (biggerList.contains(tmpS))
 				{
-					smallerList.remove(tmpA);
-					biggerList.remove(tmpA);
+					smallerList.remove(tmpS);
+					biggerList.remove(tmpS);
 				}
 					
 			}
@@ -110,37 +107,40 @@ public class SyncAddressRunnable implements Runnable
 
 		}
 		catch (Exception e) {
-			System.out.println("SyncAddressError");
+			System.out.println("SyncStationError");
 			System.out.println(e);
+			e.printStackTrace();
 		}
 		finally
 		{
-			System.out.println("---- Address ----");
+			System.out.println("---- Stations ----");
 		}
 	}
 	
-	private void updateLocal(ArrayList<Address> addressList)
+	private void updateLocal(ArrayList<Station> stationList)
 	{
-		for (int i = 0; i < addressList.size(); i++)
+		for (int i = 0; i < stationList.size(); i++)
 		{
-			aDAO.insertOrUpdate(addressList.get(i));		
+			sDAO.insertOrUpdate(stationList.get(i));
 		}
 	}
 	
-	private void updateMain(ArrayList<Address> addressList)
+	private void updateMain(ArrayList<Station> stationList)
 	{
 		try {
-			if (addressList.isEmpty())
+			if (stationList.isEmpty())
 				return;
 			
 			HashMap<String, String> params = new HashMap<String, String>();
 			
-			JSONArray addressListJSON = new JSONArray(addressList);
+			JSONArray stationListJSON = new JSONArray(stationList);
 			
-			params.put("addressList", addressListJSON.toString());
+			params.put("stationList", stationListJSON.toString());
+			
+			System.out.println(params);
 			
 			
-			g3API.setUrl("address/massUpdate");
+			g3API.setUrl("station/massUpdate");
 			g3API.setRequestType(RequestType.MASSPUT);
 			g3API.setParams(params);
 			g3API.getJsonResult();
@@ -149,5 +149,4 @@ public class SyncAddressRunnable implements Runnable
 			e.printStackTrace();
 		}
 	}
-
 }
