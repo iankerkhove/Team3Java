@@ -16,6 +16,8 @@ public class SyncAllRunnable implements Runnable
     	workQueue.add(new SyncAddressRunnable());
     	workQueue.add(new SyncStationRunnable());
     	workQueue.add(new SyncStaffRunnable());
+    	//customer
+    	
         
     }
     

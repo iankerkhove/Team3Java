@@ -51,8 +51,7 @@ public class SyncStationRunnable implements Runnable
 				JSONObject obj = mainJsonList.getJSONObject(i);
 				Station s = new Station();
 				
-//				s.setStationID(UUID.fromString(obj.getString("StationID")));
-				s.setStationID(UUID.randomUUID());
+				s.setStationID(UUID.fromString(obj.getString("StationID")));
 				s.setStationName(obj.getString("Name"));
 				s.setCoX(obj.getString("CoX"));
 				s.setCoY(obj.getString("CoY"));
@@ -122,13 +121,16 @@ public class SyncStationRunnable implements Runnable
 	{
 		for (int i = 0; i < stationList.size(); i++)
 		{
-			sDAO.insertOrUpdate(stationList.get(i));		
+			sDAO.insertOrUpdate(stationList.get(i));
 		}
 	}
 	
 	private void updateMain(ArrayList<Station> stationList)
 	{
 		try {
+			if (stationList.isEmpty())
+				return;
+			
 			HashMap<String, String> params = new HashMap<String, String>();
 			
 			JSONArray stationListJSON = new JSONArray(stationList);

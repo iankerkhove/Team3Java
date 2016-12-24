@@ -54,12 +54,11 @@ public class SyncStaffRunnable implements Runnable
 				JSONObject obj = mainJsonList.getJSONObject(i);
 				Staff s = new Staff();
 				
-//				s.setStaffID(UUID.fromString(obj.getString("StaffID")));
-//				s.setAddressID(UUID.fromString(obj.getString("AddressID")));
-//				s.setStationID(UUID.fromString(obj.getString("StationID")));
-				s.setStaffID(UUID.randomUUID());
-				s.setAddressID(UUID.randomUUID());
-				s.setStationID(UUID.randomUUID());
+				s.setStaffID(UUID.fromString(obj.getString("StaffID")));
+				
+				s.setAddressID(UUID.fromString(obj.getJSONObject("Address").getString("AddressID")));
+				s.setStationID(UUID.fromString(obj.getJSONObject("Station").getString("StationID")));
+				
 				s.setFirstName(obj.getString("FirstName"));
 				s.setLastName(obj.getString("LastName"));
 				s.setUserName(obj.getString("UserName"));
@@ -129,11 +128,11 @@ public class SyncStaffRunnable implements Runnable
 		}
 	}
 	
-	private void updateLocal(ArrayList<Staff> addressList)
+	private void updateLocal(ArrayList<Staff> staffList)
 	{
-		for (int i = 0; i < addressList.size(); i++)
+		for (int i = 0; i < staffList.size(); i++)
 		{
-			sDAO.insertOrUpdate(addressList.get(i));		
+			sDAO.insertOrUpdate(staffList.get(i));		
 		}
 	}
 	
@@ -145,9 +144,9 @@ public class SyncStaffRunnable implements Runnable
 			
 			HashMap<String, String> params = new HashMap<String, String>();
 			
-			JSONArray addressListJSON = new JSONArray(staffList);
+			JSONArray staffListJSON = new JSONArray(staffList);
 			
-			params.put("staffList", addressListJSON.toString());
+			params.put("staffList", staffListJSON.toString());
 			
 			
 			g3API.setUrl("staff/massUpdate");
