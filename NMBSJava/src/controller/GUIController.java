@@ -24,6 +24,7 @@ public class GUIController {
 	private static VerlengAbonnementPanel verlengAbonnement;
 	private static VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek;
 	private static VerlorenVoorwerpMaakPanel verlorenVoorwerpMaak;
+	private static PasPrijzenAanPanel prijzenAanpassen;
 
 	public static void start() {
 		// Make frame after performing all other tasks
@@ -121,6 +122,11 @@ public class GUIController {
 				nav.getBtnbtnVerlorenVoorwerpenVoegToe().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						startVerlorenVoorwerpMaak();
+					}
+				});
+				nav.getBtnPrijzenAanpassen().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startPrijzenAanpassen();
 					}
 				});
 				nav.getBtnLogout().addActionListener(new ActionListener() {
@@ -228,6 +234,15 @@ public class GUIController {
 		frame.getContentPane().add(verlorenVoorwerpMaak);
 		frame.setContentPane(frame.getContentPane());
 		VerlorenVoorwerpMaakController.startListening(verlorenVoorwerpMaak);
+	}
+	
+	private static void startPrijzenAanpassen() {
+		prijzenAanpassen = new PasPrijzenAanPanel();
+		frame.setTitle("NMBSTeam - Pas prijzen aan");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(prijzenAanpassen);
+		frame.setContentPane(frame.getContentPane());
+		PasPrijzenAanController.startListening(prijzenAanpassen);
 	}
 
 	public static GUIFrame getFrame() {
