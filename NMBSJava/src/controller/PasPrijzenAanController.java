@@ -38,6 +38,25 @@ public class PasPrijzenAanController {
 							}
 						}
 					});
+					
+					prijzen.getBtnCheck().addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							
+							String typeTicket = prijzen.getTxtNewTypeTicket().getText();
+							if (typeTicket.equals("")) {
+								typeTicket = (String) prijzen.getTxtTypeTicket().getSelectedItem();
+								int mnem = prijzen.getGrpKlasses().getSelection().getMnemonic();
+
+								TypeTicketDAO handler = new TypeTicketDAO();
+								TypeTicket tt = handler.selectOneOnName(typeTicket, mnem);
+								prijzen.getLblNieuwePrijs().setText(Double.toString(tt.getPrice()));
+							}
+							
+							prijzen.getTxtNieuwePrijs().setEnabled(true);
+							prijzen.getBtnWijzig().setEnabled(true);
+							
+						}
+					});
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
