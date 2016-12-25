@@ -198,7 +198,7 @@ public class StationDAO extends BaseDAO
 		}
 	}
 
-	public Station selectOne(String addressID)
+	public Station selectOne(String stationID)
 	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -212,7 +212,7 @@ public class StationDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, addressID);
+			ps.setString(1, stationID);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);
