@@ -3,14 +3,9 @@ package controller;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import panels.PasPrijzenAanPanel;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import dao.TypeTicketDAO;
+import model.TypeTicket;
 
 public class PasPrijzenAanController {
 	public static void startListening(PasPrijzenAanPanel prijzen) {
@@ -19,7 +14,7 @@ public class PasPrijzenAanController {
 				try {
 					prijzen.getBtnWijzig().addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							boolean error = false;
+							
 							boolean isNieuw = true;
 
 							String typeTicket = prijzen.getTxtNewTypeTicket().getText();
@@ -27,43 +22,23 @@ public class PasPrijzenAanController {
 								isNieuw = false;
 								typeTicket = (String) prijzen.getTxtTypeTicket().getSelectedItem();
 							}
-
 							int mnem = prijzen.getGrpKlasses().getSelection().getMnemonic();
+							Double nieuwePrijs = Double.parseDouble(prijzen.getTxtNieuwePrijs().getText());
 
-							String nieuwePrijs = prijzen.getTxtNieuwePrijs().getText();
-							if (nieuwePrijs.equals("")) {
-								error = true;
-							}
-
-							String base = "http://nmbs-team.tk/api/typeTicket/";
-							String url;
-							JSONObject temp;
-
-							if (!error) {
-								try {
-									if (isNieuw) {
-										url = base + "create?Name="+typeTicket+"&Price="+nieuwePrijs+"&ComforClass"+mnem;
-
-										temp = new JSONObject(URLCon.readUrl(url, "POST"));
-
-									}
-
-									else {
-										int typeID = CachePassTypes.getTypeID(typeTicket);
-										url = base + "update/"+ typeID + "?Name="+typeTicket+"&Price="+nieuwePrijs+"&ComforClass"+mnem;
-										temp = new JSONObject(URLCon.readUrl(url, "PUT"));
-									}
-									int errorMessage = temp.getInt("StatusCode");
-								} catch (JSONException e1) {
-									e1.printStackTrace();
-								} catch (IOException e1) {
-									e1.printStackTrace();
+							if (!(nieuwePrijs < 0)) {
+								if (isNieuw) {
+									TypeTicketDAO handler = new TypeTicketDAO();
+									handler.insert(new TypeTicket(typeTicket, nieuwePrijs, mnem));
+								}
+								else {
+									TypeTicketDAO handler = new TypeTicketDAO();
+									TypeTicket tt = handler.selectOneOnName(typeTicket, mnem);
+									handler.updatePrice(tt.getTypeTicketID().toString(), tt.getName(), nieuwePrijs);
 								}
 							}
 						}
 					});
-				} 
-				catch (Exception e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
