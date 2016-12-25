@@ -41,29 +41,6 @@ public class GUIController {
 		});
 	}
 
-	public static void login() {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				LoginPanel l = new LoginPanel();
-				frame.getContentPane().add(l, BorderLayout.CENTER);
-				frame.setContentPane(frame.getContentPane());
-				LoginController.login(l);
-			}
-		});
-	}
-	
-	public static void logout() {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				LoginController.clearCreds();
-				frame.getContentPane().removeAll();
-				LoginPanel l = new LoginPanel();
-				frame.getContentPane().add(l, BorderLayout.CENTER);
-				frame.setContentPane(frame.getContentPane());
-				LoginController.login(l);
-			}
-		});
-	}
 
 	public static void showApp() {
 		// Make frame after performing all other tasks
@@ -151,6 +128,32 @@ public class GUIController {
 						logout();
 					}
 				});
+			}
+		});
+	}
+	
+	public static void login() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				LoginPanel l = new LoginPanel();
+				frame.getContentPane().add(l, BorderLayout.CENTER);
+				frame.setContentPane(frame.getContentPane());
+				LoginController.login(l);
+			}
+		});
+	}
+	
+	public static void logout() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				LoginController.clearCreds();
+				frame.getContentPane().removeAll();
+				frame.setTitle("NMBSTeam - Login");
+				
+				LoginPanel l = new LoginPanel();
+				frame.getContentPane().add(l, BorderLayout.CENTER);
+				frame.setContentPane(frame.getContentPane());
+				LoginController.login(l);
 			}
 		});
 	}
