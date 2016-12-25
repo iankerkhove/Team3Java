@@ -278,4 +278,40 @@ public class TypeTicketDAO extends BaseDAO
 			}
 		}
 	}
+
+	public int updatePrice(String typeID, String typeTicketName, Double nieuwePrijs) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "UPDATE TypeTicket SET Name = ?, Price = ? WHERE TypeTicketID = ?;";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, typeTicketName);
+			ps.setDouble(2, nieuwePrijs);
+			ps.setString(3, typeID);
+			return ps.executeUpdate();
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
 }
