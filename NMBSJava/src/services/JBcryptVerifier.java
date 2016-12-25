@@ -756,7 +756,7 @@ public class JBcryptVerifier {
 	 * @return	an encoded salt value
 	 */
 	private static String gensalt() {
-		return gensalt(10);
+		return gensalt(GENSALT_DEFAULT_LOG2_ROUNDS);
 	}
 
 	/**
