@@ -29,6 +29,7 @@ public class GUIController {
 	private static VerlengAbonnementPanel verlengAbonnement;
 	private static VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek;
 	private static VerlorenVoorwerpMaakPanel verlorenVoorwerpMaak;
+	private static StaffToevoegenPanel staff;
 
 	public static void start() {
 		// Make frame after performing all other tasks
@@ -165,6 +166,11 @@ public class GUIController {
 						startVerlorenVoorwerpMaak();
 					}
 				});
+				nav.getBtnVoegMedewerker().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startVoegMedewerker();
+					}
+				});
 				nav.getBtnLogout().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						logout();
@@ -244,6 +250,15 @@ public class GUIController {
 		frame.getContentPane().add(verlorenVoorwerpMaak);
 		frame.setContentPane(frame.getContentPane());
 		VerlorenVoorwerpMaakController.startListening(verlorenVoorwerpMaak);
+	}
+	
+	private static void startVoegMedewerker() {
+		staff = new StaffToevoegenPanel();
+		frame.setTitle("NMBSTeam - Voeg nieuwe medewerker");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(staff);
+		frame.setContentPane(frame.getContentPane());
+		StaffToevoegenController.startListening(staff);
 	}
 
 	public static GUIFrame getFrame() {

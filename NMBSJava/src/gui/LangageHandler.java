@@ -10,7 +10,7 @@ import javax.swing.JRadioButton;
 public abstract class LangageHandler {
 	
 	private static String taal;
-
+	
 	static public String getTaal() {
 		return taal;
 	}
@@ -91,7 +91,7 @@ public abstract class LangageHandler {
 	
 	public static String chooseLangageCmb(String s)
 	{
-		String vertal = "";
+		String vertal = new String();
 		if(taal == "Français")
 		{
 			vertal = bundleFR(s);
