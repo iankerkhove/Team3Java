@@ -9,6 +9,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JTextField;
 import java.util.Properties;
 import org.jdatepicker.impl.*;
@@ -29,6 +32,7 @@ public class PasPrijzenAanPanel extends JPanel {
 	private JTextField txtNewTypeTicket;
 	
 	private JButton btnWijzig;
+	private JButton btnCheck;
 	
 	private JRadioButton rdbEersteKlasse;
 	private JRadioButton rdbTweedeKlasse;
@@ -51,8 +55,11 @@ public class PasPrijzenAanPanel extends JPanel {
 			txtHuidigePrijs.setEditable(false);
 			lblNieuwePrijs = new JLabel("Nieuwe prijs");
 			txtNieuwePrijs = new JTextField(5);
+			txtNieuwePrijs.setEnabled(false);
 			
 			btnWijzig = new JButton("Prijs aanpassen");
+			btnWijzig.setEnabled(false);
+			btnCheck = new JButton("Check");
 			
 			lblKlasse = new JLabel("Klasse");
 			rdbEersteKlasse = new JRadioButton("1e klas");
@@ -87,6 +94,7 @@ public class PasPrijzenAanPanel extends JPanel {
 			this.add(lblNieuwePrijs);
 			this.add(txtNieuwePrijs);
 			
+			this.add(btnCheck);
 			this.add(btnWijzig);
 	}
 	
@@ -144,5 +152,9 @@ public class PasPrijzenAanPanel extends JPanel {
 
 	public PassTypesAutoCompletor getTxtTypeTicket() {
 		return txtTypeTicket;
+	}
+
+	public JButton getBtnCheck() {
+		return btnCheck;
 	}
 }
