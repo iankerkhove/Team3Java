@@ -109,7 +109,7 @@ public class TypePassDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypePassID, t.Name, t.Price, t.LastUpdated as TypePassLastUpdated" + "FROM TypePass t;";
+		String sql = "SELECT t.TypePassID, t.Name, t.Price, t.LastUpdated as TypePassLastUpdated" + "FROM TypePass t ORDER BY t.Name;";
 
 		try {
 
