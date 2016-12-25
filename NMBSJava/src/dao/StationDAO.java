@@ -117,7 +117,7 @@ public class StationDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT s.StationID, s.Name, s.CoX, s.CoY, s.LastUpdated as StationLastUpdated FROM Station s";
+		String sql = "SELECT s.StationID, s.Name, s.CoX, s.CoY, s.LastUpdated as StationLastUpdated FROM Station s ORDER BY s.Name";
 
 		try {
 
