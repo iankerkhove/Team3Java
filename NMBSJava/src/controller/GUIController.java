@@ -73,6 +73,11 @@ public class GUIController {
 					frame.getContentPane().removeAll();
 					frame.setTitle("NMBSTeam - Start");
 					init();
+
+					// start syncing on hourly-base
+					SyncController.Start();
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
