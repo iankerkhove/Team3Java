@@ -36,10 +36,8 @@ public class PasPrijzenAanPanel extends JPanel {
 	
 	private PassTypesAutoCompletor txtTypeTicket;
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public PasPrijzenAanPanel() {
-			this.setLayout(new GridBagLayout());
-			GridBagConstraints c = new GridBagConstraints();
+			this.setLayout(new GridLayout(7, 2, 5, 5));
 			
 			lblTitle = new JLabel("Wijzig prijzen");
 			lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -66,45 +64,30 @@ public class PasPrijzenAanPanel extends JPanel {
 			grpKlasses.add(rdbEersteKlasse);
 			grpKlasses.add(rdbTweedeKlasse);
 			
-			c.insets = new Insets(5, 10, 5, 10);
-			c.gridx = 0;
-			c.gridy = 0;
-			c.weightx = 1.0;
-			c.weighty = 1.0;
-			//c.anchor = GridBagConstraints.WEST;
-			c.gridwidth = 2;
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.ipady = 20;
-			c.ipadx = 10;
-			this.add(lblTitle,c);
-			c.gridwidth--;
 			
-			c.gridy++;
-			this.add(lblTypeTicket, c);
-			c.gridx++;
-			this.add(txtTypeTicket, c);
-			c.gridx++;
-			this.add(txtNewTypeTicket,c);
-			c.gridy++;
-			c.gridx = 0;
-			this.add(lblKlasse, c);
-			c.gridx++;
-			this.add(rdbEersteKlasse,c);
-			c.gridx++;
-			this.add(rdbTweedeKlasse,c);
+			this.add(lblTitle);
+			this.add(new JLabel());
 			
-			c.gridy++;
-			c.gridx = 0;
-			this.add(lblHuidigePrijs, c);
-			c.gridx++;
-			this.add(txtHuidigePrijs, c);
-			c.gridx++;
-			this.add(lblNieuwePrijs, c);
-			c.gridx++;
-			this.add(txtNieuwePrijs, c);
-			c.gridy++;
-			c.gridx = 0;
-			this.add(btnWijzig, c);
+			this.add(lblTypeTicket);
+			this.add(txtTypeTicket);
+			
+			this.add(new JLabel());
+			this.add(txtNewTypeTicket);
+			
+			this.add(lblKlasse);
+			JPanel klassepane = new JPanel();
+			klassepane.setLayout(new GridLayout(2, 1));
+			klassepane.add(rdbEersteKlasse);
+			klassepane.add(rdbTweedeKlasse);
+			this.add(klassepane);
+			
+			this.add(lblHuidigePrijs);
+			this.add(txtHuidigePrijs);
+			
+			this.add(lblNieuwePrijs);
+			this.add(txtNieuwePrijs);
+			
+			this.add(btnWijzig);
 	}
 	
 	public JTextField getTxtNewTypeTicket() {
@@ -162,12 +145,4 @@ public class PasPrijzenAanPanel extends JPanel {
 	public PassTypesAutoCompletor getTxtTypeTicket() {
 		return txtTypeTicket;
 	}
-
-	public static void main(String[] args) {
-		JFrame testFrame = new JFrame();
-		testFrame.setSize(600, 400);
-		testFrame.add(new PasPrijzenAanPanel());
-		testFrame.setVisible(true);
-	}
-
 }
