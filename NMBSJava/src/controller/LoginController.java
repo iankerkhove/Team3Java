@@ -17,7 +17,7 @@ import panels.LoginPanel;
 public class LoginController{
 
 	
-	private static int staffID;
+	private static String staffID;
 	private static String token;
 	private static int statuscode;
 	private static JSONObject json;
@@ -79,7 +79,7 @@ public class LoginController{
 			statuscode = json.getInt("StatusCode");
 			if (statuscode == 200) {
 				token = json.getString("Api_token");
-				staffID = json.getInt("StaffID");
+				staffID = json.getString("StaffID");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -92,7 +92,7 @@ public class LoginController{
 		}
 	}
 
-	public static int getStaffID() {
+	public static String getStaffID() {
 		return staffID;
 	}
 
@@ -106,6 +106,6 @@ public class LoginController{
 
 	public static void clearCreds() {
 		token = "";
-		staffID = 0;
+		staffID = "";
 	}
 }

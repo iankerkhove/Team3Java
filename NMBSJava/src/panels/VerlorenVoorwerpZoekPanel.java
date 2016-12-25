@@ -35,6 +35,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 	
 	private JDatePickerImpl datePicker;
 	
+	
 	public VerlorenVoorwerpZoekPanel() {
 		setLayout(new GridLayout(2, 1, 5, 5));
 
@@ -147,7 +148,5 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 	public JDatePickerImpl getDatePicker() {
 		return datePicker;
 	}
-
-
 
 }

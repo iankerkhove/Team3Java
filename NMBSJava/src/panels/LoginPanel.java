@@ -21,6 +21,7 @@ public class LoginPanel extends JPanel {
 	private JLabel lblResult;
 	
 	public LoginPanel() {
+		setLayout(new GridLayout(1, 1, 5, 5));
 		JPanel content = new JPanel();
 
 		JPanel lang = new JPanel();
@@ -65,7 +66,7 @@ public class LoginPanel extends JPanel {
 		lblResult = new JLabel();
 		lblResult.setHorizontalAlignment(SwingConstants.CENTER);
 
-		content.setLayout(new GridLayout(8, 1, 5, 5));
+		content.setLayout(new GridLayout(9, 1, 5, 5));
 
 		content.add(lang);
 		content.add(new JLabel());
@@ -74,6 +75,7 @@ public class LoginPanel extends JPanel {
 		content.add(usrp);
 		content.add(admin);
 		content.add(login);
+		content.add(new JLabel());
 		content.add(lblResult);
 
 		this.add(content);
