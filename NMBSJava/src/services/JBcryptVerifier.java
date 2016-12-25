@@ -606,7 +606,7 @@ public class JBcryptVerifier {
 	 * @param cdata         the plaintext to encrypt
 	 * @return	an array containing the binary hashed password
 	 */
-	public byte[] crypt_raw(byte password[], byte salt[], int log_rounds,
+	private byte[] crypt_raw(byte password[], byte salt[], int log_rounds,
 	    int cdata[]) {
 		int rounds, i, j;
 		int clen = cdata.length;
@@ -647,7 +647,7 @@ public class JBcryptVerifier {
 	 * using BCrypt.gensalt)
 	 * @return	the hashed password
 	 */
-	public static String hashpw(String password, String salt) {
+	private static String hashPassword(String password, String salt) {
 		JBcryptVerifier B;
 		String real_salt;
 		byte passwordb[], saltb[], hashed[];
@@ -701,8 +701,17 @@ public class JBcryptVerifier {
 		    bf_crypt_ciphertext.length * 4 - 1));
 		return rs.toString();
 	}
-
+	
 	/**
+	 * Hash a password using the OpenBSD bcrypt scheme
+	 * @param password	the password to hash
+	 * @return	the hashed password
+	 */
+	public static String hashPassword(String password) {
+		return hashPassword(password, gensalt());
+	}
+	
+	/*
 	 * Generate a salt for use with the BCrypt.hashpw() method
 	 * @param log_rounds	the log2 of the number of rounds of
 	 * hashing to apply - the work factor therefore increases as
@@ -710,7 +719,7 @@ public class JBcryptVerifier {
 	 * @param random		an instance of SecureRandom to use
 	 * @return	an encoded salt value
 	 */
-	public static String gensalt(int log_rounds, SecureRandom random) {
+	private static String gensalt(int log_rounds, SecureRandom random) {
 		StringBuffer rs = new StringBuffer();
 		byte rnd[] = new byte[BCRYPT_SALT_LEN];
 
@@ -736,7 +745,7 @@ public class JBcryptVerifier {
 	 * 2**log_rounds.
 	 * @return	an encoded salt value
 	 */
-	public static String gensalt(int log_rounds) {
+	private static String gensalt(int log_rounds) {
 		return gensalt(log_rounds, new SecureRandom());
 	}
 
@@ -746,8 +755,8 @@ public class JBcryptVerifier {
 	 * rounds to apply
 	 * @return	an encoded salt value
 	 */
-	public static String gensalt() {
-		return gensalt(GENSALT_DEFAULT_LOG2_ROUNDS);
+	private static String gensalt() {
+		return gensalt(10);
 	}
 
 	/**
@@ -757,12 +766,12 @@ public class JBcryptVerifier {
 	 * @param hashed	the previously-hashed password
 	 * @return	true if the passwords match, false otherwise
 	 */
-	public static boolean checkpw(String plaintext, String hashed) {
+	public static boolean checkPassword(String plaintextPassword, String hashedPassword) {
 		byte hashed_bytes[];
 		byte try_bytes[];
 		try {
-			String try_pw = hashpw(plaintext, hashed);
-			hashed_bytes = hashed.getBytes("UTF-8");
+			String try_pw = hashPassword(plaintextPassword, hashedPassword);
+			hashed_bytes = hashedPassword.getBytes("UTF-8");
 			try_bytes = try_pw.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException uee) {
 			return false;
