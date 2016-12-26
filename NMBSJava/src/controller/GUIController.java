@@ -66,6 +66,11 @@ public class GUIController {
 	private static void init() {
 		// fixed navbar
 		nav = new NavPanel();
+		
+		if (LoginController.getRechten() == 0) {
+			nav.getBtnPrijzenAanpassen().setEnabled(false);
+			nav.getBtnStaffBeheer().setEnabled(false);
+		}
 		// startpanel
 		start = new StartPanel();
 		// start listening for actions on navbar
