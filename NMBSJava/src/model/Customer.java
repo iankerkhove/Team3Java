@@ -1,19 +1,19 @@
 package model;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.UUID;
 
 public class Customer extends Person
 {
 	private UUID customerID;
+	private UUID railCardID;
 	private RailCard railCard;
 	private long lastUpdated;
 
 	public Customer()
 	{}
 
-	public Customer(String firstName, String lastName, Date birthDate, String emailAddress, Address address,
+	public Customer(String firstName, String lastName, String birthDate, String emailAddress, Address address,
 			RailCard railCard)
 	{
 		super(firstName, lastName, birthDate, emailAddress, address);
@@ -56,10 +56,15 @@ public class Customer extends Person
 	{
 		lastUpdated = Instant.now().getEpochSecond();
 	}
-
-	public void setAddress(Address a) {
-		this.address = a;
-		
+	
+	public UUID getRailCardID()
+	{
+		return railCardID;
+	}
+	
+	public void setRailCardID(UUID railCardID)
+	{
+		this.railCardID = railCardID;
 	}
 	
 }
