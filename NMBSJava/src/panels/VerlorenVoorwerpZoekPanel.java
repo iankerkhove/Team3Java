@@ -17,20 +17,21 @@ import java.awt.Font;
 import gui.LangageHandler;
 @SuppressWarnings("serial")
 public class VerlorenVoorwerpZoekPanel extends JPanel {
-
-	private String taal = LangageHandler.getTaal();
 	
 	private JButton btnToonAlles;
 	private JButton btnZoek;
+	private JButton btnGevonden;
 
 	private JLabel lblTreinNummer;
+	private JLabel lblOmschrijving;
 	private JLabel lblDatum;
 	private JLabel lblResultat;
 	private JLabel lblTitel;
 	private JLabel lblStation;
 
 	private JTextField txtTreinNummer;
-	
+	private JTextField txtOmschrijving;
+
 	private StationsAutoCompletor txtStation;
 	
 	private JDatePickerImpl datePicker;
@@ -40,7 +41,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		setLayout(new GridLayout(2, 1, 5, 5));
 
 		JPanel search = new JPanel();
-		search.setLayout(new GridLayout(6, 2, 10, 10));
+		search.setLayout(new GridLayout(7, 2, 10, 10));
 
 		//1
 		lblTitel = new JLabel();
@@ -73,8 +74,16 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 
 		txtTreinNummer = new JTextField();
 		search.add(txtTreinNummer);
-
+		
 		//5
+		lblOmschrijving = new JLabel();
+		LangageHandler.chooseLangageLbl(lblOmschrijving, "omschrijving");
+		search.add(lblOmschrijving);
+
+		txtOmschrijving = new JTextField();
+		search.add(txtOmschrijving);
+
+		//6
 		lblDatum = new JLabel();
 		LangageHandler.chooseLangageLbl(lblDatum, "datum");
 		search.add(lblDatum);
@@ -89,11 +98,13 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		datePicker.getJFormattedTextField().setText(GUIDateFormat.getDate());
 		search.add(datePicker);
 
-		//6
-		search.add(new JLabel());
+		//7
+		btnGevonden = new JButton();
+		LangageHandler.chooseLangageBtn(btnGevonden, "gevonden");
+		search.add(btnGevonden);
 		
 		btnZoek = new JButton();
-		LangageHandler.chooseLangageBtn(btnZoek, "zoek");
+		LangageHandler.chooseLangageBtn(btnZoek, "zoekTrein");
 		search.add(btnZoek);
 
 		
@@ -147,6 +158,14 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 
 	public JDatePickerImpl getDatePicker() {
 		return datePicker;
+	}
+	
+	public JLabel getLblOmschrijving() {
+		return lblOmschrijving;
+	}
+
+	public JTextField getTxtOmschrijving() {
+		return txtOmschrijving;
 	}
 
 }

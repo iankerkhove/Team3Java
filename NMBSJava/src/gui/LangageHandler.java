@@ -89,7 +89,7 @@ public abstract class LangageHandler {
 		}
 	}
 	
-	public static String chooseLangageCmb(String s)
+	public static String chooseLangage(String s)
 	{
 		String vertal = new String();
 		if(taal == "Français")

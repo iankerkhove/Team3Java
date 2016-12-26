@@ -82,7 +82,7 @@ public class BiljetPanel extends JPanel {
 		dteGaanDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
 		
 		comboBoxpanel.setLayout(new GridLayout(2, 1, 5, 5));
-		String[] s = {LangageHandler.chooseLangageCmb("standaardbiljet") , LangageHandler.chooseLangageCmb("goPass"), LangageHandler.chooseLangageCmb("weekendBiljet"), LangageHandler.chooseLangageCmb("seniorenBiljet"),LangageHandler.chooseLangageCmb("biljetKind")};
+		String[] s = {LangageHandler.chooseLangage("standaardbiljet") , LangageHandler.chooseLangage("goPass"), LangageHandler.chooseLangage("weekendBiljet"), LangageHandler.chooseLangage("seniorenBiljet"),LangageHandler.chooseLangage("biljetKind")};
 		cboBiljet = new JComboBox<String>(s);
 		
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(new UtilDateModel(), properties);

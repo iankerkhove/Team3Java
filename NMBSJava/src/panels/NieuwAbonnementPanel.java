@@ -154,10 +154,10 @@ public class NieuwAbonnementPanel extends JPanel {
 		dteStartDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
 
 
-		String[] soortKaart = {LangageHandler.chooseLangageCmb("trajecttreinkaart"), LangageHandler.chooseLangageCmb("halftijdstreinkaart"), LangageHandler.chooseLangageCmb("nettreinkaart"), LangageHandler.chooseLangageCmb("schooltreinkaart") };
+		String[] soortKaart = {LangageHandler.chooseLangage("trajecttreinkaart"), LangageHandler.chooseLangage("halftijdstreinkaart"), LangageHandler.chooseLangage("nettreinkaart"), LangageHandler.chooseLangage("schooltreinkaart") };
 		cbxTreinkaart = new JComboBox(soortKaart);
 		
-		String[] aantalMaanden = {LangageHandler.chooseLangageCmb("1maand"), LangageHandler.chooseLangageCmb("3maand"), LangageHandler.chooseLangageCmb("12maand")};
+		String[] aantalMaanden = {LangageHandler.chooseLangage("1maand"), LangageHandler.chooseLangage("3maand"), LangageHandler.chooseLangage("12maand")};
 		cbxDuur = new JComboBox(aantalMaanden);
 
 		this.add(lblTitle);
