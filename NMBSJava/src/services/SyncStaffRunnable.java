@@ -1,6 +1,5 @@
 package services;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -47,8 +46,6 @@ public class SyncStaffRunnable implements Runnable
 			ArrayList<Staff> localList = sDAO.selectAll();
 			ArrayList<Staff> mainList = new ArrayList<Staff>();
 			
-			SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
-			
 			for(int i = 0; i < mainJsonList.length(); i++)
 			{
 				JSONObject obj = mainJsonList.getJSONObject(i);
@@ -64,7 +61,7 @@ public class SyncStaffRunnable implements Runnable
 				s.setUserName(obj.getString("UserName"));
 				s.setPassword(obj.getString("Password"));
 				s.setRights(obj.getInt("Rights"));
-				s.setBirthDate(formatter.parse(obj.getString("BirthDate")));
+				s.setBirthDate(obj.getString("BirthDate"));
 				s.setEmail(obj.getString("Email"));
 				s.setApiToken(obj.getString("Api_token"));
 				s.setLastUpdated(obj.getLong("LastUpdated"));

@@ -1,26 +1,27 @@
 package model;
 
 import java.time.Instant;
-import java.util.Date;
+import java.util.UUID;
 
 public class Person
 {
 	private String firstName;
 	private String lastName;
-	private Date birthDate;
-	private String emailAddress;
-	protected Address address;
+	private String birthDate;
+	private String email;
+	private Address address;
+	private UUID addressID;
 	private long lastUpdated;
 
 	public Person()
 	{}
 	
-	public Person(String firstName, String lastName, Date birthDate, String emailAddress, Address address)
+	public Person(String firstName, String lastName, String birthDate, String email, Address address)
 	{
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.birthDate = birthDate;
-		this.emailAddress = emailAddress;
+		this.email = email;
 		this.address = address;
 		this.lastUpdated = Instant.now().getEpochSecond();
 	}
@@ -45,24 +46,34 @@ public class Person
 		this.lastName = lastName;
 	}
 
-	public Date getBirthDate()
+	public String getBirthDate()
 	{
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate)
+	public void setBirthDate(String birthDate)
 	{
 		this.birthDate = birthDate;
 	}
 
-	public String getEmailAddress()
+	public String getEmail()
 	{
-		return emailAddress;
+		return email;
 	}
 
-	public void setEmailAddress(String emailAddress)
+	public void setEmail(String email)
 	{
-		this.emailAddress = emailAddress;
+		this.email = email;
+	}
+
+	public UUID getAddressID()
+	{
+		return addressID;
+	}
+
+	public void setAddressID(UUID addressID)
+	{
+		this.addressID = addressID;
 	}
 
 	public Address getAddress()

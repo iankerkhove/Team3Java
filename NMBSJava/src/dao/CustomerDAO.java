@@ -42,16 +42,13 @@ public class CustomerDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			AddressDAO h = new AddressDAO();
-			h.insert(c.getAddress());
-
 			ps.setString(1, c.getCustomerID().toString());
-			ps.setString(2, c.getRailCard().toString());
-			ps.setString(3, c.getAddress().toString());
+			ps.setString(2, c.getRailCardID().toString());
+			ps.setString(3, c.getAddressID().toString());
 			ps.setString(4, c.getFirstName());
 			ps.setString(5, c.getLastName());
-			ps.setString(6, c.getBirthDate().toString());
-			ps.setString(7, c.getEmailAddress());
+			ps.setString(6, c.getBirthDate());
+			ps.setString(7, c.getEmail());
 			ps.setLong(8, c.getLastUpdated());
 
 			// api call
@@ -101,7 +98,7 @@ public class CustomerDAO extends BaseDAO
 			ps.setString(4, c.getFirstName());
 			ps.setString(5, c.getLastName());
 			ps.setString(6, c.getBirthDate().toString());
-			ps.setString(7, c.getEmailAddress());
+			ps.setString(7, c.getEmail());
 			ps.setLong(8, c.getLastUpdated());
 			ps.setString(9, c.getCustomerID().toString());
 
@@ -331,8 +328,8 @@ public class CustomerDAO extends BaseDAO
 		c.setRailCard(r);
 		c.setFirstName(rs.getString("FirstName"));
 		c.setLastName(rs.getString("LastName"));
-		c.setBirthDate(rs.getDate("BirthDate"));
-		c.setEmailAddress(rs.getString("Email"));
+		c.setBirthDate(rs.getString("BirthDate"));
+		c.setEmail(rs.getString("Email"));
 		c.setLastUpdated(rs.getLong("CustomerLastUpdated"));
 		return c;
 	}
@@ -342,9 +339,9 @@ public class CustomerDAO extends BaseDAO
 		PreparedStatement ps = null;
 
 		String sql = "CREATE TABLE IF NOT EXISTS `Customer` (" 
-				+ "`CustomerID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`RailCardID` varchar(36) NOT NULL DEFAULT '0'," 
-				+ "`AddressID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`CustomerID` varchar(36) NOT NULL,"
+				+ "`RailCardID` varchar(36) NOT NULL," 
+				+ "`AddressID` varchar(36) NOT NULL,"
 				+ "`FirstName` varchar(20) NOT NULL," 
 				+ "`LastName` varchar(20) NOT NULL,"
 				+ "`BirthDate` varchar(20) NOT NULL," 
