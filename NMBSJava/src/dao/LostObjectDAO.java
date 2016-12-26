@@ -112,11 +112,12 @@ public class LostObjectDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT l.ObjectID, s.StationID, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
-				+ " s.Name, S.CoX,S.CoY," + "s.LastUpdated as StationLastUpdated, "
-				+ "l.Description,l.Date,l.TrainID,l.LastUpdated as LostObjectLastUpdated" + " FROM LostObject l"
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID"
+		String sql = "SELECT l.ObjectID, s.StationID, a.AddressID, a.Street, "
+				+ "a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
+				+ "s.Name, S.CoX,S.CoY," + "s.LastUpdated as StationLastUpdated, "
+				+ "l.Description,l.Date,l.TrainID,l.LastUpdated as LostObjectLastUpdated " 
+				+ " FROM LostObject l "
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID "
 				+ "INNER JOIN Station s ON s.StationID = l.StationID;";
 
 		try {
@@ -162,8 +163,9 @@ public class LostObjectDAO extends BaseDAO
 		String sql = "SELECT l.ObjectID, s.StationID, a.AddressID, a.Street,"
 				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
 				+ " s.Name, S.CoX,S.CoY," + "s.LastUpdated as StationLastUpdated, "
-				+ "l.Description,l.Date,l.TrainID,l.LastUpdated as LostObjectLastUpdated" + " FROM LostObject l"
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID"
+				+ "l.Description,l.Date,l.TrainID,l.LastUpdated as LostObjectLastUpdated" 
+				+ " FROM LostObject l "
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID "
 				+ "INNER JOIN Station s ON s.StationID = l.StationID" + "WHERE l.ObjectID=?;";
 		try {
 
