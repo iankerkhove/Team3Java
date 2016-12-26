@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import model.Address;
@@ -16,9 +17,18 @@ public class CustomerDAO extends BaseDAO
 
 	public CustomerDAO()
 	{
-
 	}
 
+	public int insertOrUpdate(Customer c)
+	{
+		Customer exists = this.selectOne(c.getCustomerID().toString());
+
+		if (exists == null)
+			return this.insert(c);
+		else
+			return this.update(c);
+	}
+	
 	public int insert(Customer c)
 	{
 		PreparedStatement ps = null;
@@ -66,7 +76,57 @@ public class CustomerDAO extends BaseDAO
 		}
 
 	}
+	
 
+	public int update(Customer c)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "UPDATE `Customer` SET `CustomerID`=?,`RailCardID`=?,`AddressID`=?,"
+				+ "`FirstName`=?,`LastName`=?,`BirthDate`=?,`Email`=?,"
+				+ "`LastUpdated`=? WHERE CustomerID=?;";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+			
+			
+			ps.setString(1, c.getCustomerID().toString());
+			
+			ps.setString(2, c.getRailCard().getRailCardID().toString());
+			ps.setString(3, c.getAddress().getAddressID().toString());
+			ps.setString(4, c.getFirstName());
+			ps.setString(5, c.getLastName());
+			ps.setString(6, c.getBirthDate().toString());
+			ps.setString(7, c.getEmailAddress());
+			ps.setLong(8, c.getLastUpdated());
+			ps.setString(9, c.getCustomerID().toString());
+
+			// api call
+
+			return ps.executeUpdate();
+
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+
+	}
 	public ArrayList<Customer> selectAllSync()
 	{
 		ArrayList<Customer> list = null;
@@ -74,7 +134,11 @@ public class CustomerDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Customer";
+		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
+				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
+				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
+				+ " FROM Customer c" + " INNER JOIN Address a ON a.AddressID = c.AddressID"
+				+ " INNER JOIN RailCard r ON r.CardID = c.RailCardID;";
 
 		try {
 
@@ -121,8 +185,8 @@ public class CustomerDAO extends BaseDAO
 		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
 				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
 				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
-				+ " FROM Customer c" + "INNER JOIN Address a ON a.AddressID = c.AddressID"
-				+ "INNER JOIN RailCard r ON r.CardID = c.RailCardID;";
+				+ " FROM Customer c" + " INNER JOIN Address a ON a.AddressID = c.AddressID"
+				+ " INNER JOIN RailCard r ON r.CardID = c.RailCardID;";
 
 		try {
 
@@ -158,6 +222,49 @@ public class CustomerDAO extends BaseDAO
 		}
 
 	}
+	public TreeMap<String, String> updateStatus()
+	{
+		TreeMap<String, String> map = null;
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT COUNT(DISTINCT CustomerID) as Count, MAX(LastUpdated) as LastUpdated FROM Customer";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			rs = ps.executeQuery();
+			map = new TreeMap<String, String>();
+
+			while (rs.next()) {
+				map.put("Count", rs.getString("Count"));
+				map.put("LastUpdated", rs.getString("LastUpdated"));
+			}
+
+			return map;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
 
 	public Customer selectOne(String customerID)
 	{
@@ -167,8 +274,8 @@ public class CustomerDAO extends BaseDAO
 		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
 				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
 				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
-				+ " FROM Customer c" + "INNER JOIN Address a ON a.AddressID = c.AddressID"
-				+ "INNER JOIN RailCard r ON r.CardID = c.RailCardID" + "WHERE c.CustomerID = ?;";
+				+ " FROM Customer c" + " INNER JOIN Address a ON a.AddressID = c.AddressID"
+				+ " INNER JOIN RailCard r ON r.CardID = c.RailCardID" + " WHERE c.CustomerID = ?;";
 
 		try {
 
@@ -202,7 +309,7 @@ public class CustomerDAO extends BaseDAO
 		}
 	}
 
-	private Customer resultToModel(ResultSet rs) throws SQLException
+	static Customer resultToModel(ResultSet rs) throws SQLException
 	{
 		Address a = new Address();
 		Customer c = new Customer();
@@ -226,7 +333,7 @@ public class CustomerDAO extends BaseDAO
 		c.setLastName(rs.getString("LastName"));
 		c.setBirthDate(rs.getDate("BirthDate"));
 		c.setEmailAddress(rs.getString("Email"));
-		c.setLastUpdated(rs.getLong("LastUpdated"));
+		c.setLastUpdated(rs.getLong("CustomerLastUpdated"));
 		return c;
 	}
 
@@ -243,8 +350,8 @@ public class CustomerDAO extends BaseDAO
 				+ "`BirthDate` varchar(20) NOT NULL," 
 				+ "`Email` varchar(50) NOT NULL,"
 				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
-				+ "PRIMARY KEY (`CustomerID`),"
-				+ "FOREIGN KEY (`AddressID`) REFERENCES `Address`(`AddressID`),"
+				+ "PRIMARY KEY (`CustomerID`), "
+				+ "FOREIGN KEY (`AddressID`) REFERENCES `Address`(`AddressID`), "
 				+ "FOREIGN KEY (`RailCardID`) REFERENCES `RailCard`(`RailCardID`)"
 				+ ");";
 
