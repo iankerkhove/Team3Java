@@ -1,7 +1,6 @@
 package model;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.UUID;
 
 public class Staff
@@ -16,7 +15,7 @@ public class Staff
 	private String userName;
 	private String password;
 	private int rights;
-	private Date birthDate;
+	private String birthDate;
 	private String email;
 	private String apiToken;
 	private long lastUpdated;
@@ -25,7 +24,7 @@ public class Staff
 	{}
 
 	public Staff(UUID addressID, UUID stationID, String firstName, String lastName, String userName, String password,
-			int rights, Date birthDate, String email)
+			int rights, String birthDate, String email)
 	{
 		this.staffID = UUID.randomUUID();
 		this.addressID = addressID;
@@ -141,12 +140,12 @@ public class Staff
 		this.rights = rights;
 	}
 
-	public Date getBirthDate()
+	public String getBirthDate()
 	{
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate)
+	public void setBirthDate(String birthDate)
 	{
 		this.birthDate = birthDate;
 	}
