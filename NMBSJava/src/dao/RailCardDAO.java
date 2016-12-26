@@ -182,7 +182,7 @@ public class RailCardDAO extends BaseDAO
 		}
 	}
 
-	private RailCard resultToModel(ResultSet rs) throws SQLException
+	static RailCard resultToModel(ResultSet rs) throws SQLException
 	{
 		RailCard r = new RailCard();
 
