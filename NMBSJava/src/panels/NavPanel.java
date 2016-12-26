@@ -2,6 +2,7 @@ package panels;
 
 import java.awt.GridLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -17,7 +18,9 @@ public class NavPanel extends JPanel {
 	private JButton btnAbonnementKoop;
 	private JButton btnAbonnementVerlengen;
 	private JButton btnPrijzenAanpassen;
+	private JButton btnStaffBeheer;
 	private JButton btnLogout;
+	private JLabel madeBy;
 
 	public NavPanel() {
 		initialize();
@@ -26,7 +29,7 @@ public class NavPanel extends JPanel {
 	}
 
 	private void initialize() {
-		this.setLayout(new GridLayout(10, 1, 5, 5));
+		this.setLayout(new GridLayout(12, 1, 5, 5));
 	}
 
 	private void createComponents() {
@@ -58,8 +61,14 @@ public class NavPanel extends JPanel {
 		btnPrijzenAanpassen = new JButton("Pas prijzen aan");
 		btnPrijzenAanpassen.setHorizontalAlignment(SwingConstants.LEFT);
 
+		btnStaffBeheer = new JButton("Beheer Staff");
+		btnStaffBeheer.setHorizontalAlignment(SwingConstants.LEFT);
+
 		btnLogout = new JButton("Uitloggen");
 		btnLogout.setHorizontalAlignment(SwingConstants.LEFT);
+		
+		madeBy = new JLabel("By Groep 3");
+		madeBy.setHorizontalAlignment(SwingConstants.CENTER);
 	}
 
 	private void addComponents() {
@@ -72,7 +81,9 @@ public class NavPanel extends JPanel {
 		this.add(btnVerlorenVoorwerpenZoek);
 		this.add(btnbtnVerlorenVoorwerpenVoegToe);
 		this.add(btnPrijzenAanpassen);
+		this.add(btnStaffBeheer);
 		this.add(btnLogout);
+		this.add(madeBy);
 	}
 
 	public JButton getBtnRouteZoek() {
@@ -113,5 +124,9 @@ public class NavPanel extends JPanel {
 
 	public JButton getBtnLogout() {
 		return btnLogout;
+	}
+
+	public JButton getBtnStaffBeheer() {
+		return btnStaffBeheer;
 	}
 }
