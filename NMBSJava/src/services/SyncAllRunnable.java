@@ -12,7 +12,13 @@ public class SyncAllRunnable implements Runnable
     public SyncAllRunnable()
     {
     	workQueue = new LinkedTransferQueue<Runnable>();
-        workQueue.add(new SyncAddressRunnable());
+        
+    	workQueue.add(new SyncAddressRunnable());
+    	workQueue.add(new SyncStationRunnable());
+    	workQueue.add(new SyncStaffRunnable());
+    	//customer
+    	
+        
     }
     
 	@Override
