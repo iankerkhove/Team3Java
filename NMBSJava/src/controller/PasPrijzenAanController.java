@@ -3,58 +3,137 @@ package controller;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JLabel;
+
 import panels.PasPrijzenAanPanel;
+import dao.TypePassDAO;
 import dao.TypeTicketDAO;
+import model.TypePass;
 import model.TypeTicket;
 
 public class PasPrijzenAanController {
+
+	private static int keuze;
+
 	public static void startListening(PasPrijzenAanPanel prijzen) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					prijzen.getBtnWijzig().addActionListener(new ActionListener() {
+					prijzen.getCboAanpasKeuze().addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							
-							boolean isNieuw = true;
+							keuze = prijzen.getCboAanpasKeuze().getSelectedIndex();
+							prijzen.initAanpassen(keuze);
+							prijzen.getRootPane().setContentPane(prijzen.getRootPane().getContentPane());
+						}
+					});
 
-							String typeTicket = prijzen.getTxtNewTypeTicket().getText();
-							if (typeTicket.equals("")) {
-								isNieuw = false;
-								typeTicket = (String) prijzen.getTxtTypeTicket().getSelectedItem();
+					prijzen.getBtnPasAan().addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+
+							/*
+							 * cboAanpasKeuze.addItem("");
+							 * cboAanpasKeuze.addItem("Nieuw TicketType maken");
+							 * cboAanpasKeuze.addItem("TicketType aanpassen");
+							 * cboAanpasKeuze.addItem("Nieuw PassType maken");
+							 * cboAanpasKeuze.addItem("PassType aanpassen");
+							 */
+
+							switch (keuze) {
+							case 0:
+								break;
+							case 1: 
+							{
+								String name = prijzen.getTxtName().getText();
+								Double price = Double.parseDouble(prijzen.getTxtPrice().getText());
+								int comfortClass = prijzen.getGrpKlasse().getSelection().getMnemonic();
+
+								if (!name.equals("") && price >= 0) {
+									TypeTicketDAO handler = new TypeTicketDAO();
+									handler.insert(new TypeTicket(name, price, comfortClass));
+								} else {
+									System.out.println("invalid");
+								}
 							}
-							int mnem = prijzen.getGrpKlasses().getSelection().getMnemonic();
-							Double nieuwePrijs = Double.parseDouble(prijzen.getTxtNieuwePrijs().getText());
+								break;
+							case 2:
+							{
+								String name = (String) prijzen.getAutTicketType().getSelectedItem();
+								Double price = Double.parseDouble(prijzen.getTxtPrice().getText());
+								Double oldPrice = Double.parseDouble(prijzen.getTxtOldPrice().getText());
+								int comfortClass = prijzen.getGrpKlasse().getSelection().getMnemonic();
 
-							if (!(nieuwePrijs < 0)) {
-								if (isNieuw) {
+								if (price != oldPrice) {
 									TypeTicketDAO handler = new TypeTicketDAO();
-									handler.insert(new TypeTicket(typeTicket, nieuwePrijs, mnem));
+									TypeTicket type = handler.selectOneOnName(name, comfortClass);
+									handler.updatePrice(type.getTypeTicketID().toString(), name, price);
+								} else {
+									System.out.println("prijs onveranderd");
 								}
-								else {
-									TypeTicketDAO handler = new TypeTicketDAO();
-									TypeTicket tt = handler.selectOneOnName(typeTicket, mnem);
-									handler.updatePrice(tt.getTypeTicketID().toString(), tt.getName(), nieuwePrijs);
+							}
+								break;
+							case 3:{
+								String name = prijzen.getTxtName().getText();
+								Double price = Double.parseDouble(prijzen.getTxtPrice().getText());
+
+								if (!name.equals("") && price >= 0) {
+									TypePassDAO handler = new TypePassDAO();
+									handler.insert(new TypePass(name, price));
+								} else {
+									System.out.println("invalid");
 								}
+							}
+								break;
+							case 4:
+							{
+								String name = (String) prijzen.getAutPassType().getSelectedItem();
+								Double price = Double.parseDouble(prijzen.getTxtPrice().getText());
+								Double oldPrice = Double.parseDouble(prijzen.getTxtOldPrice().getText());
+
+								if (price != oldPrice) {
+									TypePassDAO handler = new TypePassDAO();
+									TypePass type = handler.selectOneOnName(name);
+									handler.updatePrice(type.getTypePassID().toString(), name, price);
+								} else {
+									System.out.println("prijs onveranderd");
+								}
+							}
+								break;
+							default:
+								break;
 							}
 						}
 					});
-					
-					prijzen.getBtnCheck().addActionListener(new ActionListener() {
+
+					prijzen.getAutPassType().addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							
-							String typeTicket = prijzen.getTxtNewTypeTicket().getText();
-							if (typeTicket.equals("")) {
-								typeTicket = (String) prijzen.getTxtTypeTicket().getSelectedItem();
-								int mnem = prijzen.getGrpKlasses().getSelection().getMnemonic();
+							if (keuze == 4) {
+								String naam = (String) prijzen.getAutTicketType().getSelectedItem();
+
+								TypePassDAO handler = new TypePassDAO();
+								TypePass type = handler.selectOneOnName(naam);
+
+								prijzen.getTxtOldPrice().setText(Double.toString(type.getPrice()));
+							} else {
+								System.out.println("something went wrong");
+							}
+						}
+					});
+
+					prijzen.getAutTicketType().addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if (keuze == 2) {
+
+								String naam = (String) prijzen.getAutTicketType().getSelectedItem();
+								int klasse = prijzen.getGrpKlasse().getSelection().getMnemonic();
 
 								TypeTicketDAO handler = new TypeTicketDAO();
-								TypeTicket tt = handler.selectOneOnName(typeTicket, mnem);
-								prijzen.getLblNieuwePrijs().setText(Double.toString(tt.getPrice()));
+								TypeTicket type = handler.selectOneOnName(naam, klasse);
+
+								prijzen.getTxtOldPrice().setText(Double.toString(type.getPrice()));
+							} else {
+								System.out.println("something went wrong");
 							}
-							
-							prijzen.getTxtNieuwePrijs().setEnabled(true);
-							prijzen.getBtnWijzig().setEnabled(true);
-							
 						}
 					});
 				} catch (Exception e) {
