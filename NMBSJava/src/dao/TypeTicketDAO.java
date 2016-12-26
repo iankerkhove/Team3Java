@@ -110,8 +110,7 @@ public class TypeTicketDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, t.LastUpdated as TypeTikcetLastUpdated ORDER BY t.Name"
-				+ "FROM TypeTicket t;";
+		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, t.LastUpdated as TypeTikcetLastUpdated FROM TypeTicket t ORDER BY t.Name;";
 
 		try {
 

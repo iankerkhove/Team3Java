@@ -5,156 +5,247 @@ import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JTextField;
-import java.util.Properties;
-import org.jdatepicker.impl.*;
-import gui.GUIDateFormat;
 import gui.PassTypesAutoCompletor;
-import gui.StationsAutoCompletor;
+import gui.TicketTypesAutoCompletor;
 
 public class PasPrijzenAanPanel extends JPanel {
 
+	private static final long serialVersionUID = -607765881092828393L;
+
 	private JLabel lblTitle;
-	private JLabel lblTypeTicket;
-	private JLabel lblHuidigePrijs;
-	private JLabel lblNieuwePrijs;
+	private JComboBox<String> cboAanpasKeuze;
+	private PassTypesAutoCompletor autPassType;
+	private TicketTypesAutoCompletor autTicketType;
+	private JLabel lblName;
+	private JLabel lblPrice;
 	private JLabel lblKlasse;
 	
-	private JTextField txtHuidigePrijs;
-	private JTextField txtNieuwePrijs;
-	private JTextField txtNewTypeTicket;
+	private JLabel lblOldPrice;
+	private JTextField txtOldPrice;
 	
-	private JButton btnWijzig;
-	private JButton btnCheck;
-	
-	private JRadioButton rdbEersteKlasse;
-	private JRadioButton rdbTweedeKlasse;
-	private ButtonGroup grpKlasses;
-	
-	private PassTypesAutoCompletor txtTypeTicket;
-	
+	private JTextField txtName;
+	private JTextField txtPrice;
+	private ButtonGroup grpKlasse;
+	private JPanel classpane;
+	private JRadioButton rdbFirstclass;
+	private JRadioButton rdbSecondclass;
+	private JButton btnPasAan;
+
 	public PasPrijzenAanPanel() {
-			this.setLayout(new GridLayout(7, 2, 5, 5));
-			
-			lblTitle = new JLabel("Wijzig prijzen");
-			lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
-			
-			lblTypeTicket = new JLabel("Type ticket");
-			txtTypeTicket = new PassTypesAutoCompletor();
-			txtNewTypeTicket = new JTextField("Nieuw type ticket");
-			
-			lblHuidigePrijs = new JLabel("Huidige prijs");
-			txtHuidigePrijs = new JTextField("€10.000");
-			txtHuidigePrijs.setEditable(false);
-			lblNieuwePrijs = new JLabel("Nieuwe prijs");
-			txtNieuwePrijs = new JTextField(5);
-			txtNieuwePrijs.setEnabled(false);
-			
-			btnWijzig = new JButton("Prijs aanpassen");
-			btnWijzig.setEnabled(false);
-			btnCheck = new JButton("Check");
-			
-			lblKlasse = new JLabel("Klasse");
-			rdbEersteKlasse = new JRadioButton("1e klas");
-			rdbEersteKlasse.setMnemonic(1);
-			rdbTweedeKlasse = new JRadioButton("2e klas");
-			rdbTweedeKlasse.setMnemonic(1);
-			rdbTweedeKlasse.setSelected(true);
-			grpKlasses = new ButtonGroup();
-			grpKlasses.add(rdbEersteKlasse);
-			grpKlasses.add(rdbTweedeKlasse);
-			
-			
-			this.add(lblTitle);
-			this.add(new JLabel());
-			
-			this.add(lblTypeTicket);
-			this.add(txtTypeTicket);
-			
-			this.add(new JLabel());
-			this.add(txtNewTypeTicket);
-			
-			this.add(lblKlasse);
-			JPanel klassepane = new JPanel();
-			klassepane.setLayout(new GridLayout(2, 1));
-			klassepane.add(rdbEersteKlasse);
-			klassepane.add(rdbTweedeKlasse);
-			this.add(klassepane);
-			
-			this.add(lblHuidigePrijs);
-			this.add(txtHuidigePrijs);
-			
-			this.add(lblNieuwePrijs);
-			this.add(txtNieuwePrijs);
-			
-			this.add(btnCheck);
-			this.add(btnWijzig);
-	}
-	
-	public JTextField getTxtNewTypeTicket() {
-		return txtNewTypeTicket;
+		this.setLayout(new GridLayout(8, 2, 5, 5));
+
+		lblTitle = new JLabel("Wijzig prijzen");
+		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
+
+		cboAanpasKeuze = new JComboBox<>();
+		cboAanpasKeuze.addItem("");
+		cboAanpasKeuze.addItem("Nieuw TicketType maken");
+		cboAanpasKeuze.addItem("TicketType aanpassen");
+		cboAanpasKeuze.addItem("Nieuw PassType maken");
+		cboAanpasKeuze.addItem("PassType aanpassen");
+		
+		lblName = new JLabel("Name: ");
+		lblPrice = new JLabel("Prijs: ");
+		lblKlasse = new JLabel("Klasse: ");
+		lblOldPrice = new JLabel("Oude prijs: ");
+
+		txtName = new JTextField();
+		txtPrice = new JTextField();
+		txtOldPrice = new JTextField();
+		txtOldPrice.setEnabled(false);
+		rdbFirstclass = new JRadioButton("1ste klasse");
+		rdbFirstclass.setMnemonic(1);
+		rdbSecondclass = new JRadioButton("2de klasse");
+		rdbFirstclass.setMnemonic(2);
+		grpKlasse = new ButtonGroup();
+		grpKlasse.add(rdbFirstclass);
+		grpKlasse.add(rdbSecondclass);
+		classpane = new JPanel();
+		classpane.setLayout(new GridLayout(2, 1, 5, 5));
+		classpane.add(rdbFirstclass);
+		classpane.add(rdbSecondclass);
+		
+		btnPasAan = new JButton("Pas aan");
+		
+		autPassType = new PassTypesAutoCompletor();
+		autTicketType = new TicketTypesAutoCompletor();
+		
+		this.add(lblTitle);
+		this.add(new JLabel());
+		
+		this.add(new JLabel("Maak een keuze:"));
+		this.add(cboAanpasKeuze);
+		
+		this.add(new JLabel());
+		this.add(new JLabel());
+		
+		this.add(new JLabel());
+		this.add(new JLabel());
+		
+		this.add(new JLabel());
+		this.add(new JLabel());
+		
+		this.add(new JLabel());
+		this.add(new JLabel());
+		
+		this.add(new JLabel());
+		this.add(new JLabel());
 	}
 
-	public void setTxtHuidigePrijs(JTextField txtHuidigePrijs) {
-		this.txtHuidigePrijs = txtHuidigePrijs;
+	public void initAanpassen(int aanpaskeuze) {
+
+		this.removeAll();
+
+		this.add(lblTitle);
+		this.add(new JLabel());
+		
+		this.add(new JLabel("Maak een keuze:"));
+		this.add(cboAanpasKeuze);
+		
+		this.add(new JLabel());
+		this.add(new JLabel());
+
+		switch (aanpaskeuze) {
+		case 0:
+			break;
+		case 1:
+			this.add(lblName);
+			this.add(txtName);
+			
+			this.add(lblKlasse);
+			this.add(classpane);
+			
+			this.add(lblPrice);
+			this.add(txtPrice);
+			
+			this.add(new JLabel());
+			this.add(new JLabel());
+			
+			this.add(new JLabel());
+			this.add(btnPasAan);
+			break;
+		case 2:
+			this.add(new JLabel("PassType: "));
+			this.add(autTicketType);
+			
+			this.add(lblKlasse);
+			this.add(classpane);
+			
+			this.add(lblOldPrice);
+			this.add(txtOldPrice);
+			
+			this.add(lblPrice);
+			this.add(txtPrice);
+			
+			this.add(new JLabel());
+			this.add(btnPasAan);
+			break;
+		case 3:
+			this.add(lblName);
+			this.add(txtName);
+			
+			this.add(lblPrice);
+			this.add(txtPrice);
+			
+			this.add(new JLabel());
+			this.add(new JLabel());
+			
+			this.add(new JLabel());
+			this.add(new JLabel());
+			
+			this.add(new JLabel());
+			this.add(btnPasAan);
+			break;
+		case 4:
+			this.add(new JLabel("TicketType: "));
+			this.add(autTicketType);
+			
+			this.add(lblOldPrice);
+			this.add(txtOldPrice);
+			
+			this.add(lblPrice);
+			this.add(txtPrice);
+			
+			this.add(new JLabel());
+			this.add(new JLabel());
+			
+			this.add(new JLabel());
+			this.add(btnPasAan);
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	public JLabel getLblTitle() {
 		return lblTitle;
 	}
 
-	public JLabel getLblTypeTicket() {
-		return lblTypeTicket;
+	public JComboBox<String> getCboAanpasKeuze() {
+		return cboAanpasKeuze;
 	}
 
-	public JLabel getLblHuidigePrijs() {
-		return lblHuidigePrijs;
+	public PassTypesAutoCompletor getAutPassType() {
+		return autPassType;
 	}
 
-	public JLabel getLblNieuwePrijs() {
-		return lblNieuwePrijs;
+	public TicketTypesAutoCompletor getAutTicketType() {
+		return autTicketType;
+	}
+
+	public JLabel getLblName() {
+		return lblName;
+	}
+
+	public JLabel getLblPrice() {
+		return lblPrice;
 	}
 
 	public JLabel getLblKlasse() {
 		return lblKlasse;
 	}
 
-	public JTextField getTxtHuidigePrijs() {
-		return txtHuidigePrijs;
+	public JTextField getTxtName() {
+		return txtName;
 	}
 
-	public JTextField getTxtNieuwePrijs() {
-		return txtNieuwePrijs;
+	public JTextField getTxtPrice() {
+		return txtPrice;
 	}
 
-	public JButton getBtnWijzig() {
-		return btnWijzig;
+	public ButtonGroup getGrpKlasse() {
+		return grpKlasse;
 	}
 
-	public JRadioButton getRdbEersteKlasse() {
-		return rdbEersteKlasse;
+	public JRadioButton getRdbFirstclass() {
+		return rdbFirstclass;
 	}
 
-	public JRadioButton getRdbTweedeKlasse() {
-		return rdbTweedeKlasse;
+	public JRadioButton getRdbSecondclass() {
+		return rdbSecondclass;
 	}
 
-	public ButtonGroup getGrpKlasses() {
-		return grpKlasses;
+	public JButton getBtnPasAan() {
+		return btnPasAan;
 	}
 
-	public PassTypesAutoCompletor getTxtTypeTicket() {
-		return txtTypeTicket;
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
-	public JButton getBtnCheck() {
-		return btnCheck;
+	public JLabel getLblOldPrice() {
+		return lblOldPrice;
+	}
+
+	public JTextField getTxtOldPrice() {
+		return txtOldPrice;
+	}
+
+	public JPanel getClasspane() {
+		return classpane;
 	}
 }
