@@ -1,5 +1,7 @@
-/dao/
-/model/
-/services/
 /controller/
+/dao/
+/gui/
+/model/
+/panels/
+/services/
 /tests/
