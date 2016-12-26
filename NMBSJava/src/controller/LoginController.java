@@ -6,28 +6,25 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
 
 import org.json.JSONObject;
 
-import controller.UrlConWorker;
 import controller.UrlConWorker.APIUrl;
 import controller.UrlConWorker.RequestType;
 import dao.StaffDAO;
+import model.SettingsSingleton;
 import model.Staff;
 import panels.LoginPanel;
 import services.JBcryptVerifier;
 
 public class LoginController {
 
-	private static UUID staffID;
-	private static String token;
-	private static int rechten;
+	private static SettingsSingleton settings;
 
-	private static LoginPanel loginPanel;
+	@Deprecated
 	private static UrlConWorker urlConWorker;
 
 	public static void login(LoginPanel l) {
@@ -35,6 +32,7 @@ public class LoginController {
 			public void run() {
 				l.getBtnLogin().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						settings = SettingsSingleton.getSettings();
 						verify(l);
 					}
 				});
@@ -53,9 +51,11 @@ public class LoginController {
 			if (JBcryptVerifier.checkPassword(password, s.getPassword())){
 				if(chAdmin){
 					if (s.getRights() == 1) {
-						rechten = 1;
-						token = s.getApiToken();
-						staffID = s.getStaffID();
+						
+						settings.setRights(1);
+						settings.setApiToken(s.getApiToken());
+						settings.setStaffID(s.getStaffID());
+						
 						l.getLblResult().setText("");
 						GUIController.getFrame().getContentPane().removeAll();
 						GUIController.showApp();
@@ -63,9 +63,10 @@ public class LoginController {
 						l.getLblResult().setText("Geen admin rechten, probeer opnieuw!");
 					}
 				} else {
-					rechten = 0;
-					token = s.getApiToken();
-					staffID = s.getStaffID();
+					settings.setRights(0);
+					settings.setApiToken(s.getApiToken());
+					settings.setStaffID(s.getStaffID());
+					
 					l.getLblResult().setText("");
 					GUIController.getFrame().getContentPane().removeAll();
 					GUIController.showApp();
@@ -106,8 +107,8 @@ public class LoginController {
 
 						int statuscode = json.getInt("StatusCode");
 						if (statuscode == 200) {
-							token = json.getString("Api_token");
-							staffID = UUID.fromString(json.getString("StaffID"));
+//							token = json.getString("Api_token");
+//							staffID = UUID.fromString(json.getString("StaffID"));
 						}
 
 						if (statuscode == 200) {
@@ -130,22 +131,5 @@ public class LoginController {
 		});
 
 		urlConWorker.execute();
-	}
-
-	public static UUID getStaffID() {
-		return staffID;
-	}
-
-	public static String getToken() {
-		return token;
-	}
-
-	public static void clearCreds() {
-		token = "";
-		staffID = UUID.randomUUID();
-	}
-
-	public static int getRechten() {
-		return rechten;
 	}
 }
