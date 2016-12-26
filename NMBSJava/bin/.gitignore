@@ -1,5 +1,9 @@
-/dao/
-/model/
-/services/
+/api/
 /controller/
+/dao/
+/external_jars/
+/gui/
+/model/
+/panels/
+/services/
 /tests/
