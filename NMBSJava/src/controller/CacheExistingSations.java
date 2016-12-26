@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 
+@Deprecated
 public class CacheExistingSations {
 
 	private static ArrayList<String> allStations;

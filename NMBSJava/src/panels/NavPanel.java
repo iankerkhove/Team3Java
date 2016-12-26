@@ -3,6 +3,7 @@ package panels;
 import java.awt.GridLayout;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -24,7 +25,9 @@ public class NavPanel extends JPanel {
 		return btnVoegMedewerker;
 	}
 
+	private JButton btnStaffBeheer;
 	private JButton btnLogout;
+	private JLabel madeBy;
 
 	public NavPanel() {
 		initialize();
@@ -33,7 +36,7 @@ public class NavPanel extends JPanel {
 	}
 
 	private void initialize() {
-		this.setLayout(new GridLayout(11, 1, 5, 5));
+		this.setLayout(new GridLayout(12, 1, 5, 5));
 	}
 
 	private void createComponents() {
@@ -74,13 +77,23 @@ public class NavPanel extends JPanel {
 		LangageHandler.chooseLangageBtn(btnPrijzenAanpassen, "pasPrijzen");
 		btnPrijzenAanpassen.setHorizontalAlignment(SwingConstants.LEFT);
 
+
 		btnVoegMedewerker = new JButton();
 		LangageHandler.chooseLangageBtn(btnVoegMedewerker, "voegMedewerker");
 		btnVoegMedewerker.setHorizontalAlignment(SwingConstants.LEFT);
 		
 		btnLogout = new JButton();
 		LangageHandler.chooseLangageBtn(btnLogout, "Uitloggen");
+
+		btnStaffBeheer = new JButton("Beheer Staff");
+		btnStaffBeheer.setHorizontalAlignment(SwingConstants.LEFT);
+
+		btnLogout = new JButton("Uitloggen");
+
 		btnLogout.setHorizontalAlignment(SwingConstants.LEFT);
+		
+		madeBy = new JLabel("By Groep 3");
+		madeBy.setHorizontalAlignment(SwingConstants.CENTER);
 	}
 
 	private void addComponents() {
@@ -93,8 +106,13 @@ public class NavPanel extends JPanel {
 		this.add(btnVerlorenVoorwerpenZoek);
 		this.add(btnbtnVerlorenVoorwerpenVoegToe);
 		this.add(btnPrijzenAanpassen);
+
 		this.add(btnVoegMedewerker);
+
+		//this.add(btnStaffBeheer);
+
 		this.add(btnLogout);
+		this.add(madeBy);
 	}
 
 	public JButton getBtnRouteZoek() {
@@ -135,5 +153,9 @@ public class NavPanel extends JPanel {
 
 	public JButton getBtnLogout() {
 		return btnLogout;
+	}
+
+	public JButton getBtnStaffBeheer() {
+		return btnStaffBeheer;
 	}
 }
