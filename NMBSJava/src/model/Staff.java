@@ -1,43 +1,30 @@
 package model;
 
-import java.time.Instant;
 import java.util.UUID;
 
-public class Staff
+public class Staff extends Person
 {
 	private UUID staffID;
-	private UUID addressID;
-	private Address address;
 	private UUID stationID;
 	private Station station;
-	private String firstName;
-	private String lastName;
 	private String userName;
 	private String password;
 	private int rights;
-	private String birthDate;
-	private String email;
 	private String apiToken;
-	private long lastUpdated;
 	
 	public Staff()
 	{}
 
-	public Staff(UUID addressID, UUID stationID, String firstName, String lastName, String userName, String password,
+	public Staff(Address address, Station station, String firstName, String lastName, String userName, String password,
 			int rights, String birthDate, String email)
 	{
+		super(firstName, lastName, birthDate, email, address);
 		this.staffID = UUID.randomUUID();
-		this.addressID = addressID;
-		this.stationID = stationID;
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.station = station;
 		this.userName = userName;
 		this.password = password;
 		this.rights = rights;
-		this.birthDate = birthDate;
-		this.email = email;
 		this.apiToken = null;
-		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 
 	public UUID getStaffID()
@@ -50,16 +37,6 @@ public class Staff
 		this.staffID = staffID;
 	}
 
-	public Address getAddress()
-	{
-		return address;
-	}
-
-	public void setAddress(Address address)
-	{
-		this.address = address;
-	}
-
 	public Station getStation()
 	{
 		return station;
@@ -70,16 +47,6 @@ public class Staff
 		this.station = station;
 	}
 
-	public UUID getAddressID()
-	{
-		return addressID;
-	}
-
-	public void setAddressID(UUID addressID)
-	{
-		this.addressID = addressID;
-	}
-
 	public UUID getStationID()
 	{
 		return stationID;
@@ -88,26 +55,6 @@ public class Staff
 	public void setStationID(UUID stationID)
 	{
 		this.stationID = stationID;
-	}
-
-	public String getFirstName()
-	{
-		return firstName;
-	}
-
-	public void setFirstName(String firstName)
-	{
-		this.firstName = firstName;
-	}
-
-	public String getLastName()
-	{
-		return lastName;
-	}
-
-	public void setLastName(String lastName)
-	{
-		this.lastName = lastName;
 	}
 
 	public String getUserName()
@@ -140,26 +87,6 @@ public class Staff
 		this.rights = rights;
 	}
 
-	public String getBirthDate()
-	{
-		return birthDate;
-	}
-
-	public void setBirthDate(String birthDate)
-	{
-		this.birthDate = birthDate;
-	}
-
-	public String getEmail()
-	{
-		return email;
-	}
-
-	public void setEmail(String email)
-	{
-		this.email = email;
-	}
-
 	public String getApiToken()
 	{
 		return apiToken;
@@ -168,21 +95,6 @@ public class Staff
 	public void setApiToken(String apiToken)
 	{
 		this.apiToken = apiToken;
-	}
-
-	public long getLastUpdated()
-	{
-		return lastUpdated;
-	}
-
-	public void setLastUpdated(long lastUpdated)
-	{
-		this.lastUpdated = lastUpdated;
-	}
-
-	public void update()
-	{
-		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 
 }
