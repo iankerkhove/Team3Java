@@ -118,7 +118,7 @@ public class AddressDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Address";
+		String sql = "SELECT a.`AddressID`, a.`Street`, a.`Number`, a.`City`, a.`ZipCode`, a.`Coordinates`, a.`LastUpdated` as AddressLastUpdated FROM Address a;";
 
 		try {
 
@@ -204,7 +204,7 @@ public class AddressDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Address WHERE AddressID=?";
+		String sql = "SELECT a.`AddressID`, a.`Street`, a.`Number`, a.`City`, a.`ZipCode`, a.`Coordinates`, a.`LastUpdated` as AddressLastUpdated FROM Address a WHERE AddressID=?";
 
 		try {
 
@@ -247,7 +247,7 @@ public class AddressDAO extends BaseDAO
 		a.setCity(rs.getString("City"));
 		a.setZipCode(rs.getInt("ZipCode"));
 		a.setCoordinates(rs.getString("Coordinates"));
-		a.setLastUpdated(rs.getLong("LastUpdated"));
+		a.setLastUpdated(rs.getLong("AddressLastUpdated"));
 		return a;
 	}
 

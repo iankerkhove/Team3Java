@@ -129,7 +129,7 @@ public class SyncStaffRunnable implements Runnable
 	{
 		for (int i = 0; i < staffList.size(); i++)
 		{
-			sDAO.insertOrUpdate(staffList.get(i));		
+			sDAO.insertOrUpdate(staffList.get(i));
 		}
 	}
 	
