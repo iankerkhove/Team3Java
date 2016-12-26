@@ -49,8 +49,6 @@ public class LoginController
 							{
 								JSONObject json = data.getJSONObject(0);
 								
-								System.out.println("pom");
-								
 								statuscode = json.getInt("StatusCode");
 								if (statuscode == 200) {
 									token = json.getString("Api_token");
