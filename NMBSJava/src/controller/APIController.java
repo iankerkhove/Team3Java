@@ -23,6 +23,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import model.SettingsSingleton;
+
 public class APIController
 {
 	private final static String BASE_URL_IR = "https://api.irail.be/connections/";
@@ -35,6 +37,7 @@ public class APIController
 	private HashMap<String, String> params;
 	private RequestType requestType;
 	private String base_url;
+	private SettingsSingleton settings;
 
 	public enum RequestType
 	{
@@ -51,6 +54,7 @@ public class APIController
 		this.url = url;
 		this.params = params;
 		this.requestType = requestType;
+		this.settings = SettingsSingleton.getSettings();
 
 		switch (apiUrl) {
 		case TRAINTRACKS:
@@ -127,7 +131,7 @@ public class APIController
 
 		// add header
 		get.setHeader("User-Agent", USER_AGENT);
-		get.setHeader("Authorization", "Bearer " + LoginController.getToken());
+		get.setHeader("Authorization", "Bearer " + this.settings.getApiToken());
 
 		if (this.base_url.equals(BASE_URL_IR)) {
 			this.params.putIfAbsent("format", "json");
@@ -157,7 +161,7 @@ public class APIController
 
 		// add header
 		post.setHeader("User-Agent", USER_AGENT);
-		post.setHeader("Authorization", "Bearer " + LoginController.getToken());
+		post.setHeader("Authorization", "Bearer " + this.settings.getApiToken());
 
 		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
 
@@ -177,7 +181,7 @@ public class APIController
 
 		// add header
 		put.setHeader("User-Agent", USER_AGENT);
-		put.setHeader("Authorization", "Bearer " + LoginController.getToken());
+		put.setHeader("Authorization", "Bearer " + this.settings.getApiToken());
 
 		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
 
@@ -197,7 +201,7 @@ public class APIController
 
 		// add header
 		put.setHeader("User-Agent", USER_AGENT);
-		put.setHeader("Authorization", "Bearer " + LoginController.getToken());
+		put.setHeader("Authorization", "Bearer " + this.settings.getApiToken());
 		put.setHeader("Content-Type", "application/json");
 
 		JSONArray list = new JSONArray();

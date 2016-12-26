@@ -110,8 +110,7 @@ public class TypeTicketDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, t.LastUpdated as TypeTikcetLastUpdated"
-				+ "FROM TypeTicket t;";
+		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, t.LastUpdated as TypeTikcetLastUpdated FROM TypeTicket t ORDER BY t.Name;";
 
 		try {
 
@@ -187,6 +186,47 @@ public class TypeTicketDAO extends BaseDAO
 			}
 		}
 	}
+	
+	public TypeTicket selectOneOnName(String typeTicketName, int comfortClass)
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT t.TypeTicketID, t.Name, t.Price, t.ComfortClass, "
+				+ "t.LastUpdated as TypeTikcetLastUpdated FROM TypeTicket t" + "WHERE Name = ? AND ComfortClass = ?;";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, typeTicketName);
+			ps.setInt(2, comfortClass);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return resultToModel(rs);
+			else
+				return null;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
 
 	public static TypeTicket resultToModel(ResultSet rs) throws SQLException
 	{
@@ -230,6 +270,42 @@ public class TypeTicketDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+
+	public int updatePrice(String typeID, String typeTicketName, Double nieuwePrijs) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "UPDATE TypeTicket SET Name = ?, Price = ? WHERE TypeTicketID = ?;";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, typeTicketName);
+			ps.setDouble(2, nieuwePrijs);
+			ps.setString(3, typeID);
+			return ps.executeUpdate();
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
 			}
 			catch (SQLException e) {
 				System.out.println(e.getMessage());

@@ -272,6 +272,53 @@ public class StaffDAO extends BaseDAO
 			}
 		}
 	}
+	
+	public Staff selectOneOnUsername(String username)
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT Staff.StaffID, "
+				+ "a.AddressID, a.Street, a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
+				+ "s.StationID, s.Name, s.CoX, s.CoY, s.LastUpdated as StationLastUpdated, "
+				+ "Staff.FirstName, Staff.LastName, Staff.UserName, Staff.Password, Staff.Rights, "
+				+ "Staff.BirthDate, Staff.Email, Staff.Api_token, Staff.LastUpdated as StaffLastUpdated "
+				+ "FROM Staff "
+				+ "INNER JOIN Address a on a.AddressID = Staff.AddressID "
+				+ "INNER JOIN Station s on s.StationID = Staff.StationID "
+				+ "WHERE UserName = ?;";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, username);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return resultToModel(rs);
+			else
+				return null;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
 
 	public TreeMap<String, String> updateStatus()
 	{
