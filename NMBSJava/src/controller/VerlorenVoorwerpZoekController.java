@@ -1,7 +1,6 @@
 package controller;
 
-import java.awt.*;
-
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -12,81 +11,130 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
-import api.StationAPI;
-import panels.VerlorenVoorwerpZoekPanel;
 import gui.Popup;
+import model.SettingsSingleton;
+import panels.VerlorenVoorwerpZoekPanel;
 
 public class VerlorenVoorwerpZoekController {
 
 	private static ArrayList<String> desc;
-
 	private static JSONArray json;
+	private static SettingsSingleton settings;
 
 	public static void startListening(VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				settings = SettingsSingleton.getSettings();
 				verlorenVoorwerpZoek.getBtnToonAlles().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						readUrl();
+
+						int station = verlorenVoorwerpZoek.getTxtStation().getSelectedIndex() + 1;
+
 						desc = new ArrayList<String>();
-						for (int i = 0;i<json.length();i++) {
-							String v = json.getJSONObject(i).getString("TrainID") + " " +json.getJSONObject(i).getString("Description") +" "+ json.getJSONObject(i).getString("Date");
-							desc.add(v);
+						for (int i = 0; i < json.length(); i++) {
+							if (json.getJSONObject(i).getJSONObject("Station").getInt("StationID") == station) {
+								String v = json.getJSONObject(i).getJSONObject("Station").getString("Name") + " "
+										+ json.getJSONObject(i).getString("TrainID") + " "
+										+ json.getJSONObject(i).getString("Description") + " "
+										+ json.getJSONObject(i).getString("Date");
+								desc.add(v);
+							} else {
+								verlorenVoorwerpZoek.getLblResultat()
+										.setText("Er werd geen voorwerp in deze station teruggevonden!");
+							}
 						}
 						String ss = "";
-						for (String v: desc) {
+						for (String v : desc) {
 							ss += v + "\n";
 						}
-						verlorenVoorwerpZoek.getLblResultat().setText("<html>"
-								+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>").replaceAll("_", " ")
-								+ "</html>");
+						verlorenVoorwerpZoek.getLblResultat().setText("<html>" + ss.replaceAll("<", "&lt;")
+								.replaceAll(">", "&gt;").replaceAll("\n", "<br/>").replaceAll("_", " ") + "</html>");
 					}
+
 				});
 
 				verlorenVoorwerpZoek.getBtnZoek().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						readUrl();
 
-						//int station = verlorenVoorwerpZoek.getTxtStation().getSelectedIndex()+1;
+						// int station =
+						// verlorenVoorwerpZoek.getTxtStation().getSelectedIndex()+1;
 						String treinNummer = verlorenVoorwerpZoek.getTxtTreinNummer().getText();
 						String datum = verlorenVoorwerpZoek.getDatePicker().getJFormattedTextField().getText();
 						String omschrijving = verlorenVoorwerpZoek.getTxtOmschrijving().getText();
-						
-						if (treinNummer.equals(""))
-						{
+
+						if (treinNummer.equals("")) {
 							Popup.errorMessage("zoekErrorPopup", "zoekErrorPopupTitel");
-						}
-						else
-						{
-						String ss=null;
-						String error ="Er werd geen voorwerp teruggevonden!";
-						for (int i = 0;i<json.length();i++) {
-							if (json.getJSONObject(i).getString("TrainID").equals(treinNummer) && json.getJSONObject(i).getString("Date").equals(datum)){
-								ss = json.getJSONObject(i).getString("TrainID") + " " +json.getJSONObject(i).getString("Description") +" "+ json.getJSONObject(i).getString("Date");							
-								verlorenVoorwerpZoek.getLblResultat().setText("<html>"
-										+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>").replaceAll("_", " ")
-										+ "</html>");
-								System.out.println(ss);
+						} else {
+							String ss = null;
+							String error = "Er werd geen voorwerp teruggevonden!";
+							for (int i = 0; i < json.length(); i++) {
+								if (json.getJSONObject(i).getString("TrainID").equals(treinNummer)
+										&& json.getJSONObject(i).getString("Date").equals(datum)) {
+									ss = json.getJSONObject(i).getString("TrainID") + " "
+											+ json.getJSONObject(i).getString("Description") + " "
+											+ json.getJSONObject(i).getString("Date");
+									verlorenVoorwerpZoek.getLblResultat()
+											.setText("<html>"
+													+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+															.replaceAll("\n", "<br/>").replaceAll("_", " ")
+													+ "</html>");
+									System.out.println(ss);
+								}
+							}
+
+							if (ss == null) {
+								verlorenVoorwerpZoek.getLblResultat().setText("<html>" + error.replaceAll("<", "&lt;")
+										.replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
+
+								// String station =
+								// verlorenVoorwerpZoek.getTxtStation().getSelectedIndex()+1;
+								// String treinNummer =
+								// verlorenVoorwerpZoek.getTxtTreinNummer().getText();
+								// String datum =
+								// verlorenVoorwerpZoek.getDatePicker().getJFormattedTextField().getText();
+								//
+								// String ss=null;
+								// String error ="Er werd geen voorwerp
+								// teruggevonden!";
+								// for (int i = 0;i<json.length();i++) {
+								// if
+								// (json.getJSONObject(i).getString("TrainID").equals(treinNummer)
+								// &&
+								// json.getJSONObject(i).getString("Date").equals(datum)
+								// &&
+								// json.getJSONObject(i).getJSONObject("Station").getString("StationID")
+								// == station) {
+								// ss =
+								// json.getJSONObject(i).getJSONObject("Station").getString("Name")+
+								// " " +
+								// json.getJSONObject(i).getString("TrainID") +
+								// " "
+								// +json.getJSONObject(i).getString("Description")
+								// +" "+
+								// json.getJSONObject(i).getString("Date");
+								// verlorenVoorwerpZoek.getLblResultat().setText("<html>"
+								// + ss.replaceAll("<", "&lt;").replaceAll(">",
+								// "&gt;").replaceAll("\n",
+								// "<br/>").replaceAll("_", " ")
+								// + "</html>");
+								// }
+								// }
+								//
+								// if (ss == null){
+								// verlorenVoorwerpZoek.getLblResultat().setText("<html>"
+								// + error.replaceAll("<",
+								// "&lt;").replaceAll(">",
+								// "&gt;").replaceAll("\n", "<br/>")
+								// + "</html>");
+								// }
 							}
 						}
-
-						if (ss == null){
-							verlorenVoorwerpZoek.getLblResultat().setText("<html>"
-									+ error.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
-									+ "</html>");
-
-						}
-						System.out.println(datum);
 					}
-					}
+
 				});
-
-
-
-
-
 			}
 		});
 	}
@@ -101,7 +149,7 @@ public class VerlorenVoorwerpZoekController {
 
 			connection.setRequestMethod("GET");
 
-			connection.setRequestProperty("Authorization", "Bearer " + LoginController.getToken());
+			connection.setRequestProperty("Authorization", "Bearer " + settings.getApiToken());
 			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setRequestProperty("User-Agent",
 					"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.29 Safari/537.36");
@@ -113,7 +161,6 @@ public class VerlorenVoorwerpZoekController {
 				buffer.append(chars, 0, read);
 
 			json = new JSONArray(buffer.toString());
-
 
 		} catch (IOException e) {
 			e.printStackTrace();

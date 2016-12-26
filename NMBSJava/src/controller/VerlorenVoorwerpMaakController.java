@@ -1,7 +1,5 @@
 package controller;
 
-import java.awt.Component;
-
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,26 +8,27 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
 import org.json.JSONArray;
 
-import panels.VerlorenVoorwerpMaakPanel;
-import controller.URLCon;
-import gui.LangageHandler;
 import gui.Popup;
+import model.SettingsSingleton;
+import panels.VerlorenVoorwerpMaakPanel;
 
 public class VerlorenVoorwerpMaakController {
 
 	//private static ArrayList<String> stat;
 
 	private static JSONArray json;
+	private static SettingsSingleton settings;
 
 	public static void startListening(VerlorenVoorwerpMaakPanel verlorenVoorwerpMaak) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				settings = SettingsSingleton.getSettings();
+				
 				verlorenVoorwerpMaak.getBtnMaak().addActionListener(new ActionListener() {
 					@SuppressWarnings("static-access")
 					public void actionPerformed(ActionEvent e) {
@@ -83,7 +82,7 @@ public class VerlorenVoorwerpMaakController {
 
 			connection.setRequestMethod("GET");
 
-			connection.setRequestProperty("Authorization", "Bearer " + LoginController.getToken());
+			connection.setRequestProperty("Authorization", "Bearer " + settings.getApiToken());
 			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setRequestProperty("User-Agent",
 					"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.29 Safari/537.36");
