@@ -22,6 +22,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import model.SettingsSingleton;
+
 public class UrlConWorker extends SwingWorker<JSONObject, Object>
 {
 
@@ -35,6 +37,7 @@ public class UrlConWorker extends SwingWorker<JSONObject, Object>
 	private HashMap<String, String> params;
 	private RequestType requestType;
 	private String base_url;
+	private SettingsSingleton settings;
 
 	public enum RequestType
 	{
@@ -51,6 +54,8 @@ public class UrlConWorker extends SwingWorker<JSONObject, Object>
 		this.url = url;
 		this.params = params;
 		this.requestType = requestType;
+		
+		settings = SettingsSingleton.getSettings();
 
 		switch (apiUrl) {
 		case TRAINTRACKS:
@@ -111,7 +116,7 @@ public class UrlConWorker extends SwingWorker<JSONObject, Object>
 
 		// add header
 		get.setHeader("User-Agent", USER_AGENT);
-		get.setHeader("Authorization", "Bearer " + LoginController.getToken());
+		get.setHeader("Authorization", "Bearer " + settings.getApiToken());
 
 		if (this.base_url.equals(BASE_URL_IR)) {
 			this.params.putIfAbsent("format", "json");
@@ -141,7 +146,7 @@ public class UrlConWorker extends SwingWorker<JSONObject, Object>
 
 		// add header
 		post.setHeader("User-Agent", USER_AGENT);
-		post.setHeader("Authorization", "Bearer " + LoginController.getToken());
+		post.setHeader("Authorization", "Bearer " + settings.getApiToken());
 
 		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
 
@@ -161,7 +166,7 @@ public class UrlConWorker extends SwingWorker<JSONObject, Object>
 
 		// add header
 		put.setHeader("User-Agent", USER_AGENT);
-		put.setHeader("Authorization", "Bearer " + LoginController.getToken());
+		put.setHeader("Authorization", "Bearer " + settings.getApiToken());
 
 		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
 
