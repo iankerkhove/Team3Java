@@ -109,7 +109,7 @@ public class TypePassDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypePassID, t.Name, t.Price, t.LastUpdated as TypePassLastUpdated" + "FROM TypePass t;";
+		String sql = "SELECT t.TypePassID, t.Name, t.Price, t.LastUpdated as TypePassLastUpdated FROM TypePass t ORDER BY t.Name;";
 
 		try {
 
@@ -151,8 +151,7 @@ public class TypePassDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypePassID, t.Name, t.Price, t.LastUpdated as TypePassLastUpdated" + "FROM TypePass t"
-				+ "WHERE TypePassID = ?;";
+		String sql = "SELECT t.TypePassID, t.Name, t.Price, t.LastUpdated as TypePassLastUpdated FROM TypePass t WHERE TypePassID = ?;";
 
 		try {
 
@@ -162,6 +161,45 @@ public class TypePassDAO extends BaseDAO
 			ps = getConnection().prepareStatement(sql);
 
 			ps.setString(1, typePassID);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return resultToModel(rs);
+			else
+				return null;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+	
+	public TypePass selectOneOnName(String typePassName)
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT t.TypePassID, t.Name, t.Price, t.LastUpdated as TypePassLastUpdated FROM TypePass t WHERE Name = ?;";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, typePassName);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);
@@ -226,6 +264,42 @@ public class TypePassDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+
+	public int updatePrice(String typeID, String typePassName, Double price) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "UPDATE TypePass SET Name = ?, Price = ? WHERE TypePassID = ?;";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, typePassName);
+			ps.setDouble(2, price);
+			ps.setString(3, typeID);
+			return ps.executeUpdate();
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
 			}
 			catch (SQLException e) {
 				System.out.println(e.getMessage());

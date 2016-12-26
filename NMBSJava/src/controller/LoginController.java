@@ -3,119 +3,133 @@ package controller;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
-import javax.swing.SwingWorker;
-
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-import controller.UrlConWorker.APIUrl;
-import controller.UrlConWorker.RequestType;
+import controller.APIController.APIUrl;
+import controller.APIController.RequestType;
+import dao.StaffDAO;
+import model.SettingsSingleton;
+import model.Staff;
 import panels.LoginPanel;
+import services.APIThread;
+import services.JBcryptVerifier;
+import services.ThreadListener;
 
-public class LoginController
-{
+public class LoginController {
 
-	private static UUID staffID;
-	private static String token;
-	private static int statuscode;
+	private static SettingsSingleton settings;
 
-	private static UrlConWorker urlConWorker;
-
-	public static void login(LoginPanel l)
-	{
+	public static void login(LoginPanel l) {
 		EventQueue.invokeLater(new Runnable() {
-			public void run()
-			{
+			public void run() {
 				l.getBtnLogin().addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e)
-					{
-						readUrl(l);
-
+					public void actionPerformed(ActionEvent e) {
+						settings = SettingsSingleton.getSettings();
+						verify(l);
 					}
 				});
 			}
 		});
 	}
 
-	private static void readUrl(LoginPanel l)
-	{
+	private static void verify(LoginPanel l) {
 		String usrn = l.getTxtUsername().getText().replaceAll("&", "%26");
 		String password = l.getTxtPassword().getText().replaceAll("&", "%26");
-		// boolean chAdmin = l.getChAdmin().isSelected();
 
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("username", usrn);
-		params.put("password", password);
+		StaffDAO handler = new StaffDAO();
+		Staff s = handler.selectOneOnUsername(usrn);
+		
+		if (s == null)
+		{
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("username", usrn);
+			params.put("password", password);
 
-		urlConWorker = new UrlConWorker(APIUrl.G3, "staff/login", RequestType.POST, params);
+			APIThread irailsAPI = new APIThread(APIUrl.G3, "staff/login", RequestType.POST, params);
+			ThreadListener listener = new ThreadListener() {
 
-		urlConWorker.addPropertyChangeListener(new PropertyChangeListener() {
-
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-
-				if ("state".equals(evt.getPropertyName()) && SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
-
-					try {
-						JSONObject json = urlConWorker.get();
-
-						statuscode = json.getInt("StatusCode");
-						if (statuscode == 200) {
-							token = json.getString("Api_token");
-							staffID = UUID.fromString(json.getString("StaffID"));
-						}
-
-						if (statuscode == 200) {
-							l.getLblResult().setText("");
-							GUIController.getFrame().getContentPane().removeAll();
-							GUIController.showApp();
-							CacheExistingSations.cache();
-							CacheTicketTypes.cache();
-							CachePassTypes.cache();
-						}
-						else {
-							l.getLblResult().setText("Fout, probeer opnieuw!");
-							l.getTxtUsername().setText("");
-							l.getTxtPassword().setText("");
-						}
+				@Override
+				public void setResult(JSONArray data)
+				{
+					JSONObject obj = data.getJSONObject(0);
+					
+					if (obj.getInt("StatusCode") != 200)
+					{
+						connectionError(l);
 					}
-					catch (InterruptedException | ExecutionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					else
+					{	
+						Staff s = new Staff();
+						s.setStaffID(UUID.fromString(obj.getString("StaffID")));
+						s.setRights(obj.getInt("Rights"));
+						s.setApiToken(obj.getString("Api_token"));
+						
+						connection(l, s);
 					}
 				}
-
+				
+			};
+			
+			irailsAPI.settListener(listener);
+			irailsAPI.start();
+		}
+		else
+		{
+			if (JBcryptVerifier.checkPassword(password, s.getPassword()))
+			{
+				connection(l, s);
 			}
-
-		});
-
-		urlConWorker.execute();
+			else
+			{
+				l.getLblResult().setText("Fout password, probeer opnieuw!");
+				l.getTxtPassword().setText("");
+			}
+				
+		} 
 	}
-
-	public static UUID getStaffID()
+	
+	private static void connection(LoginPanel l, Staff s)
 	{
-		return staffID;
+		boolean chAdmin = l.getChAdmin().isSelected();
+		
+		if(chAdmin)
+		{
+			if (s.getRights() == 1)
+				connectionSucceed(l, s, 1);
+			else
+				l.getLblResult().setText("Geen admin rechten, probeer opnieuw!");
+			
+		} else {
+			connectionSucceed(l, s, 0);
+		}
+	
 	}
-
-	public static String getToken()
+	
+	private static void connectionSucceed(LoginPanel l, Staff s, int rights)
 	{
-		return token;
+		settings.setRights(rights);
+		settings.setApiToken(s.getApiToken());
+		settings.setStaffID(s.getStaffID());
+		
+		l.getLblResult().setText("");
+		GUIController.getFrame().getContentPane().removeAll();
+		GUIController.showApp();
 	}
-
-	public static int getStatuscode()
+	
+	private static void connectionError(LoginPanel l)
 	{
-		return statuscode;
+		l.getLblResult().setText("User ongeldig, probeer opnieuw!");
+		l.getTxtUsername().setText("");
+		l.getTxtPassword().setText("");
 	}
-
-	public static void clearCreds()
-	{
-		token = "";
-		staffID = UUID.randomUUID();
-	}
+	
+	
+	
+	
+	
+	
 }
