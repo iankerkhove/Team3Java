@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 
 import services.SyncAddressRunnable;
 import services.SyncAllRunnable;
-import services.SyncCustomerRunnable;
 
 public class SyncController
 {
