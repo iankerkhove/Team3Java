@@ -19,13 +19,14 @@ import org.json.JSONArray;
 import panels.VerlorenVoorwerpMaakPanel;
 import controller.URLCon;
 import gui.LangageHandler;
+import gui.Popup;
 
 public class VerlorenVoorwerpMaakController {
-	
+
 	//private static ArrayList<String> stat;
-	
+
 	private static JSONArray json;
-	
+
 	public static void startListening(VerlorenVoorwerpMaakPanel verlorenVoorwerpMaak) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -33,43 +34,45 @@ public class VerlorenVoorwerpMaakController {
 					@SuppressWarnings("static-access")
 					public void actionPerformed(ActionEvent e) {
 						readUrl();
-						
+						JFrame frame = new JFrame();
+
 						String station = verlorenVoorwerpMaak.getTxtStation().getSelectedItem().toString();
-						
 						String treinNummer = verlorenVoorwerpMaak.getTxtTrein().getText();
 						String omschrijving = verlorenVoorwerpMaak.getTxtOmschrijving().getText();
 						String datum = verlorenVoorwerpMaak.getDatePicker().getJFormattedTextField().getText();
 						String omschrijving2 = omschrijving.replaceAll(" ", "_");
 						String statId = "";
-						
-						for (int i = 0; i<json.length();i++)
+
+
+						if (treinNummer.equals("") ||omschrijving.equals(""))
 						{
-							if (station.equals(json.getJSONObject(i).getString("Name").toString()))
-							{
-								statId = json.getJSONObject(i).getString("StationID").toString();
-							}							
+							Popup.warningMessage("voorwerpWarningPopup", "voorwerpWarningPopup");
 						}
-						
-						System.out.println(statId);
-						
-						URLCon url = new URLCon();
-						try {
-							url.readUrl("http://nmbs-team.tk/api/lostObject/create?StationID=" +statId +"&Description=" + omschrijving2 + "&Date=" + datum +"&TrainID=" + treinNummer, "POST");
-							JFrame frame = new JFrame();
-							JOptionPane.showMessageDialog(frame,
-								    LangageHandler.chooseLangageCmb("voorwerpPopup"),
-								    LangageHandler.chooseLangageCmb("succesvolToegevoegd"),
-								    JOptionPane.PLAIN_MESSAGE);
-						} catch (IOException e2) {
-							// TODO Auto-generated catch block
-							e2.printStackTrace();
+						else
+						{
+							for (int i = 0; i<json.length();i++)
+							{
+								if (station.equals(json.getJSONObject(i).getString("Name").toString()))
+								{
+									statId = json.getJSONObject(i).getString("StationID").toString();
+								}							
+							}
+
+							URLCon url = new URLCon();
+							try {
+								url.readUrl("http://nmbs-team.tk/api/lostObject/create?StationID=" +statId +"&Description=" + omschrijving2 + "&Date=" + datum +"&TrainID=" + treinNummer, "POST");
+								Popup.plainMessage("voorwerpPlainPopup", "voorwerpPlainPopupTitel");
+							} catch (IOException e2) {
+								// TODO Auto-generated catch block
+								e2.printStackTrace();
+							}
 						}
 					}
 				});
 			}
 		});
 	}
-	
+
 	private static void readUrl() {
 
 		BufferedReader reader = null;
@@ -92,8 +95,8 @@ public class VerlorenVoorwerpMaakController {
 				buffer.append(chars, 0, read);
 
 			json = new JSONArray(buffer.toString());
-			
-			
+
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {

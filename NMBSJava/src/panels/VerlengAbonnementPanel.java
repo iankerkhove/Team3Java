@@ -155,7 +155,7 @@ public class VerlengAbonnementPanel extends JPanel {
 
 		lblTreinkaart = new JLabel();
 		LangageHandler.chooseLangageLbl(lblTreinkaart, "treinkaart");
-		String[] soortKaart = {LangageHandler.chooseLangageCmb("trajecttreinkaart"), LangageHandler.chooseLangageCmb("halftijdstreinkaart"), LangageHandler.chooseLangageCmb("nettreinkaart"), LangageHandler.chooseLangageCmb("schooltreinkaart") };
+		String[] soortKaart = {LangageHandler.chooseLangage("trajecttreinkaart"), LangageHandler.chooseLangage("halftijdstreinkaart"), LangageHandler.chooseLangage("nettreinkaart"), LangageHandler.chooseLangage("schooltreinkaart") };
 		cbxTreinkaart = new JComboBox(soortKaart);
 		
 		treinkaart.add(lblTreinkaart);
@@ -187,7 +187,7 @@ public class VerlengAbonnementPanel extends JPanel {
 
 		lblDuur = new JLabel();
 		LangageHandler.chooseLangageLbl(lblDuur, "duur");
-		String[] aantalMaanden = { LangageHandler.chooseLangageCmb("1maand"), LangageHandler.chooseLangageCmb("3maand"), LangageHandler.chooseLangageCmb("12maand")};
+		String[] aantalMaanden = { LangageHandler.chooseLangage("1maand"), LangageHandler.chooseLangage("3maand"), LangageHandler.chooseLangage("12maand")};
 		cbxDuur = new JComboBox(aantalMaanden);
 		
 		duur.add(lblDuur);
