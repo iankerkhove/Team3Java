@@ -56,5 +56,10 @@ public class Customer extends Person
 	{
 		lastUpdated = Instant.now().getEpochSecond();
 	}
+
+	public void setAddress(Address a) {
+		this.address = a;
+		
+	}
 	
 }

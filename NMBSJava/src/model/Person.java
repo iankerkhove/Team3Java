@@ -9,7 +9,7 @@ public class Person
 	private String lastName;
 	private Date birthDate;
 	private String emailAddress;
-	private Address address;
+	protected Address address;
 	private long lastUpdated;
 
 	public Person()
