@@ -1,12 +1,24 @@
 package controller;
 
 import java.awt.BorderLayout;
-
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import gui.GUIFrame;
-import panels.*;
+import model.SettingsSingleton;
+import panels.BiljetPanel;
+import panels.LoginPanel;
+import panels.NavPanel;
+import panels.NieuwAbonnementPanel;
+import panels.PasPrijzenAanPanel;
+import panels.RouteberekeningPanel;
+import panels.StartPanel;
+import panels.StationboardPanel;
+import panels.TreinopzoekingPanel;
+import panels.VerlengAbonnementPanel;
+import panels.VerlorenVoorwerpMaakPanel;
+import panels.VerlorenVoorwerpZoekPanel;
 
 public class GUIController {
 
@@ -26,6 +38,8 @@ public class GUIController {
 	private static VerlorenVoorwerpMaakPanel verlorenVoorwerpMaak;
 	private static PasPrijzenAanPanel prijzenAanpassen;
 
+	private static SettingsSingleton settings;
+	
 	public static void start() {
 		// Make frame after performing all other tasks
 		EventQueue.invokeLater(new Runnable() {
@@ -66,8 +80,9 @@ public class GUIController {
 	private static void init() {
 		// fixed navbar
 		nav = new NavPanel();
+		settings = SettingsSingleton.getSettings();
 		
-		if (LoginController.getRechten() == 0) {
+		if (settings.getRights() == 0) {
 			nav.getBtnPrijzenAanpassen().setEnabled(false);
 			nav.getBtnStaffBeheer().setEnabled(false);
 		}
@@ -157,7 +172,7 @@ public class GUIController {
 	public static void logout() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				LoginController.clearCreds();
+				settings.clearCreds();
 				frame.getContentPane().removeAll();
 				frame.setTitle("NMBSTeam - Login");
 				

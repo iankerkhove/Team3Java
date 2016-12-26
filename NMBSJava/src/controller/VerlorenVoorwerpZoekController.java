@@ -1,7 +1,6 @@
 package controller;
 
-import java.awt.*;
-
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -12,6 +11,8 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
+
+import model.SettingsSingleton;
 import panels.VerlorenVoorwerpZoekPanel;
 
 public class VerlorenVoorwerpZoekController {
@@ -19,12 +20,14 @@ public class VerlorenVoorwerpZoekController {
 	private static ArrayList<String> desc;
 
 	private static JSONArray json;
+	private static SettingsSingleton settings;
 
 	public static void startListening(VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				verlorenVoorwerpZoek.getBtnToonAlles().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						settings = SettingsSingleton.getSettings();
 						readUrl();
 
 						int station = verlorenVoorwerpZoek.getTxtStation().getSelectedIndex()+1;
@@ -57,26 +60,26 @@ public class VerlorenVoorwerpZoekController {
 						readUrl();
 
 
-						int station = verlorenVoorwerpZoek.getTxtStation().getSelectedIndex()+1;
-						String treinNummer = verlorenVoorwerpZoek.getTxtTreinNummer().getText();
-						String datum = verlorenVoorwerpZoek.getDatePicker().getJFormattedTextField().getText();
-
-						String ss=null;
-						String error ="Er werd geen voorwerp teruggevonden!";
-						for (int i = 0;i<json.length();i++) {
-							if (json.getJSONObject(i).getString("TrainID").equals(treinNummer) && json.getJSONObject(i).getString("Date").equals(datum) && json.getJSONObject(i).getJSONObject("Station").getInt("StationID") == station) {
-								ss = json.getJSONObject(i).getJSONObject("Station").getString("Name")+ " " + json.getJSONObject(i).getString("TrainID") + " " +json.getJSONObject(i).getString("Description") +" "+ json.getJSONObject(i).getString("Date");							
-								verlorenVoorwerpZoek.getLblResultat().setText("<html>"
-										+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>").replaceAll("_", " ")
-										+ "</html>");
-							}
-						}
-
-						if (ss == null){
-							verlorenVoorwerpZoek.getLblResultat().setText("<html>"
-									+ error.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
-									+ "</html>");
-						}
+//						String station = verlorenVoorwerpZoek.getTxtStation().getSelectedIndex()+1;
+//						String treinNummer = verlorenVoorwerpZoek.getTxtTreinNummer().getText();
+//						String datum = verlorenVoorwerpZoek.getDatePicker().getJFormattedTextField().getText();
+//
+//						String ss=null;
+//						String error ="Er werd geen voorwerp teruggevonden!";
+//						for (int i = 0;i<json.length();i++) {
+//							if (json.getJSONObject(i).getString("TrainID").equals(treinNummer) && json.getJSONObject(i).getString("Date").equals(datum) && json.getJSONObject(i).getJSONObject("Station").getString("StationID") == station) {
+//								ss = json.getJSONObject(i).getJSONObject("Station").getString("Name")+ " " + json.getJSONObject(i).getString("TrainID") + " " +json.getJSONObject(i).getString("Description") +" "+ json.getJSONObject(i).getString("Date");							
+//								verlorenVoorwerpZoek.getLblResultat().setText("<html>"
+//										+ ss.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>").replaceAll("_", " ")
+//										+ "</html>");
+//							}
+//						}
+//
+//						if (ss == null){
+//							verlorenVoorwerpZoek.getLblResultat().setText("<html>"
+//									+ error.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
+//									+ "</html>");
+//						}
 					}
 				});
 			}
@@ -93,7 +96,7 @@ public class VerlorenVoorwerpZoekController {
 
 			connection.setRequestMethod("GET");
 
-			connection.setRequestProperty("Authorization", "Bearer " + LoginController.getToken());
+			connection.setRequestProperty("Authorization", "Bearer " + settings.getApiToken());
 			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setRequestProperty("User-Agent",
 					"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.29 Safari/537.36");
