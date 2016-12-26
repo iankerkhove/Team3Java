@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import org.json.JSONArray;
 
+@Deprecated
 public class CacheTicketTypes {
 
 	private static JSONArray ticketTypes = new JSONArray("[]");
@@ -18,10 +19,10 @@ public class CacheTicketTypes {
 	}
 
 	// get price from ticketID
-	public static double getPrice(int typeId) {
+	public static double getPrice(String typeId) {
 		for (int i = 0; i < ticketTypes.length(); i++) {
-			if (typeId == ticketTypes.getJSONObject(i).getInt("TypeTicketID")) {
-				return ticketTypes.getJSONObject(typeId).getDouble("Price");
+			if (typeId.equals(ticketTypes.getJSONObject(i).getString("TypeTicketID"))) {
+				return ticketTypes.getJSONObject(i).getDouble("Price");
 			}			
 		}
 		return -1;
@@ -39,20 +40,20 @@ public class CacheTicketTypes {
 	}
 
 	// get typeticketID from name and class
-	public static int getTypeTicketID(String name, int comfortClass) {
+	public static String getTypeTicketID(String name, int comfortClass) {
 		for (int j = 0; j < ticketTypes.length(); j++) {
 			if (ticketTypes.getJSONObject(j).getString("Name").toUpperCase().equals(name.toUpperCase())
 					&& ticketTypes.getJSONObject(j).getInt("ComfortClass") == comfortClass) {
-				return ticketTypes.getJSONObject(j).getInt("TypeTicketID");
+				return ticketTypes.getJSONObject(j).getString("TypeTicketID");
 			}
 		}
-		return -1;
+		return "";
 	}
 
 	// get name from typeid
-	public static double getName(int typeTicketID) {
+	public static double getName(String typeTicketID) {
 		for (int i = 0; i < ticketTypes.length(); i++) {
-			if (ticketTypes.getJSONObject(i).getInt("TypeTicketID") == typeTicketID) {
+			if (ticketTypes.getJSONObject(i).getString("TypeTicketID").equals(typeTicketID)) {
 				return ticketTypes.getJSONObject(i).getDouble("Price");
 			}
 		}
@@ -75,9 +76,9 @@ public class CacheTicketTypes {
 	}
 
 	// get comfortclass from typeticketID
-	public static int getComfortClass(int typeTicketID) {
+	public static int getComfortClass(String typeTicketID) {
 		for (int i = 0; i < ticketTypes.length(); i++) {
-			if (ticketTypes.getJSONObject(i).getInt("TypeTicketID") == typeTicketID) {
+			if (ticketTypes.getJSONObject(i).getString("TypeTicketID").equals(typeTicketID)) {
 				return ticketTypes.getJSONObject(i).getInt("ComfortClass");
 			}
 		}

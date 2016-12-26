@@ -1,16 +1,26 @@
 package controller;
 
 import java.awt.BorderLayout;
-
-
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import gui.GUIFrame;
 import gui.LangageHandler;
-import panels.*;
-
-import controller.TaalController;
+import model.SettingsSingleton;
+import panels.BiljetPanel;
+import panels.LoginPanel;
+import panels.NavPanel;
+import panels.NieuwAbonnementPanel;
+import panels.PasPrijzenAanPanel;
+import panels.RouteberekeningPanel;
+import panels.StaffToevoegenPanel;
+import panels.StartPanel;
+import panels.StationboardPanel;
+import panels.TreinopzoekingPanel;
+import panels.VerlengAbonnementPanel;
+import panels.VerlorenVoorwerpMaakPanel;
+import panels.VerlorenVoorwerpZoekPanel;
 
 public class GUIController {
 
@@ -30,7 +40,10 @@ public class GUIController {
 	private static VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek;
 	private static VerlorenVoorwerpMaakPanel verlorenVoorwerpMaak;
 	private static StaffToevoegenPanel staff;
+	private static PasPrijzenAanPanel prijzenAanpassen;
 
+	private static SettingsSingleton settings;
+	
 	public static void start() {
 		// Make frame after performing all other tasks
 		EventQueue.invokeLater(new Runnable() {
@@ -66,7 +79,7 @@ public class GUIController {
 	public static void logout() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				LoginController.clearCreds();
+				settings.clearCreds();
 				frame.getContentPane().removeAll();
 				l = new LoginPanel();
 				frame.getContentPane().add(l, BorderLayout.CENTER);
@@ -84,6 +97,11 @@ public class GUIController {
 					frame.getContentPane().removeAll();
 					frame.setTitle("NMBSTeam - Start");
 					init();
+
+					// start syncing on hourly-base
+					SyncController.Start();
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -94,6 +112,12 @@ public class GUIController {
 	private static void init() {
 		// fixed navbar
 		nav = new NavPanel();
+		settings = SettingsSingleton.getSettings();
+		
+		if (settings.getRights() == 0) {
+			nav.getBtnPrijzenAanpassen().setEnabled(false);
+			nav.getBtnStaffBeheer().setEnabled(false);
+		}
 		// startpanel
 		start = new StartPanel();
 		// start listening for actions on navbar
@@ -171,6 +195,11 @@ public class GUIController {
 						startVoegMedewerker();
 					}
 				});
+				nav.getBtnPrijzenAanpassen().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startPrijzenAanpassen();
+					}
+				});
 				nav.getBtnLogout().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						logout();
@@ -179,6 +208,32 @@ public class GUIController {
 			}
 		});
 	}
+	
+	/*public static void login() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				LoginPanel l = new LoginPanel();
+				frame.getContentPane().add(l, BorderLayout.CENTER);
+				frame.setContentPane(frame.getContentPane());
+				LoginController.login(l);
+			}
+		});
+	}
+	
+	public static void logout() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				settings.clearCreds();
+				frame.getContentPane().removeAll();
+				frame.setTitle("NMBSTeam - Login");
+				
+				LoginPanel l = new LoginPanel();
+				frame.getContentPane().add(l, BorderLayout.CENTER);
+				frame.setContentPane(frame.getContentPane());
+				LoginController.login(l);
+			}
+		});
+	}*/
 
 	private static void startRouteberekening() {
 		route = new RouteberekeningPanel();
@@ -259,6 +314,15 @@ public class GUIController {
 		frame.getContentPane().add(staff);
 		frame.setContentPane(frame.getContentPane());
 		StaffToevoegenController.startListening(staff);
+	}
+		
+	private static void startPrijzenAanpassen() {
+		prijzenAanpassen = new PasPrijzenAanPanel();
+		frame.setTitle("NMBSTeam - Pas prijzen aan");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(prijzenAanpassen);
+		frame.setContentPane(frame.getContentPane());
+		PasPrijzenAanController.startListening(prijzenAanpassen);
 	}
 
 	public static GUIFrame getFrame() {

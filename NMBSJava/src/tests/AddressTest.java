@@ -32,7 +32,7 @@ public class AddressTest {
 
 	@Test 
 	public void AddressIDTest() {
-		adres.setAddressID(3);
+		//adres.setAddressID(3);
 		assertEquals(3, adres.getAddressID());
 	}
 
@@ -68,7 +68,7 @@ public class AddressTest {
 
 	@Test
 	public void ToStringTest() {
-		adres.setAddressID(3);
+		//adres.setAddressID(3);
 		assertEquals(
 				"Address [addressID=3, street=Nijverheidskaai, number=170, city=Brussel, zipCode=1000, coordinates=50.8410136 - 4.322051299999998]",
 				adres.toString());
@@ -76,7 +76,7 @@ public class AddressTest {
 
 	@Test
 	public void GetAPItest() {
-		adres.setAddressID(3);
+		//adres.setAddressID(3);
 		try {
 			temp = new JSONObject(URLCon.readUrl("http://nmbs-team.tk/api/address/3", "GET"));
 		} catch (IOException e) {
