@@ -334,9 +334,9 @@ public class StaffDAO extends BaseDAO
 		staff.setPassword(rs.getString("Password"));
 		staff.setRights(rs.getInt("Rights"));
 		staff.setEmail(rs.getString("Email"));
-		staff.setBirthDate(rs.getDate("BirthDate"));
+		staff.setBirthDate(rs.getString("BirthDate"));
 		staff.setApiToken(rs.getString("Api_token"));
-		staff.setLastUpdated(rs.getLong("LastUpdated"));
+		staff.setLastUpdated(rs.getLong("StaffLastUpdated"));
 
 
 		return staff;
