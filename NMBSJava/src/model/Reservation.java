@@ -9,7 +9,7 @@ public class Reservation
 	private UUID reservationID;
 	private int passengerCount;
 	private String trainID;
-	private Date reservationDate;
+	private String reservationDate;
 	private double price;
 	private Route route;
 	private UUID routeID;
@@ -18,7 +18,7 @@ public class Reservation
 	public Reservation()
 	{}
 
-	public Reservation(int passengerCount, String trainID, double price, Date reservationDate, UUID routeID)
+	public Reservation(int passengerCount, String trainID, double price, String reservationDate, UUID routeID)
 	{
 		this.reservationID = UUID.randomUUID();
 		this.passengerCount = passengerCount;
@@ -59,12 +59,12 @@ public class Reservation
 		this.trainID = trainID;
 	}
 
-	public Date getReservationDate()
+	public String getReservationDate()
 	{
 		return reservationDate;
 	}
 
-	public void setReservationDate(Date reservationDate)
+	public void setReservationDate(String reservationDate)
 	{
 		this.reservationDate = reservationDate;
 	}
