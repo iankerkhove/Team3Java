@@ -142,13 +142,11 @@ public class LineDAO extends BaseDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT l.LineID,  r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
+		String sql = "SELECT l.LineID,  r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation,"
 				+ " s.Name, s.CoX, s.CoY, s.LastUpdated as StationLastUpdated, "
 				+ "r.LastUpdated as RouteLastUpdated, l.TrainType, l.LastUpdated as LineLastUpdated FROM Line l "
 				+ "INNER JOIN Route r ON l.RouteID = r.RouteID "
-				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID "
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID;";
+				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID;";
 
 		try {
 
@@ -186,13 +184,11 @@ public class LineDAO extends BaseDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT l.LineID,  r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
+		String sql = "SELECT l.LineID,  r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation,"
 				+ " s.Name, s.CoX, s.CoY, s.LastUpdated as StationLastUpdated, "
 				+ "r.LastUpdated as RouteLastUpdated, l.TrainType, l.LastUpdated as LineLastUpdated FROM Line l "
 				+ "INNER JOIN Route r ON l.RouteID = r.RouteID "
 				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID "
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID "
 				+ "WHERE l.LineID = ?;";
 		try {
 
