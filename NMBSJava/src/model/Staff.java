@@ -11,10 +11,9 @@ public class Staff extends Person
 	private String password;
 	private int rights;
 	private String apiToken;
-	
+
 	public Staff()
 	{}
-
 	public Staff(Address address, Station station, String firstName, String lastName, String userName, String password,
 			int rights, String birthDate, String email)
 	{
@@ -86,7 +85,6 @@ public class Staff extends Person
 	{
 		this.rights = rights;
 	}
-
 	public String getApiToken()
 	{
 		return apiToken;

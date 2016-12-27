@@ -17,6 +17,17 @@ public class SyncAllRunnable implements Runnable
     	workQueue.add(new SyncStationRunnable());
     	workQueue.add(new SyncStaffRunnable());
     	workQueue.add(new SyncCustomerRunnable());
+    	workQueue.add(new SyncDiscountRunnable());
+    	workQueue.add(new SyncLostObjectRunnable());
+    	workQueue.add(new SyncPassRunnable());
+    	workQueue.add(new SyncRailCardRunnable());
+    	workQueue.add(new SyncReservationRunnable());
+    	
+    	
+    	
+    	workQueue.add(new SyncLineRunnable());
+    	workQueue.add(new SyncTypePassRunnable());
+    	workQueue.add(new SyncTypeTicketRunnable());
     	
     	
         

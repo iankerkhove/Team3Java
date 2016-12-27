@@ -51,7 +51,7 @@ public class SyncLineRunnable implements Runnable
 				Line a = new Line();
 				
 				a.setLineID(UUID.fromString(obj.getString("LineID")));
-				a.setRouteID(UUID.fromString(obj.getString("RouteID")));
+				a.setRouteID(UUID.fromString(obj.getJSONObject("Route").getString("RouteID")));
 				a.setTrainType(obj.getString("TrainType"));
 				a.setLastUpdated(obj.getLong("LastUpdated"));
 				

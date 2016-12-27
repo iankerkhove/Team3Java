@@ -1,15 +1,14 @@
 package model;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.UUID;
 
 public class Pass
 {
 	private UUID passID;
 	private UUID typePassID;
-	private Date date;
-	private Date startDate;
+	private String date;
+	private String startDate;
 	private int comfortClass;
 	private TypePass typePass;
 	private long lastUpdated;
@@ -17,7 +16,7 @@ public class Pass
 	public Pass()
 	{}
 
-	public Pass(UUID typePassID, Date date, Date startDate, int comfortClass)
+	public Pass(UUID typePassID, String date, String startDate, int comfortClass)
 	{
 		this.passID = UUID.randomUUID();
 		this.typePassID = typePassID;
@@ -47,22 +46,22 @@ public class Pass
 		this.typePassID = typePassID;
 	}
 
-	public Date getDate()
+	public String getDate()
 	{
 		return date;
 	}
 
-	public void setDate(Date date)
+	public void setDate(String d)
 	{
-		this.date = date;
+		this.date = d;
 	}
 
-	public Date getStartDate()
+	public String getStartDate()
 	{
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate)
+	public void setStartDate(String startDate)
 	{
 		this.startDate = startDate;
 	}

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import model.LostObject;
@@ -17,12 +18,21 @@ public class LostObjectDAO extends BaseDAO
 	{
 
 	}
+	public int insertOrUpdate(LostObject l)
+	{
+		LostObject exists = this.selectOne(l.getObjectID().toString());
 
+		if (exists == null)
+			return this.insert(l);
+		else
+			return this.update(l);
+	}
+	
 	public int insert(LostObject l)
 	{
 		PreparedStatement ps = null;
 
-		String sql = "INSERT INTO LostObject VALUES(?,?,?,?,?,?)";
+		String sql = "INSERT INTO LostObject VALUES(?,?,?,?,?,?,?)";
 
 		try {
 
@@ -32,11 +42,12 @@ public class LostObjectDAO extends BaseDAO
 			ps = getConnection().prepareStatement(sql);
 
 			ps.setString(1, l.getObjectID().toString());
-			ps.setString(2, l.getStation().getStationID().toString());
+			ps.setString(2, l.getStationID().toString());
 			ps.setString(3, l.getDescription());
 			ps.setString(4, l.getDate().toString());
 			ps.setString(5, l.getTrainID());
-			ps.setLong(6, l.getLastUpdated());
+			ps.setBoolean(6, l.getFound());
+			ps.setLong(7, l.getLastUpdated());
 
 			// api call
 
@@ -68,8 +79,11 @@ public class LostObjectDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM LostObject";
 
+		String sql = "SELECT l.ObjectID, s.StationID, "
+				+ "s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
+				+ "l.Description,l.Date,l.TrainID,l.Found,l.LastUpdated as LostObjectLastUpdated " 
+				+ " FROM LostObject l ;";
 		try {
 
 			if (getConnection().isClosed()) {
@@ -105,6 +119,55 @@ public class LostObjectDAO extends BaseDAO
 
 	}
 
+	
+	public int update(LostObject l)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "UPDATE `LostObject` SET `ObjectID`=?,`StationID`=?,`Description`=?,"
+				+ "`Date`=?,`TrainID`=?,`Found`=?,"
+				+ "`LastUpdated`=? WHERE ObjectID = ?";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+			
+			
+			ps.setString(1, l.getObjectID().toString());
+			
+			ps.setString(2, l.getStationID().toString());
+			ps.setString(3, l.getDescription());
+			ps.setString(4, l.getDate().toString());
+			ps.setString(5, l.getTrainID());
+			ps.setBoolean(6, l.getFound());
+			ps.setLong(7, l.getLastUpdated());
+			ps.setString(8, l.getObjectID().toString());
+
+			// api call
+
+			return ps.executeUpdate();
+
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+
+	}
 	public ArrayList<LostObject> selectAll()
 	{
 		ArrayList<LostObject> list = null;
@@ -112,14 +175,13 @@ public class LostObjectDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT l.ObjectID, s.StationID, a.AddressID, a.Street, "
-				+ "a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
-				+ "s.Name, S.CoX,S.CoY," + "s.LastUpdated as StationLastUpdated, "
-				+ "l.Description,l.Date,l.TrainID,l.LastUpdated as LostObjectLastUpdated " 
-				+ " FROM LostObject l "
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID "
-				+ "INNER JOIN Station s ON s.StationID = l.StationID;";
 
+		String sql = "SELECT l.ObjectID, s.StationID, "
+				+ "s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
+				+ "l.Description,l.Date,l.TrainID,l.Found,l.LastUpdated as LostObjectLastUpdated " 
+				+ " FROM LostObject l "
+				+ "INNER JOIN Station s ON s.StationID = l.StationID;";
+		
 		try {
 
 			if (getConnection().isClosed()) {
@@ -154,19 +216,15 @@ public class LostObjectDAO extends BaseDAO
 		}
 
 	}
-
-	public LostObject selectOne(String discountID)
+	public TreeMap<String, String> updateStatus()
 	{
+		TreeMap<String, String> map = null;
+
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT l.ObjectID, s.StationID, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
-				+ " s.Name, S.CoX,S.CoY," + "s.LastUpdated as StationLastUpdated, "
-				+ "l.Description,l.Date,l.TrainID,l.LastUpdated as LostObjectLastUpdated" 
-				+ " FROM LostObject l "
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID "
-				+ "INNER JOIN Station s ON s.StationID = l.StationID" + "WHERE l.ObjectID=?;";
+		String sql = "SELECT COUNT(DISTINCT ObjectID) as Count, MAX(LastUpdated) as LastUpdated FROM LostObject";
+
 		try {
 
 			if (getConnection().isClosed()) {
@@ -174,7 +232,51 @@ public class LostObjectDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, discountID);
+			rs = ps.executeQuery();
+			map = new TreeMap<String, String>();
+
+			while (rs.next()) {
+				map.put("Count", rs.getString("Count"));
+				map.put("LastUpdated", rs.getString("LastUpdated"));
+			}
+
+			return map;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+	public LostObject selectOne(String objectID)
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT l.ObjectID, s.StationID,"
+				+ " s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
+				+ "l.Description,l.Date,l.TrainID,l.Found,l.LastUpdated as LostObjectLastUpdated" 
+				+ " FROM LostObject l "
+				+ "INNER JOIN Station s ON s.StationID = l.StationID" + " WHERE l.ObjectID=?;";
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, objectID);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);
@@ -211,10 +313,11 @@ public class LostObjectDAO extends BaseDAO
 		s.setLastUpdated(rs.getLong("StationLasUpdated"));
 
 		l.setObjectID(UUID.fromString(rs.getString("ObjectID")));
-		l.setStation(s);
+		l.setStationID(UUID.fromString(s.getStationID().toString()));
 		l.setDescription(rs.getString("Description"));
-		l.setDate(rs.getDate("Date"));
+		l.setDate(rs.getString("Date"));
 		l.setTrainID(rs.getString("TrainID"));
+		l.setFound(rs.getBoolean("Found"));
 		l.setLastUpdated(rs.getLong("LostObjectLastUpdated"));
 		return l;
 	}
@@ -229,11 +332,12 @@ public class LostObjectDAO extends BaseDAO
 				+ "`Description` varchar(100) NOT NULL,"
 				+ "`Date` varchar(11) DEFAULT NULL," 
 				+ "`TrainID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
-				+ "PRIMARY KEY (`ObjectID`),"
+				+ "`Found` tinyint(1) DEFAULT '0',"
+				+ "`LastUpdated` bigint(14) DEFAULT NULL, " 
+				+ "PRIMARY KEY (`ObjectID`), "
 				+ "FOREIGN KEY (`StationID`) REFERENCES `Station`(`StationID`)"
 				+ ");";
-
+		
 		try {
 
 			if (con.isClosed()) {

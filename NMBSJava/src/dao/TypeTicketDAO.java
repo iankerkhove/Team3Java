@@ -5,8 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.UUID;
-
 import model.TypeTicket;
 
 public class TypeTicketDAO extends BaseDAO
@@ -15,6 +15,102 @@ public class TypeTicketDAO extends BaseDAO
 	public TypeTicketDAO()
 	{
 
+	}
+	
+	public int insertOrUpdate(TypeTicket tt)
+	{
+		TypeTicket exists = this.selectOne(tt.getTypeTicketID().toString());
+
+		if (exists == null)
+			return this.insert(tt);
+		else
+			return this.update(tt);
+	}
+	
+	public int update(TypeTicket a)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "UPDATE TypeTicket SET `Name`=?, `Price`=?, `ComfortClass`=?, `LastUpdated`=? WHERE TypeTicketID=?";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			a.update();
+			ps.setString(1, a.getName());
+			ps.setDouble(2, a.getPrice());
+			ps.setInt(3, a.getComfortClass());
+			ps.setLong(4, a.getLastUpdated());
+			ps.setString(5, a.getTypeTicketID().toString());
+
+			// api call
+
+			return ps.executeUpdate();
+
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+
+	}
+	
+	public TreeMap<String, String> updateStatus()
+	{
+		TreeMap<String, String> map = null;
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT COUNT(DISTINCT TypeTicketID) as Count, MAX(LastUpdated) as LastUpdated FROM TypeTicket";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			rs = ps.executeQuery();
+			map = new TreeMap<String, String>();
+
+			while (rs.next()) {
+				map.put("Count", rs.getString("Count"));
+				map.put("LastUpdated", rs.getString("LastUpdated"));
+			}
+
+			return map;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
 	}
 
 	public int insert(TypeTicket t)
@@ -66,7 +162,7 @@ public class TypeTicketDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, t.LastUpdated as TypeTikcetLastUpdated";
+		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, t.LastUpdated as TypeTicketLastUpdated";
 
 		try {
 
@@ -110,7 +206,7 @@ public class TypeTicketDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, t.LastUpdated as TypeTikcetLastUpdated FROM TypeTicket t ORDER BY t.Name;";
+		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, t.LastUpdated as TypeTicketLastUpdated FROM TypeTicket t ORDER BY t.Name;";
 
 		try {
 
@@ -153,7 +249,7 @@ public class TypeTicketDAO extends BaseDAO
 		ResultSet rs = null;
 
 		String sql = "SELECT t.TypeTicketID, t.Name, t.Price, t.ComfortClass, "
-				+ "t.LastUpdated as TypeTikcetLastUpdated FROM TypeTicket t" + "WHERE TypeTicketID = ?;";
+				+ "t.LastUpdated as TypeTikcetLastUpdated FROM TypeTicket t WHERE TypeTicketID = ?;";
 
 		try {
 
@@ -193,7 +289,7 @@ public class TypeTicketDAO extends BaseDAO
 		ResultSet rs = null;
 
 		String sql = "SELECT t.TypeTicketID, t.Name, t.Price, t.ComfortClass, "
-				+ "t.LastUpdated as TypeTikcetLastUpdated FROM TypeTicket t" + "WHERE Name = ? AND ComfortClass = ?;";
+				+ "t.LastUpdated as TypeTikcetLastUpdated FROM TypeTicket t WHERE Name = ? AND ComfortClass = ?;";
 
 		try {
 
@@ -270,42 +366,6 @@ public class TypeTicketDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
-			}
-			catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw new RuntimeException("error.unexpected");
-			}
-		}
-	}
-
-	public int updatePrice(String typeID, String typeTicketName, Double nieuwePrijs) {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		String sql = "UPDATE TypeTicket SET Name = ?, Price = ? WHERE TypeTicketID = ?;";
-
-		try {
-
-			if (getConnection().isClosed()) {
-				throw new IllegalStateException("error unexpected");
-			}
-			ps = getConnection().prepareStatement(sql);
-
-			ps.setString(1, typeTicketName);
-			ps.setDouble(2, nieuwePrijs);
-			ps.setString(3, typeID);
-			return ps.executeUpdate();
-		}
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw new RuntimeException(e.getMessage());
-		}
-		finally {
-			try {
-				if (ps != null)
-					ps.close();
-				if (rs != null)
-					rs.close();
 			}
 			catch (SQLException e) {
 				System.out.println(e.getMessage());
