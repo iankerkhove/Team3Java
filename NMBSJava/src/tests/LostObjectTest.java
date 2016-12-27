@@ -1,29 +1,29 @@
 package tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import model.LostObject;
-import model.Station;
 
 public class LostObjectTest {
-	private Date datum = new Date(2016,12,05);
-	private Station station;
+	private String datum = "2016,12,05";
+	private UUID stationID;
 	private LostObject lobj;
 	private String trainID = "3635";
 	@Before
 	public void setUp() throws Exception {
-		lobj = new LostObject(station, "blauwe pull", datum, trainID);
+		//lobj = new LostObject(stationID, "blauwe pull", datum, trainID);
 		
 	}
 	
 	@Test
 	public void ConstructorTest(){
-		assertEquals(station,lobj.getStation());
+		assertEquals(stationID,lobj.getStationID());
 		assertEquals("blauwe pull",lobj.getDescription());
 		assertEquals(datum,lobj.getDate());
 		assertEquals(3635,lobj.getTrainID());
@@ -37,8 +37,8 @@ public class LostObjectTest {
 	
 	@Test
 	public void StationTest(){
-		lobj.setStation(station);
-		assertEquals(station,lobj.getStation());
+		lobj.setStationID(stationID);
+		assertEquals(stationID,lobj.getStationID());
 	}
 	
 	@Test

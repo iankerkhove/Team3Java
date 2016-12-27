@@ -1,6 +1,5 @@
 package services;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -13,9 +12,7 @@ import controller.APIController;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
 import dao.CustomerDAO;
-import model.Address;
 import model.Customer;
-import model.RailCard;
 public class SyncCustomerRunnable implements Runnable  {
 
 		private CustomerDAO cDAO;
@@ -48,33 +45,18 @@ public class SyncCustomerRunnable implements Runnable  {
 				ArrayList<Customer> localList = cDAO.selectAll();
 				ArrayList<Customer> mainList = new ArrayList<Customer>();
 				
-				SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
-				
 				for(int i = 0; i < mainJsonList.length(); i++)
 				{
 					JSONObject obj = mainJsonList.getJSONObject(i);
 					Customer c = new Customer();
-					Address a = new Address();
-					RailCard r = new RailCard();
-					
-					a.setAddressID(UUID.fromString(obj.getJSONObject("Address").getString("AddressID")));
-					a.setStreet(obj.getJSONObject("Address").getString("Street"));
-					a.setNumber(obj.getJSONObject("Address").getInt("Number"));
-					a.setCity(obj.getJSONObject("Address").getString("City"));
-					a.setZipCode(obj.getJSONObject("Address").getInt("ZipCode"));
-					a.setCoordinates(obj.getJSONObject("Address").getString("Coordinates"));
-					a.setLastUpdated(obj.getJSONObject("Address").getLong("LastUpdated"));
-					
-					r.setRailCardID(UUID.fromString(obj.getJSONObject("RailCard").getString("CardID")));
-					r.setLastUpdated(obj.getJSONObject("RailCard").getLong("LastUpdated"));
-					
+
 					c.setCustomerID(UUID.fromString(obj.getString("CustomerID")));
-					c.setAddress(a);
-					c.setRailCard(r);					
+					c.setAddressID(UUID.fromString(obj.getJSONObject("Address").getString("AddressID")));
+					c.setRailCardID(UUID.fromString(obj.getJSONObject("RailCard").getString("CardID")));					
 					c.setFirstName(obj.getString("FirstName"));
 					c.setLastName(obj.getString("LastName"));
-					c.setBirthDate(formatter.parse(obj.getString("BirthDate")));
-					c.setEmailAddress(obj.getString("Email"));
+					c.setBirthDate(obj.getString("BirthDate"));
+					c.setEmail(obj.getString("Email"));
 					c.setLastUpdated(obj.getLong("LastUpdated"));
 
 					mainList.add(c);

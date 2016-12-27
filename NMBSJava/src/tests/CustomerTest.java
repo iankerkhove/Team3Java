@@ -1,10 +1,9 @@
 package tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
+
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,15 +16,13 @@ public class CustomerTest {
 	private Customer customer;
 	private Address adres;
 	private RailCard railcard;
-	private Calendar c ;
-	private Date datum = new Date(1989,03,28);
 	
 	JSONObject temp;
 	@Before
 	public void setUp() throws Exception {
 		//c.setTime(datum);
 		adres = new Address("Nijverheidskaai", 170, "Brussel", 1000, "50.8410136 - 4.322051299999998");
-		customer = new Customer("Jan", "Paternoster", datum, "jan.paternoster@bbr.be", adres, railcard);
+		customer = new Customer("Jan", "Paternoster", "12101989", "jan.paternoster@bbr.be", adres, railcard);
 
 	}
 	
@@ -33,8 +30,8 @@ public class CustomerTest {
 	public void ConstructorTest(){
 		assertEquals("Jan",customer.getFirstName());
 		assertEquals("Paternoster",customer.getLastName());
-		assertEquals(datum,customer.getBirthDate());
-		assertEquals("jan.paternoster@bbr.be",customer.getEmailAddress());
+		assertEquals("12101989",customer.getBirthDate());
+		assertEquals("jan.paternoster@bbr.be",customer.getEmail());
 		assertEquals(adres,customer.getAddress());
 		assertEquals(railcard, customer.getRailCard());
 	}
@@ -53,14 +50,14 @@ public class CustomerTest {
 	
 	@Test
 	public void BirthTest(){
-		customer.setBirthDate(datum);
-		assertEquals(datum,customer.getBirthDate());
+		customer.setBirthDate("12101989");
+		assertEquals("12101989",customer.getBirthDate());
 	}
 	
 	@Test
 	public void MailTest(){
-		customer.setEmailAddress("dries.van.dijck@bbr.be");
-		assertEquals("dries.van.dijck@bbr.be",customer.getEmailAddress());
+		customer.setEmail("dries.van.dijck@bbr.be");
+		assertEquals("dries.van.dijck@bbr.be",customer.getEmail());
 	}
 	
 	@Test
