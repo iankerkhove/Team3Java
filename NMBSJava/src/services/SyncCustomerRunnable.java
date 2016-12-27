@@ -120,6 +120,8 @@ public class SyncCustomerRunnable implements Runnable  {
 		
 		private void updateLocal(ArrayList<Customer> customerList)
 		{
+			cDAO.setSyncFunction();
+			
 			for (int i = 0; i < customerList.size(); i++)
 			{
 				cDAO.insertOrUpdate(customerList.get(i));		

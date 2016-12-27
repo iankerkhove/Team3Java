@@ -5,19 +5,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import controller.APIController.RequestType;
 import model.Address;
 import model.Customer;
 import model.RailCard;
 
 public class CustomerDAO extends BaseDAO
 {
+	public final static String BASE_URL = "customer/";
 
 	public CustomerDAO()
-	{
-	}
+	{}
 
 	public int insertOrUpdate(Customer c)
 	{
@@ -51,7 +53,17 @@ public class CustomerDAO extends BaseDAO
 			ps.setString(7, c.getEmail());
 			ps.setLong(8, c.getLastUpdated());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("customerID", c.getCustomerID().toString());
+				params.put("railCardID", c.getRailCardID().toString());
+				params.put("addressID", c.getAddressID().toString());
+				params.put("firstName", c.getFirstName());
+				params.put("lastName", c.getLastName());
+				params.put("email", c.getBirthDate());
+				params.put("lastUpdated", Long.toString(c.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -64,6 +76,8 @@ public class CustomerDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
 
 			}
 			catch (SQLException e) {
@@ -102,7 +116,17 @@ public class CustomerDAO extends BaseDAO
 			ps.setLong(8, c.getLastUpdated());
 			ps.setString(9, c.getCustomerID().toString());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("customerID", c.getCustomerID().toString());
+				params.put("railCardID", c.getRailCardID().toString());
+				params.put("addressID", c.getAddressID().toString());
+				params.put("firstName", c.getFirstName());
+				params.put("lastName", c.getLastName());
+				params.put("email", c.getBirthDate());
+				params.put("lastUpdated", Long.toString(c.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -115,6 +139,8 @@ public class CustomerDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("customerID"), RequestType.PUT, params);
 
 			}
 			catch (SQLException e) {
@@ -346,7 +372,7 @@ public class CustomerDAO extends BaseDAO
 				+ "`LastName` varchar(20) NOT NULL,"
 				+ "`BirthDate` varchar(20) NOT NULL," 
 				+ "`Email` varchar(50) NOT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
+				+ "`LastUpdated` bigint(14) NOT NULL," 
 				+ "PRIMARY KEY (`CustomerID`), "
 				+ "FOREIGN KEY (`AddressID`) REFERENCES `Address`(`AddressID`), "
 				+ "FOREIGN KEY (`RailCardID`) REFERENCES `RailCard`(`RailCardID`)"
