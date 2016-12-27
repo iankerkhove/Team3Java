@@ -121,6 +121,8 @@ public class SyncAddressRunnable implements Runnable
 	
 	private void updateLocal(ArrayList<Address> addressList)
 	{
+		aDAO.setSyncFunction();
+		
 		for (int i = 0; i < addressList.size(); i++)
 		{
 			aDAO.insertOrUpdate(addressList.get(i));		

@@ -1,13 +1,16 @@
 package panels;
 
 import java.awt.GridLayout;
+import java.util.UUID;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import dao.AddressDAO;
 import gui.LangageHandler;
+import model.Address;
 @SuppressWarnings("serial")
 public class NavPanel extends JPanel {
 	
