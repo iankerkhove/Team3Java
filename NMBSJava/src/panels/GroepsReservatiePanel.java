@@ -43,14 +43,6 @@ public class GroepsReservatiePanel extends JPanel {
 	private TimePicker timeGaan;
 	private TimePicker timeTerug;
 	
-	private JRadioButton rdbVertrekd;
-	private JRadioButton rdbAankomstd;
-	private ButtonGroup grpTimeSeld;
-	
-	private JRadioButton rdbVertrekt;
-	private JRadioButton rdbAankomstt;
-	private ButtonGroup grpTimeSelt;
-	
 	private JCheckBox doorTerug;
 
 	private JPanel vanNaarpanel;
@@ -121,32 +113,6 @@ public class GroepsReservatiePanel extends JPanel {
 		timeTerug.setText(GUIDateFormat.getTime());
 		timeTerug.setEnabled(false);
 		
-		//rdb's
-		rdbVertrekd = new JRadioButton("Vertrek");
-		rdbVertrekd.setSelected(true);
-		rdbVertrekd.setMnemonic(1);
-		rdbAankomstd = new JRadioButton("Aankomst");
-		rdbAankomstd.setMnemonic(2);
-		grpTimeSeld = new ButtonGroup();
-		grpTimeSeld.add(rdbVertrekd);
-		grpTimeSeld.add(rdbAankomstd);
-		
-		JPanel timeSelPaneldoor = new JPanel();
-		timeSelPaneldoor.add(rdbVertrekd);
-		timeSelPaneldoor.add(rdbAankomstd);
-		
-		rdbVertrekt = new JRadioButton("Vertrek");
-		rdbVertrekt.setSelected(true);
-		rdbVertrekt.setMnemonic(1);
-		rdbAankomstt = new JRadioButton("Aankomst");
-		rdbAankomstt.setMnemonic(2);
-		grpTimeSelt = new ButtonGroup();
-		grpTimeSelt.add(rdbVertrekt);
-		grpTimeSelt.add(rdbAankomstt);
-		
-		JPanel timeSelPanelterug = new JPanel();
-		timeSelPanelterug.add(rdbVertrekt);
-		timeSelPanelterug.add(rdbAankomstt);
 		//combobox
 		cboTrein=new JComboBox<String>();
 		cboTrein.setPreferredSize(new Dimension(100,25));
@@ -171,11 +137,11 @@ public class GroepsReservatiePanel extends JPanel {
 		
 		doorpanel.add(new JLabel("Door: "));
 		doorpanel.add(dteGaanDatum);
-		doorpanel.add(timeSelPaneldoor);
+		doorpanel.add(new JLabel());
 		doorpanel.add(timeGaan);
 		terugpanel.add(new JLabel("Terug: "));
 		terugpanel.add(dteTerugDatum);
-		terugpanel.add(timeSelPanelterug);
+		terugpanel.add(new JLabel());
 		terugpanel.add(timeTerug);
 		
 		//add's

@@ -32,7 +32,7 @@ public class PersonTest {
 
 	@Test
 	public void PerIDTest(){
-		//persoon.setPerID(1);
+		persoon.setPerID(1);
 		assertEquals(1,persoon.getPerID());
 	}
 	

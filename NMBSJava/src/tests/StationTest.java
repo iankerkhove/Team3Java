@@ -2,8 +2,6 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import java.util.UUID;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +11,7 @@ import model.Station;
 public class StationTest {
 	private Station station;
 	private Address adres;
-	private UUID stationID = UUID.randomUUID();
+	
 	@Before
 	public void setUp() throws Exception {
 		adres = new Address("Nijverheidskaai", 170, "Brussel", 1000, "50.8410136 - 4.322051299999998");
@@ -40,7 +38,7 @@ public class StationTest {
 	
 	@Test
 	public void StationIDTest(){
-		station.setStationID(stationID);
-		assertEquals(stationID,station.getStationID());
+		station.setStationID(20);
+		assertEquals(20,station.getStationID());
 	}
 }

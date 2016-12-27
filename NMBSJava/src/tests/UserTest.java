@@ -36,7 +36,7 @@ public class UserTest {
 	
 	@Test
 	public void UserIDTest(){
-		//user.setUserID(1);
+		user.setUserID(1);
 		assertEquals(1,user.getUserID());
 	}
 	

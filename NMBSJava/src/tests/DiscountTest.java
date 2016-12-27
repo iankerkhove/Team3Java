@@ -22,7 +22,7 @@ public class DiscountTest {
 	
 	@Test
 	public void DiscountIDTest(){
-		//disc.setDiscountID(1);
+		disc.setDiscountID(1);
 		assertEquals(1,disc.getDiscountID());
 	}
 	
