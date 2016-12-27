@@ -1,7 +1,6 @@
 package model;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.UUID;
 
 public class Subscription
@@ -10,8 +9,8 @@ public class Subscription
 	private UUID railCardID;
 	private UUID routeID;
 	private UUID discountID;
-	private Date validFrom;
-	private Date validUntil;
+	private String validFrom;
+	private String validUntil;
 	private RailCard railCard;
 	private Route route;
 	private Discount discount;
@@ -20,7 +19,7 @@ public class Subscription
 	public Subscription()
 	{}
 
-	public Subscription(UUID railID, UUID routeID, Date validFrom, Date validUntil)
+	public Subscription(UUID railID, UUID routeID, String validFrom, String validUntil)
 	{
 		this.railCardID = railID;
 		this.routeID = routeID;
@@ -30,7 +29,7 @@ public class Subscription
 		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 
-	public Subscription(UUID railID, UUID routeID, UUID discountID, Date validFrom, Date validUntil)
+	public Subscription(UUID railID, UUID routeID, UUID discountID, String validFrom, String validUntil)
 	{
 		this.railCardID = railID;
 		this.routeID = routeID;
@@ -81,22 +80,22 @@ public class Subscription
 		this.discountID = discountID;
 	}
 
-	public Date getValidFrom()
+	public String getValidFrom()
 	{
 		return validFrom;
 	}
 
-	public void setValidFrom(Date validFrom)
+	public void setValidFrom(String validFrom)
 	{
 		this.validFrom = validFrom;
 	}
 
-	public Date getValidUntil()
+	public String getValidUntil()
 	{
 		return validUntil;
 	}
 
-	public void setValidUntil(Date validUntil)
+	public void setValidUntil(String validUntil)
 	{
 		this.validUntil = validUntil;
 	}

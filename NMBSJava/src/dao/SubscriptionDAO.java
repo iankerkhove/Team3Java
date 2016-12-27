@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import model.Discount;
@@ -16,6 +17,93 @@ public class SubscriptionDAO extends BaseDAO
 
 	public SubscriptionDAO()
 	{}
+	
+	public int insertOrUpdate(Subscription a) {
+		Subscription exists = this.selectOne(a.getSubscriptionID().toString());
+
+		if (exists == null)
+			return this.insert(a);
+		else
+			return this.update(a);
+	}
+
+	public int update(Subscription a) {
+		PreparedStatement ps = null;
+
+		String sql = "UPDATE Subscription SET `RailCardID`=?, `RouteID`=?, `DiscountID`=?, `ValidFrom`=?, `ValidUntil`=?, `LastUpdated`=? WHERE SubscriptionID = ?";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, a.getRailCardID().toString());
+			ps.setString(2, a.getRouteID().toString());
+			ps.setString(3, a.getDiscountID().toString());
+			ps.setString(4, a.getValidFrom());
+			ps.setString(5, a.getValidUntil());
+			ps.setLong(6, a.getLastUpdated());
+			ps.setString(7, a.getSubscriptionID().toString());
+
+			// api call
+
+			return ps.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+	
+	public TreeMap<String, String> updateStatus() {
+		TreeMap<String, String> map = null;
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT COUNT(DISTINCT SubscriptionID) as Count, MAX(LastUpdated) as LastUpdated FROM Subscription";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			rs = ps.executeQuery();
+			map = new TreeMap<String, String>();
+
+			while (rs.next()) {
+				map.put("Count", rs.getString("Count"));
+				map.put("LastUpdated", rs.getString("LastUpdated"));
+			}
+
+			return map;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
 
 	public int insert(Subscription s)
 	{
@@ -112,12 +200,13 @@ public class SubscriptionDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT s.SubscriptionID, c.CardID,c.LastUpdated as RailCardLastUpdated"
-				+ "r.RouteID,r.DepartureStationID,r.ArrivalStationID,r.LastUpdated as RouteLastUpdated,"
-				+ "d.DiscountID, d.Name,d.Amount,d.LastUpdated as DiscountLastUpdated,"
-				+ "s.ValidFrom,s.ValidUntil,s.LastUpdated as SubscriptionLastUpdated" 
-				+ " FROM Subscription s"
-				+ "INNER JOIN Route r ON r.RouteID = s.RouteID"
+		String sql = "SELECT s.SubscriptionID, c.CardID, c.LastUpdated as RailCardLastUpdated, "
+				+ "r.RouteID, r.DepartureStationID, r.ArrivalStationID, r.LastUpdated as RouteLastUpdated,"
+				+ "d.DiscountID, d.Name, d.Amount, d.LastUpdated as DiscountLastUpdated,"
+				+ "s.ValidFrom, s.ValidUntil, s.LastUpdated as SubscriptionLastUpdated " 
+				+ "FROM Subscription s "
+				+ "INNER JOIN RailCard c ON c.CardID = s.RailCardID "
+				+ "INNER JOIN Route r ON r.RouteID = s.RouteID "
 				+ "INNER JOIN Discount d ON d.DiscountID = s.DiscountID;";
 
 		try {
@@ -155,18 +244,20 @@ public class SubscriptionDAO extends BaseDAO
 
 	}
 
-	public Subscription selectOne(String discountID)
+	public Subscription selectOne(String subscriptionID)
 	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT s.SubscriptionID, c.CardID,c.LastUpdated as RailCardLastUpdated, "
+		String sql = "SELECT s.SubscriptionID, c.CardID, c.LastUpdated as RailCardLastUpdated, "
 				+ "r.RouteID, r.DepartureStationID, r.ArrivalStationID, r.LastUpdated as RouteLastUpdated, "
-				+ "d.DiscountID, d.Name,d.Amount, d.LastUpdated as DiscountLastUpdated,"
-				+ "s.ValidFrom, s.ValidUntil,s.LastUpdated as SubscriptionLastUpdated " 
+				+ "d.DiscountID, d.Name, d.Amount, d.LastUpdated as DiscountLastUpdated, "
+				+ "s.ValidFrom, s.ValidUntil, s.LastUpdated as SubscriptionLastUpdated " 
 				+ "FROM Subscription s "
+				+ "INNER JOIN RailCard c ON c.CardID = s.RailCardID "
 				+ "INNER JOIN Route r ON r.RouteID = s.RouteID "
-				+ "INNER JOIN Discount d ON d.DiscountID = s.DiscountID;";
+				+ "INNER JOIN Discount d ON d.DiscountID = s.DiscountID "
+				+ "WHERE SubscriptionID = ?;";
 		try {
 
 			if (getConnection().isClosed()) {
@@ -174,7 +265,7 @@ public class SubscriptionDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, discountID);
+			ps.setString(1, subscriptionID);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);
@@ -221,8 +312,8 @@ public class SubscriptionDAO extends BaseDAO
 		s.setRailCardID(UUID.fromString(rs.getString("RailCardID")));
 		s.setRoute(r);
 		s.setDiscount(d);
-		s.setValidFrom(rs.getDate("ValidFrom"));
-		s.setValidUntil(rs.getDate("ValidUntil"));
+		s.setValidFrom(rs.getString("ValidFrom"));
+		s.setValidUntil(rs.getString("ValidUntil"));
 		s.setLastUpdated(rs.getLong("SubscriptionLastUpdated"));
 
 		return s;
