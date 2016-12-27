@@ -16,6 +16,8 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import model.SettingsSingleton;
+
 public class URLCon {
 
 	private static BufferedReader reader;
@@ -23,14 +25,18 @@ public class URLCon {
 	
 	private static final HostnameVerifier defaultHV = HttpsURLConnection.getDefaultHostnameVerifier();
 	private static final SSLSocketFactory defaultSF = HttpsURLConnection.getDefaultSSLSocketFactory();
+	private static SettingsSingleton settings;
 
 	public static String readUrl(String urlString, String rqMethod) throws IOException {
 		try {
+			
+			settings = SettingsSingleton.getSettings();
+			
 			enableCertificateValidation();
 			url = new URL(urlString);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod(rqMethod);
-			connection.setRequestProperty("Authorization", "Bearer " + LoginController.getToken());
+			connection.setRequestProperty("Authorization", "Bearer " + settings.getApiToken());
 			connection.setRequestProperty("User-Agent",
 					"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.29 Safari/537.36");
 			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));

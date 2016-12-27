@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import org.json.JSONArray;
 
+@Deprecated
 public class CachePassTypes {
 	
 	private static JSONArray passTypes = new JSONArray("[]");
@@ -24,22 +25,22 @@ public class CachePassTypes {
 		return tempArrayList;
 	}
 
-	public static String getTypeName(int typePassID) {
+	public static String getTypeName(String typePassID) {
 		for (int i = 0; i < passTypes.length(); i++) {
-			if (passTypes.getJSONObject(i).getInt("TypePassID") == typePassID) {
+			if (passTypes.getJSONObject(i).getString("TypePassID").equals(typePassID)) {
 				return passTypes.getJSONObject(i).getString("Name");
 			}
 		}
 		return "";
 	}
 
-	public static int getTypeID(String s) {
+	public static String getTypeID(String s) {
 		for (int i = 0; i < passTypes.length(); i++) {
 			if (passTypes.getJSONObject(i).getString("Name").toUpperCase().equals(s.toUpperCase())) {
-				return passTypes.getJSONObject(i).getInt("TypePassID");
+				return passTypes.getJSONObject(i).getString("TypePassID");
 			}
 		}
-		return -1;
+		return "";
 	}
 	
 	public static int getObjectCount(){

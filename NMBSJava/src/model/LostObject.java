@@ -1,68 +1,106 @@
 package model;
 
-import java.util.Date;
+import java.time.Instant;
+import java.util.UUID;
 
-public class LostObject {
-private int objectID;
-private Station station;
-private String description;
-private Date date;
-private int trainID;
+public class LostObject
+{
+	private UUID objectID;
+	private UUID stationID;
+	private String description;
+	private String date;
+	private String trainID;
+	private long lastUpdated;
+	private Boolean found = false;
+	
+	public LostObject()
+	{}
 
-public LostObject(Station station, String description, Date date, int trainID) {
-	this.station = station;
-	this.description = description;
-	this.date = date;
-	this.trainID = trainID;
-}
+	public LostObject(UUID station, String description, String date, String trainID, Boolean found)
+	{
+		this.stationID = station;
+		this.description = description;
+		this.date = date;
+		this.trainID = trainID;
+		this.found = found;
+		this.objectID = UUID.randomUUID();
+		this.lastUpdated = Instant.now().getEpochSecond();
+	}
 
-public int getObjectID() {
-	return objectID;
-}
+	public UUID getStationID() {
+		return stationID;
+	}
 
-public void setObjectID(int objectID) {
-	this.objectID = objectID;
-}
+	public void setStationID(UUID stationID) {
+		this.stationID = stationID;
+	}
 
-public Station getStation() {
-	return station;
-}
+	public UUID getObjectID()
+	{
+		return objectID;
+	}
 
-public void setStationID(Station station) {
-	this.station = station;
-}
+	public void setObjectID(UUID objectID)
+	{
+		this.objectID = objectID;
+	}
 
-public String getDescription() {
-	return description;
-}
+	public String getDescription()
+	{
+		return description;
+	}
 
-public void setDescription(String description) {
-	this.description = description;
-}
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
 
-public Date getDate() {
-	return date;
-}
+	public String getDate()
+	{
+		return date;
+	}
 
-public void setDate(Date date) {
-	this.date = date;
-}
+	public void setDate(String date)
+	{
+		this.date = date;
+	}
 
-public int getTrainID() {
-	return trainID;
-}
+	public String getTrainID()
+	{
+		return trainID;
+	}
 
-public void setTrainID(int trainID) {
-	this.trainID = trainID;
-}
+	public void setTrainID(String trainID)
+	{
+		this.trainID = trainID;
+	}
 
-@Override
-public String toString() {
-	return "LostObject [objectID=" + objectID + ", station=" + station.getStationName() + ", description=" + description + ", date="
-			+ date + ", trainID=" + trainID + "]";
-}
+	public long getLastUpdated()
+	{
+		return lastUpdated;
+	}
 
+	public void setLastUpdated(long lastUpdated)
+	{
+		this.lastUpdated = lastUpdated;
+	}
 
+	public void update()
+	{
+		this.lastUpdated = Instant.now().getEpochSecond();
+	}
 
-
+	@Override
+	public String toString()
+	{
+		return "LostObject [objectID=" + objectID + ", station=" + stationID + ", description="
+				+ description + ", date=" + date + ", trainID=" + trainID + "]";
+	}
+	public void setFound(Boolean found) {
+		this.found = found;
+		
+	}
+	public Boolean getFound() {
+		return this.found;
+	}
 }
