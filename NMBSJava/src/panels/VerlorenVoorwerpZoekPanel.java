@@ -14,34 +14,38 @@ import gui.StationsAutoCompletor;
 import java.awt.GridLayout;
 import java.util.Properties;
 import java.awt.Font;
-
+import gui.LangageHandler;
 @SuppressWarnings("serial")
 public class VerlorenVoorwerpZoekPanel extends JPanel {
-
+	
 	private JButton btnToonAlles;
 	private JButton btnZoek;
+	private JButton btnGevonden;
 
 	private JLabel lblTreinNummer;
+	private JLabel lblOmschrijving;
 	private JLabel lblDatum;
 	private JLabel lblResultat;
 	private JLabel lblTitel;
 	private JLabel lblStation;
 
 	private JTextField txtTreinNummer;
-	
+	private JTextField txtOmschrijving;
+
 	private StationsAutoCompletor txtStation;
 	
 	private JDatePickerImpl datePicker;
+	
 	
 	public VerlorenVoorwerpZoekPanel() {
 		setLayout(new GridLayout(2, 1, 5, 5));
 
 		JPanel search = new JPanel();
-		search.setLayout(new GridLayout(6, 2, 10, 10));
+		search.setLayout(new GridLayout(7, 2, 10, 10));
 
 		//1
 		lblTitel = new JLabel();
-		lblTitel.setText("Zoek voorwerp");
+		LangageHandler.chooseLangageLbl(lblTitel, "zoekVoorwerp");
 		lblTitel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		search.add(lblTitel);
 		
@@ -51,12 +55,12 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		search.add(new JLabel());
 		
 		btnToonAlles = new JButton();
-		btnToonAlles.setText("Toon alles");
+		LangageHandler.chooseLangageBtn(btnToonAlles, "toonAlles");
 		search.add(btnToonAlles);
 		
 		//3
 		lblStation = new JLabel();
-		lblStation.setText("Station: ");
+		LangageHandler.chooseLangageLbl(lblStation, "station");
 		search.add(lblStation);
 	
 		txtStation = new StationsAutoCompletor();
@@ -65,15 +69,23 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 
 		//4
 		lblTreinNummer = new JLabel();
-		lblTreinNummer.setText("Treinnummer:");
+		LangageHandler.chooseLangageLbl(lblTreinNummer, "treinnummer");
 		search.add(lblTreinNummer);
 
 		txtTreinNummer = new JTextField();
 		search.add(txtTreinNummer);
-
+		
 		//5
+		lblOmschrijving = new JLabel();
+		LangageHandler.chooseLangageLbl(lblOmschrijving, "omschrijving");
+		search.add(lblOmschrijving);
+
+		txtOmschrijving = new JTextField();
+		search.add(txtOmschrijving);
+
+		//6
 		lblDatum = new JLabel();
-		lblDatum.setText("Datum:");
+		LangageHandler.chooseLangageLbl(lblDatum, "datum");
 		search.add(lblDatum);
 
 		Properties properties = new Properties();
@@ -86,11 +98,13 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		datePicker.getJFormattedTextField().setText(GUIDateFormat.getDate());
 		search.add(datePicker);
 
-		//6
-		search.add(new JLabel());
+		//7
+		btnGevonden = new JButton();
+		LangageHandler.chooseLangageBtn(btnGevonden, "gevonden");
+		search.add(btnGevonden);
 		
 		btnZoek = new JButton();
-		btnZoek.setText("Zoek");
+		LangageHandler.chooseLangageBtn(btnZoek, "zoekTrein");
 		search.add(btnZoek);
 
 		
@@ -145,7 +159,13 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 	public JDatePickerImpl getDatePicker() {
 		return datePicker;
 	}
+	
+	public JLabel getLblOmschrijving() {
+		return lblOmschrijving;
+	}
 
-
+	public JTextField getTxtOmschrijving() {
+		return txtOmschrijving;
+	}
 
 }

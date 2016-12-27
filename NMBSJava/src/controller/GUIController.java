@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import gui.GUIFrame;
+import gui.LangageHandler;
 import model.SettingsSingleton;
 import panels.BiljetPanel;
 import panels.LoginPanel;
@@ -13,6 +14,7 @@ import panels.NavPanel;
 import panels.NieuwAbonnementPanel;
 import panels.PasPrijzenAanPanel;
 import panels.RouteberekeningPanel;
+import panels.StaffToevoegenPanel;
 import panels.StartPanel;
 import panels.StationboardPanel;
 import panels.TreinopzoekingPanel;
@@ -27,6 +29,7 @@ public class GUIController {
 	// navbar
 	private static NavPanel nav;
 	// all panels
+	private static LoginPanel l;
 	private static StartPanel start;
 	private static RouteberekeningPanel route;
 	private static TreinopzoekingPanel trein;
@@ -36,6 +39,7 @@ public class GUIController {
 	private static VerlengAbonnementPanel verlengAbonnement;
 	private static VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek;
 	private static VerlorenVoorwerpMaakPanel verlorenVoorwerpMaak;
+	private static StaffToevoegenPanel staff;
 	private static PasPrijzenAanPanel prijzenAanpassen;
 
 	private static SettingsSingleton settings;
@@ -56,6 +60,34 @@ public class GUIController {
 		});
 	}
 
+	public static void login() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				LangageHandler.setTaal("Nederlands");
+				LoginPanel l = new LoginPanel();
+				
+				//GUIController.startListeningForLang(l);
+				//taalListener();
+				frame.getContentPane().add(l, BorderLayout.CENTER);
+				frame.setContentPane(frame.getContentPane());
+				LoginController.login(l);
+				
+			}
+		});
+	}
+	
+	public static void logout() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				settings.clearCreds();
+				frame.getContentPane().removeAll();
+				l = new LoginPanel();
+				frame.getContentPane().add(l, BorderLayout.CENTER);
+				frame.setContentPane(frame.getContentPane());
+				LoginController.login(l);
+			}
+		});
+	}
 
 	public static void showApp() {
 		// Make frame after performing all other tasks
@@ -95,6 +127,20 @@ public class GUIController {
 		frame.getContentPane().add(start, BorderLayout.CENTER);
 		frame.setContentPane(frame.getContentPane());
 	}
+
+	protected static void reloadLogin() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				l = new LoginPanel();
+				frame.getContentPane().removeAll();
+				frame.getContentPane().add(l);
+				frame.setContentPane(frame.getContentPane());
+				LoginController.login(l);
+			}
+		});
+	}
+	
+	
 
 	public static void startListeningOnNav() {
 		EventQueue.invokeLater(new Runnable() {
@@ -144,6 +190,11 @@ public class GUIController {
 						startVerlorenVoorwerpMaak();
 					}
 				});
+				nav.getBtnVoegMedewerker().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startVoegMedewerker();
+					}
+				});
 				nav.getBtnPrijzenAanpassen().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						startPrijzenAanpassen();
@@ -158,7 +209,7 @@ public class GUIController {
 		});
 	}
 	
-	public static void login() {
+	/*public static void login() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				LoginPanel l = new LoginPanel();
@@ -182,7 +233,7 @@ public class GUIController {
 				LoginController.login(l);
 			}
 		});
-	}
+	}*/
 
 	private static void startRouteberekening() {
 		route = new RouteberekeningPanel();
@@ -256,6 +307,15 @@ public class GUIController {
 		VerlorenVoorwerpMaakController.startListening(verlorenVoorwerpMaak);
 	}
 	
+	private static void startVoegMedewerker() {
+		staff = new StaffToevoegenPanel();
+		frame.setTitle("NMBSTeam - Voeg nieuwe medewerker");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(staff);
+		frame.setContentPane(frame.getContentPane());
+		StaffToevoegenController.startListening(staff);
+	}
+		
 	private static void startPrijzenAanpassen() {
 		prijzenAanpassen = new PasPrijzenAanPanel();
 		frame.setTitle("NMBSTeam - Pas prijzen aan");
