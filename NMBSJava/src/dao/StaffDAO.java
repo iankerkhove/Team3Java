@@ -5,15 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import controller.APIController.RequestType;
 import model.Address;
 import model.Staff;
 import model.Station;
 
 public class StaffDAO extends BaseDAO
 {
+	public final static String BASE_URL = "staff/";
 
 	public StaffDAO()
 	{}
@@ -54,7 +57,22 @@ public class StaffDAO extends BaseDAO
 			ps.setString(11, s.getApiToken());
 			ps.setLong(12, s.getLastUpdated());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("staffID", s.getStaffID().toString());
+				params.put("addressID", s.getAddressID().toString());
+				params.put("stationID", s.getStationID().toString());
+				params.put("firstName", s.getFirstName());
+				params.put("lastName", s.getLastName());
+				params.put("userName", s.getUserName());
+				params.put("password", s.getPassword());
+				params.put("rights", Integer.toString(s.getRights()));
+				params.put("birthDate", s.getLastName());
+				params.put("email", s.getEmail());
+				params.put("apiToken", s.getBirthDate());
+				params.put("lastUpdated", Long.toString(s.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -67,6 +85,8 @@ public class StaffDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
 
 			}
 			catch (SQLException e) {
@@ -105,7 +125,22 @@ public class StaffDAO extends BaseDAO
 			ps.setLong(11, s.getLastUpdated());
 			ps.setString(12, s.getStaffID().toString());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("staffID", s.getStaffID().toString());
+				params.put("addressID", s.getAddressID().toString());
+				params.put("stationID", s.getStationID().toString());
+				params.put("firstName", s.getFirstName());
+				params.put("lastName", s.getLastName());
+				params.put("userName", s.getUserName());
+				params.put("password", s.getPassword());
+				params.put("rights", Integer.toString(s.getRights()));
+				params.put("birthDate", s.getLastName());
+				params.put("email", s.getEmail());
+				params.put("apiToken", s.getBirthDate());
+				params.put("lastUpdated", Long.toString(s.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -118,6 +153,8 @@ public class StaffDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("staffID"), RequestType.PUT, params);
 
 			}
 			catch (SQLException e) {
@@ -405,7 +442,7 @@ public class StaffDAO extends BaseDAO
 				+ "`BirthDate` varchar(40) NOT NULL,"
 				+ "`Email` varchar(50) NOT NULL,"
 				+ "`Api_token` varchar(60) DEFAULT NULL UNIQUE,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL,"
+				+ "`LastUpdated` bigint(14) NOT NULL,"
 				+ "PRIMARY KEY (`StaffID`),"
 				+ "FOREIGN KEY (`AddressID`) REFERENCES `Address`(`AddressID`),"
 				+ "FOREIGN KEY (`StationID`) REFERENCES `Station`(`StationID`)"
