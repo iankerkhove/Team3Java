@@ -26,7 +26,7 @@ public class SyncReservationRunnable implements Runnable
 
 			// check if has to update
 			HashMap<String, String> params = new HashMap<String, String>();
-			g3API = new APIController(APIUrl.G3, "customer/massUpdateStatus", RequestType.GET, params);
+			g3API = new APIController(APIUrl.G3, "reservation/massUpdateStatus", RequestType.GET, params);
 			rDAO = new ReservationDAO();
 
 			JSONObject mainStatus = g3API.getJsonResult().getJSONObject(0);
