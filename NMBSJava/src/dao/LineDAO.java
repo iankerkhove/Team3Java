@@ -5,20 +5,62 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import model.Line;
 import model.Route;
 
-public class LineDAO extends BaseDAO
-{
-	public LineDAO()
-	{
+public class LineDAO extends BaseDAO {
+	public LineDAO() {
 
 	}
 
-	public int insert(Line l)
-	{
+	public int insertOrUpdate(Line a) {
+		Line exists = this.selectOne(a.getLineID().toString());
+
+		if (exists == null)
+			return this.insert(a);
+		else
+			return this.update(a);
+	}
+
+	public int update(Line a) {
+		PreparedStatement ps = null;
+
+		String sql = "UPDATE Line SET RouteID = ?, TrainType = ?, LastUpdated = ? WHERE LineID = ?";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, a.getRouteID().toString());
+			ps.setString(2, a.getTrainType());
+			ps.setLong(3, a.getLastUpdated());
+			ps.setString(4, a.getLineID().toString());
+
+			// api call
+
+			return ps.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+
+	public int insert(Line l) {
 		PreparedStatement ps = null;
 
 		String sql = "INSERT INTO Line VALUES(?,?,?,?)";
@@ -39,18 +81,15 @@ public class LineDAO extends BaseDAO
 
 			return ps.executeUpdate();
 
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		}
-		finally {
+		} finally {
 			try {
 				if (ps != null)
 					ps.close();
 
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -58,8 +97,7 @@ public class LineDAO extends BaseDAO
 
 	}
 
-	public ArrayList<Line> selectAllSync()
-	{
+	public ArrayList<Line> selectAllSync() {
 		ArrayList<Line> list = null;
 
 		PreparedStatement ps = null;
@@ -82,19 +120,16 @@ public class LineDAO extends BaseDAO
 			}
 
 			return list;
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		}
-		finally {
+		} finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -102,8 +137,7 @@ public class LineDAO extends BaseDAO
 
 	}
 
-	public ArrayList<Line> selectAll()
-	{
+	public ArrayList<Line> selectAll() {
 		ArrayList<Line> list = null;
 
 		PreparedStatement ps = null;
@@ -111,10 +145,10 @@ public class LineDAO extends BaseDAO
 
 		String sql = "SELECT l.LineID,  r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"
 				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
-				+ " s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
-				+ "r.LastUpdated as RouteLastUpdated" + "l.TrainType, l.LastUpdated as LineLastUpdated" + " FROM Line l"
-				+ "INNER JOIN Route r ON l.RouteID = r.RouteID"
-				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
+				+ " s.Name, s.CoX, s.CoY, s.LastUpdated as StationLastUpdated, "
+				+ "r.LastUpdated as RouteLastUpdated, l.TrainType, l.LastUpdated as LineLastUpdated FROM Line l "
+				+ "INNER JOIN Route r ON l.RouteID = r.RouteID "
+				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID "
 				+ "INNER JOIN Address a ON a.AddressID = s.AddressID;";
 
 		try {
@@ -132,19 +166,16 @@ public class LineDAO extends BaseDAO
 			}
 
 			return list;
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		}
-		finally {
+		} finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
@@ -152,18 +183,18 @@ public class LineDAO extends BaseDAO
 
 	}
 
-	public Line selectOne(String lineID)
-	{
+	public Line selectOne(String lineID) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		String sql = "SELECT l.LineID,  r.RouteID, s.StationID as DepartStation, s.StationID as ArrivalStation, a.AddressID, a.Street,"
 				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated,"
-				+ " s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
-				+ "r.LastUpdated as RouteLastUpdated" + "l.TrainType, l.LastUpdated as LineLastUpdated" + " FROM Line l"
-				+ "INNER JOIN Route r ON l.RouteID = r.RouteID"
-				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID"
-				+ "INNER JOIN Address a ON a.AddressID = s.AddressID" + "WHERE l.LineID = ?;";
+				+ " s.Name, s.CoX, s.CoY, s.LastUpdated as StationLastUpdated, "
+				+ "r.LastUpdated as RouteLastUpdated, l.TrainType, l.LastUpdated as LineLastUpdated FROM Line l "
+				+ "INNER JOIN Route r ON l.RouteID = r.RouteID "
+				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID "
+				+ "INNER JOIN Address a ON a.AddressID = s.AddressID "
+				+ "WHERE l.LineID = ?;";
 		try {
 
 			if (getConnection().isClosed()) {
@@ -177,27 +208,23 @@ public class LineDAO extends BaseDAO
 				return resultToModel(rs);
 			else
 				return null;
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		}
-		finally {
+		} finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (rs != null)
 					rs.close();
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
 		}
 	}
 
-	private Line resultToModel(ResultSet rs) throws SQLException
-	{
+	private Line resultToModel(ResultSet rs) throws SQLException {
 		Line l = new Line();
 
 		Route r = RouteDAO.resultToModel(rs);
@@ -210,18 +237,53 @@ public class LineDAO extends BaseDAO
 		return l;
 	}
 
-	public static void createTable(Connection con)
-	{
+	public TreeMap<String, String> updateStatus() {
+		TreeMap<String, String> map = null;
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT COUNT(DISTINCT LineID) as Count, MAX(LastUpdated) as LastUpdated FROM Line";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			rs = ps.executeQuery();
+			map = new TreeMap<String, String>();
+
+			while (rs.next()) {
+				map.put("Count", rs.getString("Count"));
+				map.put("LastUpdated", rs.getString("LastUpdated"));
+			}
+
+			return map;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+
+	public static void createTable(Connection con) {
 		PreparedStatement ps = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS `Line` (" 
-				+ "`LineID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0'," 
-				+ "`TrainType` varchar(10) NOT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
-				+ "PRIMARY KEY (`LineID`),"
-				+ "FOREIGN KEY (`RouteID`) REFERENCES `Route`(`RouteID`)"
-				+ ");";
+		String sql = "CREATE TABLE IF NOT EXISTS `Line` (" + "`LineID` varchar(36) NOT NULL DEFAULT '0',"
+				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0'," + "`TrainType` varchar(10) NOT NULL,"
+				+ "`LastUpdated` bigint(14) DEFAULT NULL," + "PRIMARY KEY (`LineID`),"
+				+ "FOREIGN KEY (`RouteID`) REFERENCES `Route`(`RouteID`)" + ");";
 
 		try {
 
@@ -230,17 +292,14 @@ public class LineDAO extends BaseDAO
 			}
 			ps = con.prepareStatement(sql);
 			ps.executeUpdate();
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new RuntimeException(e.getMessage());
-		}
-		finally {
+		} finally {
 			try {
 				if (ps != null)
 					ps.close();
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
 			}
