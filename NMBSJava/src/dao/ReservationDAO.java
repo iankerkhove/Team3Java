@@ -43,11 +43,11 @@ public class ReservationDAO extends BaseDAO
 
 			ps.setString(1, r.getReservationID().toString());
 			ps.setInt(2, r.getPassengerCount());
-			ps.setString(3, r.getTrainID().toString());
+			ps.setString(3, r.getTrainID());
 			ps.setDouble(4, r.getPrice());
-			ps.setString(5, r.getReservationDate().toString());
-			ps.setString(5, r.getRouteID().toString());
-			ps.setLong(6, r.getLastUpdated());
+			ps.setString(5, r.getReservationDate());
+			ps.setString(6, r.getRouteID().toString());
+			ps.setLong(7, r.getLastUpdated());
 
 
 			// api call
@@ -126,7 +126,7 @@ public class ReservationDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql ="SELECT r.RouteID, r.DepartureStationID as DepartStation, r.ArrivalStationID as ArrivalStation,"
+		String sql ="SELECT r.RouteID, r.DepartureStationID as DepartStation, r.ArrivalStationID as ArrivalStation, "
 				+ " s.Name, s.CoX,s.CoY, s.LastUpdated as StationLastUpdated, "
 				+ "r.LastUpdated as RouteLastUpdated, re.ReservationID, re.PassengerCount, re.TrainID, "
 				+ "re.Price, re.ReservationDate, re.LastUpdated as ReservationLastUpdated FROM Reservation re "
@@ -327,13 +327,13 @@ public class ReservationDAO extends BaseDAO
 
 		String sql = "CREATE TABLE IF NOT EXISTS `Reservation` (  "
 				+ "`ReservationID` varchar(36) NOT NULL DEFAULT '0', " 
-				+ "`PassengerCount` int(11) NOT NULL,  "
-				+ "`TrainID` varchar(36) NOT NULL DEFAULT '0',  "
+				+ "`PassengerCount` int(11) NOT NULL, "
+				+ "`TrainID` varchar(36) NOT NULL DEFAULT '0', "
 				+ "`Price` double NOT NULL, "
-				+"`ReservationDate` varchar(40) NOT NULL,"
-				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL, "
-				+ "PRIMARY KEY (`ReservationID`),"
+				+ "`ReservationDate` varchar(40) NOT NULL, "
+				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0', "
+				+ "`LastUpdated` bigint(14) NOT NULL, "
+				+ "PRIMARY KEY (`ReservationID`), "
 				+ "FOREIGN KEY (`RouteID`) REFERENCES `Route`(`RouteID`)"
 				+ ");";
 
