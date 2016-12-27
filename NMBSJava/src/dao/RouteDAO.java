@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import model.Route;
@@ -15,7 +16,91 @@ public class RouteDAO extends BaseDAO
 
 	public RouteDAO()
 	{}
+	
+	public int insertOrUpdate(Route a) {
+		Route exists = this.selectOne(a.getRouteID().toString());
 
+		if (exists == null)
+			return this.insert(a);
+		else
+			return this.update(a);
+	}
+
+	public int update(Route a) {
+		PreparedStatement ps = null;
+
+		String sql = "UPDATE Route SET `DepartureStationID`= ?,`ArrivalStationID`= ?,`LastUpdated`= ? WHERE RouteID = ?";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, a.getDepartureStationID().toString());
+			ps.setString(2, a.getArrivalStationID().toString());
+			ps.setLong(3, a.getLastUpdated());
+			ps.setString(4, a.getRouteID().toString());
+
+			// api call
+
+			return ps.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+
+	public TreeMap<String, String> updateStatus() {
+		TreeMap<String, String> map = null;
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT COUNT(DISTINCT RouteID) as Count, MAX(LastUpdated) as LastUpdated FROM Route";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			rs = ps.executeQuery();
+			map = new TreeMap<String, String>();
+
+			while (rs.next()) {
+				map.put("Count", rs.getString("Count"));
+				map.put("LastUpdated", rs.getString("LastUpdated"));
+			}
+
+			return map;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+	
 	public int insert(Route r)
 	{
 		PreparedStatement ps = null;
@@ -118,8 +203,8 @@ public class RouteDAO extends BaseDAO
 				+ "r.RouteID, s1.StationID as DepartureStationID, s1.Name as DepartureName, "
 				+ "s1.CoX as DepartureCoX, s1.CoY as DepartureCoY, s1.LastUpdated as DepartureLastUpdated,"
 				+ "s2.StationID as ArrivalStationID, s2.Name as ArrivalName, "
-				+ "s2.CoX as ArrivalCoX, s2.CoY as ArrivalCoY, s2.LastUpdated as ArrivalLastUpdated, r.LastUpdated as RouteLastUpdated"
-				+ "FROM Route r"
+				+ "s2.CoX as ArrivalCoX, s2.CoY as ArrivalCoY, s2.LastUpdated as ArrivalLastUpdated, r.LastUpdated as RouteLastUpdated "
+				+ "FROM Route r "
 				+ "INNER JOIN Station s1 on s1.StationID = r.DepartureStationID "
 				+ "INNER JOIN Station s2 on s2.StationID = r.ArrivalStationID;";
 
@@ -168,10 +253,10 @@ public class RouteDAO extends BaseDAO
 				+ "r.RouteID, s1.StationID as DepartureStationID, s1.Name as DepartureName, "
 				+ "s1.CoX as DepartureCoX, s1.CoY as DepartureCoY, s1.LastUpdated as DepartureLastUpdated,"
 				+ "s2.StationID as ArrivalStationID, s2.Name as ArrivalName, "
-				+ "s2.CoX as ArrivalCoX, s2.CoY as ArrivalCoY, s2.LastUpdated as ArrivalLastUpdated, r.LastUpdated as RouteLastUpdated"
-				+ "FROM Route r"
+				+ "s2.CoX as ArrivalCoX, s2.CoY as ArrivalCoY, s2.LastUpdated as ArrivalLastUpdated, r.LastUpdated as RouteLastUpdated "
+				+ "FROM Route r "
 				+ "INNER JOIN Station s1 on s1.StationID = r.DepartureStationID "
-				+ "INNER JOIN Station s2 on s2.StationID = r.ArrivalStationID"
+				+ "INNER JOIN Station s2 on s2.StationID = r.ArrivalStationID "
 				+ "WHERE r.RouteID=?;";
 		
 		try {
@@ -211,15 +296,15 @@ public class RouteDAO extends BaseDAO
 	public static Route resultToModel(ResultSet rs) throws SQLException
 	{
 		Route r = new Route();
-		Station s = new Station();
+		Station s1 = new Station();
 		Station s2 = new Station();
 
 
-		s.setStationID(UUID.fromString(rs.getString("DepartureStationID")));
-		s.setStationName(rs.getString("DepartureName"));
-		s.setCoX(rs.getString("DepartureCoX"));
-		s.setCoY(rs.getString("DepartureCoY"));
-		s.setLastUpdated(rs.getLong("DepartureLastUpdated"));
+		s1.setStationID(UUID.fromString(rs.getString("DepartureStationID")));
+		s1.setStationName(rs.getString("DepartureName"));
+		s1.setCoX(rs.getString("DepartureCoX"));
+		s1.setCoY(rs.getString("DepartureCoY"));
+		s1.setLastUpdated(rs.getLong("DepartureLastUpdated"));
 
 		s2.setStationID(UUID.fromString(rs.getString("ArrivalStationID")));
 		s2.setStationName(rs.getString("ArrivalName"));
@@ -228,7 +313,7 @@ public class RouteDAO extends BaseDAO
 		s2.setLastUpdated(rs.getLong("ArrivalStationLastUpdated"));
 
 		r.setRouteID(UUID.fromString(rs.getString("RouteID")));
-		r.setDepartureStation(s);
+		r.setDepartureStation(s1);
 		r.setArrivalStation(s2);
 		r.setLastUpdated(rs.getLong("RouteLastUpdated"));
 
