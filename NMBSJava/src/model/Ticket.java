@@ -4,132 +4,110 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
-public class Ticket
-{
+public class Ticket {
 	// members
+	private UUID ticketID;
 	private UUID routeID;
 	private Route route;
-	private Date date;
-	private double price;
-	private Date validFrom;
-	private Date validUntil;
-	private UUID ticketID;
+	private UUID typeTicketID;
+	private TypeTicket typeTicket;
+	private String date;
+	private String validFrom;
+	private String validUntil;
 	private long lastUpdated;
-	private ComfortClass comfortClass;
 
 	// enumeratie
-	public enum ComfortClass
-	{
+	public enum ComfortClass {
 		First, Second
 	}
 
-	public Ticket()
-	{}
-	
-	public Ticket(UUID routeID, Date date, double price, Date validFrom, Date validUntil, ComfortClass comfortClass)
-	{
+	public Ticket() {
+	}
+
+	public Ticket(UUID routeID, UUID typeTicketID, String date, String validFrom, String validUntil) {
+		this.ticketID = UUID.randomUUID();
+		this.routeID = routeID;
+		this.typeTicketID = typeTicketID;
 		this.date = date;
-		this.price = price;
 		this.validFrom = validFrom;
 		this.validUntil = validUntil;
-		this.comfortClass = comfortClass;
-		this.routeID = UUID.randomUUID();
 		this.lastUpdated = Instant.now().getEpochSecond();
 	}
-	
-	public Route getRoute()
-	{
-		return route;
+
+	public void update() {
+		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 
-	public void setRoute(Route route)
-	{
-		this.route = route;
-	}
-
-	public void setRouteID(UUID routeID)
-	{
-		this.routeID = routeID;
-	}
-
-	public void setTicketID(UUID ticketID)
-	{
-		this.ticketID = ticketID;
-	}
-
-	public UUID getTicketID()
-	{
+	public UUID getTicketID() {
 		return ticketID;
 	}
 
-	public Date getDate()
-	{
+	public void setTicketID(UUID ticketID) {
+		this.ticketID = ticketID;
+	}
+
+	public UUID getRouteID() {
+		return routeID;
+	}
+
+	public void setRouteID(UUID routeID) {
+		this.routeID = routeID;
+	}
+
+	public Route getRoute() {
+		return route;
+	}
+
+	public void setRoute(Route route) {
+		this.route = route;
+	}
+
+	public UUID getTypeTicketID() {
+		return typeTicketID;
+	}
+
+	public void setTypeTicketID(UUID typeTicketID) {
+		this.typeTicketID = typeTicketID;
+	}
+
+	public TypeTicket getTypeTicket() {
+		return typeTicket;
+	}
+
+	public void setTypeTicket(TypeTicket typeTicket) {
+		this.typeTicket = typeTicket;
+	}
+
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date)
-	{
+	public void setDate(String date) {
 		this.date = date;
 	}
 
-	public double getPrice()
-	{
-		return price;
-	}
-
-	public void setPrice(double price)
-	{
-		this.price = price;
-	}
-
-	public Date getValidFrom()
-	{
+	public String getValidFrom() {
 		return validFrom;
 	}
 
-	public void setValidFrom(Date validFrom)
-	{
+	public void setValidFrom(String validFrom) {
 		this.validFrom = validFrom;
 	}
 
-	public Date getValidUntil()
-	{
+	public String getValidUntil() {
 		return validUntil;
 	}
 
-	public void setValidUntil(Date validUntil)
-	{
+	public void setValidUntil(String validUntil) {
 		this.validUntil = validUntil;
 	}
 
-	public long getLastUpdated()
-	{
+	public long getLastUpdated() {
 		return lastUpdated;
 	}
 
-	public void setLastUpdated(long lastUpdated)
-	{
+	public void setLastUpdated(long lastUpdated) {
 		this.lastUpdated = lastUpdated;
-	}
-
-	public ComfortClass getComfortClass()
-	{
-		return comfortClass;
-	}
-
-	public void setComfortClass(ComfortClass comfortClass)
-	{
-		this.comfortClass = comfortClass;
-	}
-
-	public UUID getRouteID()
-	{
-		return routeID;
-	}
-	
-	public void update()
-	{
-		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 
 }
