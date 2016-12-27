@@ -127,6 +127,8 @@ public class SyncStaffRunnable implements Runnable
 	
 	private void updateLocal(ArrayList<Staff> staffList)
 	{
+		sDAO.setSyncFunction();
+		
 		for (int i = 0; i < staffList.size(); i++)
 		{
 			sDAO.insertOrUpdate(staffList.get(i));

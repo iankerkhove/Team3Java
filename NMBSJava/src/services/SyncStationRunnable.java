@@ -119,6 +119,8 @@ public class SyncStationRunnable implements Runnable
 	
 	private void updateLocal(ArrayList<Station> stationList)
 	{
+		sDAO.setSyncFunction();
+		
 		for (int i = 0; i < stationList.size(); i++)
 		{
 			sDAO.insertOrUpdate(stationList.get(i));

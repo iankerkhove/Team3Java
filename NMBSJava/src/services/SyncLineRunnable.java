@@ -116,6 +116,8 @@ public class SyncLineRunnable implements Runnable
 	
 	private void updateLocal(ArrayList<Line> lineList)
 	{
+		aDAO.setSyncFunction();
+		
 		for (int i = 0; i < lineList.size(); i++)
 		{
 			aDAO.insertOrUpdate(lineList.get(i));		

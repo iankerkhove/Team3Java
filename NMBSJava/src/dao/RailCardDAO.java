@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import model.Customer;
 import model.RailCard;
 
 public class RailCardDAO extends BaseDAO

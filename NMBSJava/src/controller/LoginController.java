@@ -31,6 +31,7 @@ public class LoginController{
 					public void actionPerformed(ActionEvent e) {
 						settings = SettingsSingleton.getSettings();
 						verify(l);
+
 					}
 				});
 				

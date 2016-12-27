@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import model.Customer;
 import model.Reservation;
 import model.Route;
 
@@ -315,7 +314,7 @@ public class ReservationDAO extends BaseDAO
 		re.setPassengerCount(rs.getInt("PassengerCount"));
 		re.setTrainID(rs.getString("TrainID"));
 		re.setPrice(rs.getDouble("Price"));
-		re.setReservationDate(rs.getDate("ReservationDate").toString());
+		re.setReservationDate(rs.getString("ReservationDate"));
 		re.setRoute(r);
 		re.setLastUpdated(rs.getLong("ReservationLastUpdated"));
 
@@ -362,4 +361,5 @@ public class ReservationDAO extends BaseDAO
 			}
 		}
 	}
+
 }

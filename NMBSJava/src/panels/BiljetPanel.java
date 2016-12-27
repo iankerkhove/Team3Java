@@ -1,21 +1,24 @@
 package panels;
 
-import javax.swing.*;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.util.Properties;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.SwingConstants;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import gui.GUIDateFormat;
-import gui.StationsAutoCompletor;
-
-import model.Station;
-import java.awt.GridLayout;
-import java.util.Properties;
-import java.awt.Font;
-
 import gui.LangageHandler;
+import gui.StationsAutoCompletor;
 
 @SuppressWarnings("serial") 
 public class BiljetPanel extends JPanel {

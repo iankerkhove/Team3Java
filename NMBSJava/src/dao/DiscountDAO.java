@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import model.Customer;
 import model.Discount;
 
 
@@ -110,7 +109,7 @@ public class DiscountDAO extends BaseDAO
 		}
 
 	}
-	
+
 	public ArrayList<Discount> selectAll()
 	{
 		ArrayList<Discount> list = null;
@@ -147,6 +146,7 @@ public class DiscountDAO extends BaseDAO
 					ps.close();
 				if (rs != null)
 					rs.close();
+
 			}
 			catch (SQLException e) {
 
@@ -263,7 +263,7 @@ public class DiscountDAO extends BaseDAO
 				+ "`DiscountID` varchar(36) NOT NULL DEFAULT '0',"
 				+ "`Name` varchar(20) NOT NULL," 
 				+ "`Amount` double NOT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
+				+ "`LastUpdated` bigint(14) NOT NULL," 
 				+ "PRIMARY KEY (`DiscountID`)"
 				+ ");";
 

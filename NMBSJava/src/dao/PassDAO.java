@@ -43,7 +43,7 @@ public class PassDAO extends BaseDAO
 
 			ps.setString(1, p.getPassID().toString());
 			ps.setString(2, p.getTypePassID().toString());
-			ps.setString(3, p.getDate().toString());
+			ps.setString(3, p.getDate());
 			ps.setString(4, p.getStartDate().toString());
 			ps.setInt(5, p.getComfortClass());
 			ps.setLong(6, p.getLastUpdated());
@@ -88,7 +88,7 @@ public class PassDAO extends BaseDAO
 			
 			ps.setString(1, p.getPassID().toString());
 			ps.setString(2, p.getTypePassID().toString());
-			ps.setString(3, p.getDate().toString());
+			ps.setString(3, p.getDate());
 			ps.setString(4, p.getStartDate().toString());
 			ps.setInt(5,p.getComfortClass());
 			ps.setLong(6, p.getLastUpdated());
@@ -303,8 +303,8 @@ public class PassDAO extends BaseDAO
 
 		p.setPassID(UUID.fromString(rs.getString("PassID")));
 		p.setTypePass(t);
-		p.setDate(rs.getDate("Date").toString());
-		p.setStartDate(rs.getDate("StartDate").toString());
+		p.setDate(rs.getString("Date"));
+		p.setStartDate(rs.getString("StartDate"));
 		p.setComfortClass(rs.getInt("ComfortClass"));
 		p.setLastUpdated(rs.getLong("PassLastUpdated"));
 

@@ -5,15 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
+
+import controller.APIController.RequestType;
 import model.Line;
 import model.Route;
 
-public class LineDAO extends BaseDAO {
-	public LineDAO() {
-
-	}
+public class LineDAO extends BaseDAO 
+{
+	public final static String BASE_URL = "line/";
+	
+	public LineDAO() {}
 
 	public int insertOrUpdate(Line a) {
 		Line exists = this.selectOne(a.getLineID().toString());
@@ -24,7 +28,7 @@ public class LineDAO extends BaseDAO {
 			return this.update(a);
 	}
 
-	public int update(Line a) {
+	public int update(Line l) {
 		PreparedStatement ps = null;
 
 		String sql = "UPDATE Line SET RouteID = ?, TrainType = ?, LastUpdated = ? WHERE LineID = ?";
@@ -36,12 +40,19 @@ public class LineDAO extends BaseDAO {
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, a.getRouteID().toString());
-			ps.setString(2, a.getTrainType());
-			ps.setLong(3, a.getLastUpdated());
-			ps.setString(4, a.getLineID().toString());
+			ps.setString(1, l.getRouteID().toString());
+			ps.setString(2, l.getTrainType());
+			ps.setLong(3, l.getLastUpdated());
+			ps.setString(4, l.getLineID().toString());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("lineID", l.getLineID().toString());
+				params.put("routeID", l.getRouteID().toString());
+				params.put("trainType", l.getTrainType());
+				params.put("lastUpdated", Long.toString(l.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -52,6 +63,9 @@ public class LineDAO extends BaseDAO {
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("lineID"), RequestType.PUT, params);
+				
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
@@ -76,7 +90,14 @@ public class LineDAO extends BaseDAO {
 			ps.setString(3, l.getTrainType());
 			ps.setLong(4, l.getLastUpdated());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("lineID", l.getLineID().toString());
+				params.put("routeID", l.getRouteID().toString());
+				params.put("trainType", l.getTrainType());
+				params.put("lastUpdated", Long.toString(l.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -87,6 +108,8 @@ public class LineDAO extends BaseDAO {
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
 
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
