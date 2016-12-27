@@ -1,9 +1,8 @@
 package tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.Date;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,14 +11,13 @@ import model.Ticket;
 import model.Ticket.ComfortClass;
 public class TicketTest {
 	private Ticket ticket;
-	private UUID id;
 	private Date datum = new Date(2017,03,02);
 	private Date datumVan = new Date(2017,03,02);
 	private Date datumTot = new Date(2017,04,02);
 	
 	@Before
 	public void setUp() throws Exception {
-		ticket = new Ticket(id, datum, 11.5,datumVan, datumTot, ComfortClass.Second);
+		ticket = new Ticket(1, datum, 11.5,datumVan, datumTot, ComfortClass.Second);
 	}
 	
 	@Test
@@ -34,13 +32,13 @@ public class TicketTest {
 	
 	@Test
 	public void TicketIDTest(){
-		//ticket.setTicketID(1);
+		ticket.setTicketID(1);
 		assertEquals(1,ticket.getTicketID());
 	}
 	
 	@Test
 	public void RouteIDTest(){
-		//ticket.setRouteID(2);
+		ticket.setRouteID(2);
 		assertEquals(2,ticket.getRouteID());
 	}
 	

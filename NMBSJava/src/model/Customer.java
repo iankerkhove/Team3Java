@@ -1,37 +1,22 @@
 package model;
 
-import java.time.Instant;
 import java.util.Date;
-import java.util.UUID;
 
 public class Customer extends Person {
-	private UUID customerID;
+	private int customerID;
 	private RailCard railCard;
-	private long unixTimestamp;
-	public Customer() {
-		
-	}
+
 	public Customer(String firstName, String lastName, Date birthDate, String emailAddress, Address address,
 			RailCard railCard) {
 		super(firstName, lastName, birthDate, emailAddress, address);
 		this.railCard = railCard;
-		this.customerID = UUID.randomUUID();
-		unixTimestamp = Instant.now().getEpochSecond();
 	}
-	public void update(){
-		unixTimestamp = Instant.now().getEpochSecond();
-	}
-	public void setLastUpdated(long unixTimestamp){
-		this.unixTimestamp = unixTimestamp;
-	}
-	public long getUnixTimestamp() {
-		return unixTimestamp;
-	}
-	public UUID getCustomerID() {
+
+	public int getCustomerID() {
 		return customerID;
 	}
 
-	public void setCustomerID(UUID customerID) {
+	public void setCustomerID(int customerID) {
 		this.customerID = customerID;
 	}
 

@@ -1,45 +1,30 @@
 package model;
 
-import java.time.Instant;
 import java.util.Date;
-import java.util.UUID;
 
 public class Person {
-	private UUID perID;
+	private int perID;
 	private String firstName;
 	private String lastName;
 	private Date birthDate;
 	private String emailAddress;
 	private Address address;
-	private long unixTimestamp;
+	
 	public Person(String firstName, String lastName, Date birthDate, String emailAddress, Address address) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.birthDate = birthDate;
 		this.emailAddress = emailAddress;
 		this.setAddress(address);
-		this.perID = UUID.randomUUID();
-		unixTimestamp = Instant.now().getEpochSecond();
 	}
 
-	public Person() {
-	}
-
-	public long getUnixTimestamp() {
-		return unixTimestamp;
-	}
-
-	public void update() {
-		this.unixTimestamp = Instant.now().getEpochSecond();
-	}
-
-	public UUID getPerID() {
+	public int getPerID() {
 		return perID;
 	}
 	
-	/*public void setPerID(int perID) {
+	public void setPerID(int perID) {
 		this.perID = perID;
-	}*/
+	}
 
 	public String getFirstName() {
 		return firstName;

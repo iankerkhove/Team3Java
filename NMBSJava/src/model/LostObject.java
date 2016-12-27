@@ -1,43 +1,26 @@
 package model;
 
-import java.time.Instant;
 import java.util.Date;
-import java.util.UUID;
 
 public class LostObject {
-private UUID objectID;
+private int objectID;
 private Station station;
 private String description;
 private Date date;
-private String trainID;
-private long unixTimestamp;
-public LostObject(Station station, String description, Date date, String trainID) {
+private int trainID;
+
+public LostObject(Station station, String description, Date date, int trainID) {
 	this.station = station;
 	this.description = description;
 	this.date = date;
 	this.trainID = trainID;
-	this.objectID = UUID.randomUUID();
-	unixTimestamp = Instant.now().getEpochSecond();
 }
 
-public LostObject() {
-}
-
-public long getUnixTimestamp() {
-	return unixTimestamp;
-}
-
-public void update() {
-	this.unixTimestamp = Instant.now().getEpochSecond();
-}
-public void setLastUpdated(long unixTimestamp){
-	this.unixTimestamp = unixTimestamp;
-}
-public UUID getObjectID() {
+public int getObjectID() {
 	return objectID;
 }
 
-public void setObjectID(UUID objectID) {
+public void setObjectID(int objectID) {
 	this.objectID = objectID;
 }
 
@@ -45,7 +28,7 @@ public Station getStation() {
 	return station;
 }
 
-public void setStation(Station station) {
+public void setStationID(Station station) {
 	this.station = station;
 }
 
@@ -65,11 +48,11 @@ public void setDate(Date date) {
 	this.date = date;
 }
 
-public String getTrainID() {
+public int getTrainID() {
 	return trainID;
 }
 
-public void setTrainID(String trainID) {
+public void setTrainID(int trainID) {
 	this.trainID = trainID;
 }
 

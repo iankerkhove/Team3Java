@@ -172,14 +172,6 @@ public class RouteberekeningAPI {
 		}
 		return temp;
 	}
-	
-	public ArrayList<String> treinID(){
-		ArrayList<String> s = null;
-		for (int i = 0; i < this.getConnections().size(); i++) {
-			s.add(this.getConnections().get(i).getDeparture().getVehicle());
-		}
-		return s;
-	}
 
 	public String toStringHTML() {
 		return "<html>" + this.toString().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")

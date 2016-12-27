@@ -72,7 +72,7 @@ public class CustomerTest {
 	
 	@Test
 	public void CustomerIDTest(){
-		//customer.setCustomerID(1);
+		customer.setCustomerID(1);
 		assertEquals(1,customer.getCustomerID());
 	}
 	
@@ -84,7 +84,7 @@ public class CustomerTest {
 	
 	@Test
 	public void GetAPItest() {
-		//customer.setCustomerID(1);
+		customer.setCustomerID(1);
 		try {
 			temp = new JSONObject(URLCon.readUrl("http://nmbs-team.tk/api/staff/login?username=nmbsteam&password=nmbsteamrocks", "POST"));
 			System.out.println(temp);

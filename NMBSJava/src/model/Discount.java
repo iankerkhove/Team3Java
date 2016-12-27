@@ -1,41 +1,19 @@
 package model;
 
-import java.time.Instant;
-import java.util.UUID;
-
 public class Discount {
-	private UUID discountID;
+	private int discountID;
 	private String name;
 	private double amount;
-	private long unixTimestamp;
+	
 	public Discount(String name, double amount) {
 		this.name = name;
 		this.amount = amount;
-		this.discountID = UUID.randomUUID();
-		unixTimestamp = Instant.now().getEpochSecond();
 	}
 	
-	public Discount() {
-		
-	}
-	public void setUnixTimestamp(long unixTimestamp) {
-		this.unixTimestamp = unixTimestamp;
-	}
-	public void setLastUpdated(long unixTimestamp){
-		this.unixTimestamp = unixTimestamp;
-	}
-	public long getUnixTimestamp() {
-		return unixTimestamp;
-	}
-
-	public void update() {
-		this.unixTimestamp = Instant.now().getEpochSecond();
-	}
-
-	public UUID getDiscountID() {
+	public int getDiscountID() {
 		return discountID;
 	}
-	public void setDiscountID(UUID discountID) {
+	public void setDiscountID(int discountID) {
 		this.discountID = discountID;
 	}
 	public String getName() {
