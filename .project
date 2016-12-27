@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-<?xml version="1.0" encoding="UTF-8"?>
-<projectDescription>
-	<name>Team3Java</name>
-	<comment></comment>
-	<projects>
-	</projects>
-	<buildSpec>
-	</buildSpec>
-	<natures>
-	</natures>
-</projectDescription>
-=======
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>nmbs-java</name>
@@ -22,4 +9,3 @@
 	<natures>
 	</natures>
 </projectDescription>
->>>>>>> branch 'master' of https://github.com/YoussefImg/Team3Java.git
