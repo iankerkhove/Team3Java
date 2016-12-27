@@ -18,7 +18,7 @@ public class RailcardTest {
 	
 	@Test
 	public void RailcardIDTest() {
-		railcard.setRailCardID(3);
+		//railcard.setRailCardID(3);
 		assertEquals(3,railcard.getRailCardID());
 	}
 	
