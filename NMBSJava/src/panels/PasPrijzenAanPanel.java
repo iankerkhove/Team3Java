@@ -160,8 +160,8 @@ public class PasPrijzenAanPanel extends JPanel {
 			this.add(btnPasAan);
 			break;
 		case 4:
-			this.add(new JLabel("TicketType: "));
-			this.add(autTicketType);
+			this.add(new JLabel("PassType: "));
+			this.add(autPassType);
 			
 			this.add(lblOldPrice);
 			this.add(txtOldPrice);
