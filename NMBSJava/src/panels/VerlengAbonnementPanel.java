@@ -1,6 +1,7 @@
 package panels;
 
 import java.awt.BorderLayout;
+
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
@@ -20,9 +21,10 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import gui.GUIDateFormat;
+import gui.LangageHandler;
 
 public class VerlengAbonnementPanel extends JPanel {
-	
+
 	private JPanel titel;
 	private JPanel abonnementsNummer;
 	private JPanel klantenNummer;
@@ -110,7 +112,8 @@ public class VerlengAbonnementPanel extends JPanel {
 		titel=new JPanel();
 		titel.setLayout(new GridLayout(1, 1,1,1));
 		
-		lblTitle = new JLabel("Verleng Abonnement");
+		lblTitle = new JLabel();
+		LangageHandler.chooseLangageLbl(lblTitle, "verlengAbo");
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		
 		titel.add(lblTitle);
@@ -120,9 +123,11 @@ public class VerlengAbonnementPanel extends JPanel {
 		abonnementsNummer = new JPanel();
 		abonnementsNummer.setLayout(new GridLayout(1,3,1,1));
 		
-		lblAbonnementsNummer = new JLabel("Abonnementsnummer: ");
+		lblAbonnementsNummer = new JLabel();
+		LangageHandler.chooseLangageLbl(lblAbonnementsNummer, "aboNummer");
 		txtAbonnementsNummer = new JTextField();
-		btnZoek = new JButton("Zoek");
+		btnZoek = new JButton();
+		LangageHandler.chooseLangageBtn(btnZoek,"zoek");
 		
 		abonnementsNummer.add(lblAbonnementsNummer);
 		abonnementsNummer.add(txtAbonnementsNummer);
@@ -133,9 +138,11 @@ public class VerlengAbonnementPanel extends JPanel {
 		klantenNummer = new JPanel();
 		klantenNummer.setLayout(new GridLayout(1,3,1,1));
 		
-		lblKlantenNummer = new JLabel("Klantennumer: ");
+		lblKlantenNummer = new JLabel();
+		LangageHandler.chooseLangageLbl(lblKlantenNummer, "klantennummer");
 		lblKLantenNummerResult = new JLabel("123456");
-		btnMeerInfo = new JButton("Meer info");
+		btnMeerInfo = new JButton();
+		LangageHandler.chooseLangageBtn(btnMeerInfo, "meerInfo");
 
 		klantenNummer.add(lblKlantenNummer);
 		klantenNummer.add(lblKLantenNummerResult);
@@ -146,9 +153,10 @@ public class VerlengAbonnementPanel extends JPanel {
 		treinkaart = new JPanel();
 		treinkaart.setLayout(new GridLayout(1,2,1,1));
 
-		lblTreinkaart = new JLabel("Treinkaart: ");
-		String[] str = { "Trajecttreinkaart", "Halftijdstreinkaart", "Nettreinkaart", "Schooltreinkaart" };
-		cbxTreinkaart = new JComboBox(str);
+		lblTreinkaart = new JLabel();
+		LangageHandler.chooseLangageLbl(lblTreinkaart, "treinkaart");
+		String[] soortKaart = {LangageHandler.chooseLangage("trajecttreinkaart"), LangageHandler.chooseLangage("halftijdstreinkaart"), LangageHandler.chooseLangage("nettreinkaart"), LangageHandler.chooseLangage("schooltreinkaart") };
+		cbxTreinkaart = new JComboBox(soortKaart);
 		
 		treinkaart.add(lblTreinkaart);
 		treinkaart.add(cbxTreinkaart);
@@ -158,7 +166,8 @@ public class VerlengAbonnementPanel extends JPanel {
 		startdatum = new JPanel();
 		startdatum.setLayout(new GridLayout(1,2,1,1));
 
-		lblStartdatum = new JLabel("Startdatum: ");
+		lblStartdatum = new JLabel();
+		LangageHandler.chooseLangageLbl(lblStartdatum, "startdatum");
 		Properties properties = new Properties();
 		properties.put("text.today", "Today");
 		properties.put("text.month", "Month");
@@ -176,8 +185,9 @@ public class VerlengAbonnementPanel extends JPanel {
 		duur = new JPanel();
 		duur.setLayout(new GridLayout(1,2,1,1));
 
-		lblDuur = new JLabel("Duur: ");
-		String[] aantalMaanden = { "1 maand", "3 maanden", "12 maanden"};
+		lblDuur = new JLabel();
+		LangageHandler.chooseLangageLbl(lblDuur, "duur");
+		String[] aantalMaanden = { LangageHandler.chooseLangage("1maand"), LangageHandler.chooseLangage("3maand"), LangageHandler.chooseLangage("12maand")};
 		cbxDuur = new JComboBox(aantalMaanden);
 		
 		duur.add(lblDuur);
@@ -188,7 +198,8 @@ public class VerlengAbonnementPanel extends JPanel {
 		vervaldatum = new JPanel();
 		vervaldatum.setLayout(new GridLayout(1,2,1,1));
 
-		lblVervaldatum = new JLabel("Vervaldatum: ");
+		lblVervaldatum = new JLabel();
+		LangageHandler.chooseLangageLbl(lblVervaldatum, "vervaldatum");
 		lblVervaldatumResult = new JLabel(" ");
 		
 		vervaldatum.add(lblVervaldatum);
@@ -199,9 +210,12 @@ public class VerlengAbonnementPanel extends JPanel {
 		klasse = new JPanel();
 		klasse.setLayout(new GridLayout(1, 3,1,1));
 		
-		lblKlasse = new JLabel("Klasse: ");
-		rdbEersteKlasse = new JRadioButton("1e Klas");
-		rdbTweedeKlasse = new JRadioButton("2e Klas");
+		lblKlasse = new JLabel();
+		LangageHandler.chooseLangageLbl(lblKlasse, "klasse");
+		rdbEersteKlasse = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbEersteKlasse, "1eKlasse");
+		rdbTweedeKlasse = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbTweedeKlasse, "2eKlasse");
 		
 		grpKlasses = new ButtonGroup();
 		grpKlasses.add(rdbEersteKlasse);
@@ -216,9 +230,12 @@ public class VerlengAbonnementPanel extends JPanel {
 		traject = new JPanel();
 		traject.setLayout(new GridLayout(1, 3,1,1));
 		
-		lblVastTraject = new JLabel("Vast traject: ");
-		rdbJa = new JRadioButton("Ja");
+		lblVastTraject = new JLabel();
+		LangageHandler.chooseLangageLbl(lblVastTraject, "vast");
+		rdbJa = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbJa, "ja");
 		rdbNee=new JRadioButton("Nee");
+		LangageHandler.chooseLangageRdb(rdbNee, "nee");
 		
 		grpJaNee = new ButtonGroup();
 		grpJaNee.add(rdbJa);
@@ -257,9 +274,11 @@ public class VerlengAbonnementPanel extends JPanel {
 		printEnValideer = new JPanel();
 		printEnValideer.setLayout(new GridLayout(1, 3, 1, 1));
 		
-		btnPrint = new JButton("PRINT");
+		btnPrint = new JButton();
+		LangageHandler.chooseLangageBtn(btnPrint, "print");
 		lblPrint = new JLabel("€0");		
-		btnValideer = new JButton("Valideer");
+		btnValideer = new JButton();
+		LangageHandler.chooseLangageBtn(btnValideer, "valideer");
 		
 		printEnValideer.add(btnPrint);
 		printEnValideer.add(lblPrint);

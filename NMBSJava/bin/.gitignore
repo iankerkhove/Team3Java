@@ -1,3 +1,5 @@
+/external_jars/
+/api/
 /controller/
 /dao/
 /gui/
