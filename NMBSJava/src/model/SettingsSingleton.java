@@ -1,5 +1,7 @@
 package model;
 
+import java.util.UUID;
+
 import controller.SettingController;
 
 public class SettingsSingleton
@@ -7,7 +9,9 @@ public class SettingsSingleton
 	private static SettingsSingleton settings;
 	
 	private String firstTime;
-	private int role;
+	private UUID StaffID;
+	private int rights;
+	private String apiToken;
 	
 	private SettingsSingleton()
 	{
@@ -33,13 +37,39 @@ public class SettingsSingleton
 		SettingController.save();
 	}
 	
-	public void setRole(int role)
+	public UUID getStaffID()
 	{
-		this.role = role;
+		return StaffID;
+	}
+
+	public void setStaffID(UUID staffID)
+	{
+		StaffID = staffID;
+	}
+
+	public int getRights()
+	{
+		return rights;
+	}
+
+	public void setRights(int rights)
+	{
+		this.rights = rights;
+	}
+
+	public String getApiToken()
+	{
+		return apiToken;
+	}
+
+	public void setApiToken(String apiToken)
+	{
+		this.apiToken = apiToken;
 	}
 	
-	public int getRole()
+	public void clearCreds()
 	{
-		return this.role;
+		this.apiToken = "";
+		this.StaffID = UUID.randomUUID();
 	}
 }

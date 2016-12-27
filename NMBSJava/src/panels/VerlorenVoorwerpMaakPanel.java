@@ -13,10 +13,11 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import gui.GUIDateFormat;
 import gui.StationsAutoCompletor;
-
+import gui.LangageHandler;
 @SuppressWarnings("serial")
 public class VerlorenVoorwerpMaakPanel extends JPanel {
 
+	//private String taal = LangageHandler.getTaal();
 	
 	private JLabel lblTitel;
 	private JLabel lblStation;
@@ -42,7 +43,7 @@ public class VerlorenVoorwerpMaakPanel extends JPanel {
 		
 		// 1
 		lblTitel = new JLabel();
-		lblTitel.setText("Toevoegen voorwerp");
+		LangageHandler.chooseLangageLbl(lblTitel, "toevoegenVoorwerp");
 		lblTitel.setFont((new Font("Tahoma", Font.PLAIN, 18)));
 		maak.add(lblTitel);
 		
@@ -54,7 +55,7 @@ public class VerlorenVoorwerpMaakPanel extends JPanel {
 		
 		//2
 		lblStation = new JLabel();
-		lblStation.setText("Station: ");
+		LangageHandler.chooseLangageLbl(lblStation, "station");
 		maak.add(lblStation);
 	
 		txtStation = new StationsAutoCompletor();
@@ -62,7 +63,7 @@ public class VerlorenVoorwerpMaakPanel extends JPanel {
 		
 		//3
 		lblTrein = new JLabel();
-		lblTrein.setText("Treinnummer: ");
+		LangageHandler.chooseLangageLbl(lblTrein, "treinnummer");
 		maak.add(lblTrein);
 		
 		txtTrein = new JTextField();
@@ -71,7 +72,7 @@ public class VerlorenVoorwerpMaakPanel extends JPanel {
 		
 		//4
 		lblOmschrijving = new JLabel();
-		lblOmschrijving.setText("Omschrijving: ");
+		LangageHandler.chooseLangageLbl(lblOmschrijving, "omschrijving");
 		maak.add(lblOmschrijving);
 		
 		txtOmschrijving = new JTextField();
@@ -80,7 +81,7 @@ public class VerlorenVoorwerpMaakPanel extends JPanel {
 		
 		//5
 		lblDatum = new JLabel();
-		lblDatum.setText("Datum: ");
+		LangageHandler.chooseLangageLbl(lblDatum, "datum");
 		maak.add(lblDatum);
 		
 		Properties properties = new Properties();
@@ -97,7 +98,7 @@ public class VerlorenVoorwerpMaakPanel extends JPanel {
 		maak.add(new JLabel());
 		
 		btnMaak = new JButton();
-		btnMaak.setText("Voeg nieuwe voorwerp toe");
+		LangageHandler.chooseLangageBtn(btnMaak, "voegNieuwe");
 		maak.add(btnMaak);
 		
 		lblResultat = new JLabel();

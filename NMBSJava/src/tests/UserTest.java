@@ -1,4 +1,4 @@
-//package tests;
+
 //
 //import static org.junit.Assert.*;
 //
@@ -64,4 +64,3 @@
 //		assertEquals(1,users.size());
 //		assertEquals(user,users.get(0));
 //	}
-//}

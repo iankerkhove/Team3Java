@@ -80,12 +80,11 @@ public class LostObjectDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
+
 		String sql = "SELECT l.ObjectID, s.StationID, "
 				+ "s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
 				+ "l.Description,l.Date,l.TrainID,l.Found,l.LastUpdated as LostObjectLastUpdated " 
-				+ " FROM LostObject l "
-				+ "INNER JOIN Station s ON s.StationID = l.StationID;";
-
+				+ " FROM LostObject l ;";
 		try {
 
 			if (getConnection().isClosed()) {
@@ -120,6 +119,7 @@ public class LostObjectDAO extends BaseDAO
 		}
 
 	}
+
 	
 	public int update(LostObject l)
 	{
@@ -176,12 +176,13 @@ public class LostObjectDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
+
 		String sql = "SELECT l.ObjectID, s.StationID, "
 				+ "s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
 				+ "l.Description,l.Date,l.TrainID,l.Found,l.LastUpdated as LostObjectLastUpdated " 
 				+ " FROM LostObject l "
 				+ "INNER JOIN Station s ON s.StationID = l.StationID;";
-
+		
 		try {
 
 			if (getConnection().isClosed()) {

@@ -25,6 +25,11 @@ public class SyncAllRunnable implements Runnable
     	
     	
     	
+    	workQueue.add(new SyncLineRunnable());
+    	workQueue.add(new SyncTypePassRunnable());
+    	workQueue.add(new SyncTypeTicketRunnable());
+    	
+    	
         
     }
     
