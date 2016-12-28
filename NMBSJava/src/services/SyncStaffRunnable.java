@@ -3,6 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -44,7 +45,13 @@ public class SyncStaffRunnable implements Runnable
 			JSONArray mainJsonList = g3API.getJsonResult();
 			
 			ArrayList<Staff> localList = sDAO.selectAll();
-			ArrayList<Staff> mainList = new ArrayList<Staff>();
+			HashMap<UUID, Staff> mainMap = new HashMap<UUID, Staff>();
+			HashMap<UUID, Staff> localMap = new HashMap<UUID, Staff>();
+
+			for (Staff item : localList)
+			{
+				localMap.put(item.getStaffID(), item);
+			}
 			
 			for(int i = 0; i < mainJsonList.length(); i++)
 			{
@@ -66,53 +73,68 @@ public class SyncStaffRunnable implements Runnable
 				s.setApiToken(obj.getString("Api_token"));
 				s.setLastUpdated(obj.getLong("LastUpdated"));
 
-				mainList.add(s);
+				mainMap.put(s.getStationID(), s);
 			}
 			
 			//update tables
-			ArrayList<Staff> smallerList = new ArrayList<Staff>();
-			ArrayList<Staff> biggerList = new ArrayList<Staff>();
+			HashMap<UUID, Staff> smallerMap = new HashMap<UUID, Staff>();
+			HashMap<UUID, Staff> biggerMap = new HashMap<UUID, Staff>();
 			
 			boolean localIsBigger = false;
 			
-			if (localList.size() < mainList.size())
+			if (localMap.size() < mainMap.size())
 			{
-				smallerList = localList;
-				biggerList = mainList;
+				smallerMap = localMap;
+				biggerMap = mainMap;
 			}
 			else
 			{
-				smallerList = mainList;
-				biggerList = localList;
+				smallerMap = mainMap;
+				biggerMap = localMap;
 				localIsBigger = true;
 			}
 			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
 			
-			for (int i = 0; i < smallerList.size(); i++)
+			for (UUID key : smallerKeys)
 			{
-				Staff tmpS = new Staff();
-				tmpS = smallerList.get(i);
-				
-				if (biggerList.contains(tmpS))
+				if (biggerMap.containsKey(key))
 				{
-					smallerList.remove(tmpS);
-					biggerList.remove(tmpS);
-				}
+					Staff bItem = biggerMap.get(key);
+					Staff sItem = smallerMap.get(key);
 					
+					if (bItem.equals(sItem))
+					{
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
+						{
+							biggerMap.remove(key);
+							smallerMap.remove(key);
+						}
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
+					}
+				}
 			}
+			
 			
 			
 			//update local
 			if (localIsBigger)
-				updateLocal(smallerList);
+				updateLocal(smallerMap);
 			else
-				updateLocal(biggerList);
+				updateLocal(biggerMap);
 			
 			//update main
 			if (localIsBigger)
-				updateMain(biggerList);
+				updateMain(biggerMap);
 			else
-				updateMain(smallerList);
+				updateMain(smallerMap);
 
 		}
 		catch (Exception e) {
@@ -125,23 +147,25 @@ public class SyncStaffRunnable implements Runnable
 		}
 	}
 	
-	private void updateLocal(ArrayList<Staff> staffList)
+	private void updateLocal(HashMap<UUID, Staff> staffMap)
 	{
-		for (int i = 0; i < staffList.size(); i++)
+		sDAO.setSyncFunction();
+		
+		for (Staff t : staffMap.values())
 		{
-			sDAO.insertOrUpdate(staffList.get(i));
+			sDAO.insertOrUpdate(t);		
 		}
 	}
 	
-	private void updateMain(ArrayList<Staff> staffList)
+	private void updateMain(HashMap<UUID, Staff> staffMap)
 	{
 		try {
-			if (staffList.isEmpty())
+			if (staffMap.isEmpty())
 				return;
 			
 			HashMap<String, String> params = new HashMap<String, String>();
 			
-			JSONArray staffListJSON = new JSONArray(staffList);
+			JSONArray staffListJSON = new JSONArray(staffMap.values());
 			
 			params.put("staffList", staffListJSON.toString());
 			

@@ -109,5 +109,60 @@ public class Address
 		return "Address [addressID=" + addressID + ", street=" + street + ", number=" + number + ", city=" + city
 				+ ", zipCode=" + zipCode + ", coordinates=" + coordinates + "]";
 	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((addressID == null) ? 0 : addressID.hashCode());
+		result = prime * result + ((city == null) ? 0 : city.hashCode());
+		result = prime * result + ((coordinates == null) ? 0 : coordinates.hashCode());
+		result = prime * result + number;
+		result = prime * result + ((street == null) ? 0 : street.hashCode());
+		result = prime * result + zipCode;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Address other = (Address) obj;
+		if (addressID == null) {
+			if (other.addressID != null)
+				return false;
+		}
+		else if (!addressID.equals(other.addressID))
+			return false;
+		if (city == null) {
+			if (other.city != null)
+				return false;
+		}
+		else if (!city.equals(other.city))
+			return false;
+		if (coordinates == null) {
+			if (other.coordinates != null)
+				return false;
+		}
+		else if (!coordinates.equals(other.coordinates))
+			return false;
+		if (number != other.number)
+			return false;
+		if (street == null) {
+			if (other.street != null)
+				return false;
+		}
+		else if (!street.equals(other.street))
+			return false;
+		if (zipCode != other.zipCode)
+			return false;
+		return true;
+	}
 	
 }

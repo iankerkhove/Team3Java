@@ -3,9 +3,12 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import controller.APIController;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
@@ -43,65 +46,86 @@ public class SyncLineRunnable implements Runnable
 			JSONArray mainJsonList = g3API.getJsonResult();
 			
 			ArrayList<Line> localList = aDAO.selectAll();
-			ArrayList<Line> mainList = new ArrayList<Line>();
+			HashMap<UUID, Line> mainMap = new HashMap<UUID, Line>();
+			HashMap<UUID, Line> localMap = new HashMap<UUID, Line>();
+
+			for (Line item : localList)
+			{
+				localMap.put(item.getLineID(), item);
+			}
 			
 			for(int i = 0; i < mainJsonList.length(); i++)
 			{
 				JSONObject obj = mainJsonList.getJSONObject(i);
-				Line a = new Line();
+				Line l = new Line();
 				
-				a.setLineID(UUID.fromString(obj.getString("LineID")));
-				a.setRouteID(UUID.fromString(obj.getString("RouteID")));
-				a.setTrainType(obj.getString("TrainType"));
-				a.setLastUpdated(obj.getLong("LastUpdated"));
+				l.setLineID(UUID.fromString(obj.getString("LineID")));
+				l.setRouteID(UUID.fromString(obj.getJSONObject("Route").getString("RouteID")));
+				l.setTrainType(obj.getString("TrainType"));
+				l.setLastUpdated(obj.getLong("LastUpdated"));
 				
-				mainList.add(a);
+				mainMap.put(l.getLineID(), l);
 			}
 			
 			//update tables
-			ArrayList<Line> smallerList = new ArrayList<Line>();
-			ArrayList<Line> biggerList = new ArrayList<Line>();
+			HashMap<UUID, Line> smallerMap = new HashMap<UUID, Line>();
+			HashMap<UUID, Line> biggerMap = new HashMap<UUID, Line>();
 			
 			boolean localIsBigger = false;
 			
-			if (localList.size() < mainList.size())
+			if (localMap.size() < mainMap.size())
 			{
-				smallerList = localList;
-				biggerList = mainList;
+				smallerMap = localMap;
+				biggerMap = mainMap;
 			}
 			else
 			{
-				smallerList = mainList;
-				biggerList = localList;
+				smallerMap = mainMap;
+				biggerMap = localMap;
 				localIsBigger = true;
 			}
 			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
 			
-			for (int i = 0; i < smallerList.size(); i++)
+			for (UUID key : smallerKeys)
 			{
-				Line tmpA = new Line();
-				tmpA = smallerList.get(i);
-				
-				if (biggerList.contains(tmpA))
+				if (biggerMap.containsKey(key))
 				{
-					smallerList.remove(tmpA);
-					biggerList.remove(tmpA);
-				}
+					Line bItem = biggerMap.get(key);
+					Line sItem = smallerMap.get(key);
 					
+					if (bItem.equals(sItem))
+					{
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
+						{
+							biggerMap.remove(key);
+							smallerMap.remove(key);
+						}
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
+					}
+				}
 			}
+			
 			
 			
 			//update local
 			if (localIsBigger)
-				updateLocal(smallerList);
+				updateLocal(smallerMap);
 			else
-				updateLocal(biggerList);
+				updateLocal(biggerMap);
 			
 			//update main
 			if (localIsBigger)
-				updateMain(biggerList);
+				updateMain(biggerMap);
 			else
-				updateMain(smallerList);
+				updateMain(smallerMap);
 
 		}
 		catch (Exception e) {
@@ -114,23 +138,25 @@ public class SyncLineRunnable implements Runnable
 		}
 	}
 	
-	private void updateLocal(ArrayList<Line> lineList)
+	private void updateLocal(HashMap<UUID, Line> lineMap)
 	{
-		for (int i = 0; i < lineList.size(); i++)
+		aDAO.setSyncFunction();
+		
+		for (Line t : lineMap.values())
 		{
-			aDAO.insertOrUpdate(lineList.get(i));		
+			aDAO.insertOrUpdate(t);		
 		}
 	}
 	
-	private void updateMain(ArrayList<Line> lineList)
+	private void updateMain(HashMap<UUID, Line> lineMap)
 	{
 		try {
-			if (lineList.isEmpty())
+			if (lineMap.isEmpty())
 				return;
 			
 			HashMap<String, String> params = new HashMap<String, String>();
 			
-			JSONArray lineListJSON = new JSONArray(lineList);
+			JSONArray lineListJSON = new JSONArray(lineMap.values());
 			
 			params.put("lineList", lineListJSON.toString());
 			

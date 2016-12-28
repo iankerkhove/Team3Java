@@ -8,15 +8,13 @@ public class SettingsSingleton
 {
 	private static SettingsSingleton settings;
 	
-	private String firstTime;
+	private boolean firstTime;
 	private UUID StaffID;
 	private int rights;
 	private String apiToken;
 	
 	private SettingsSingleton()
-	{
-
-	}
+	{}
 
 	public static SettingsSingleton getSettings()
 	{
@@ -26,12 +24,12 @@ public class SettingsSingleton
 		return settings;
 	}
 	
-	public String getFirstTime()
+	public boolean getFirstTime()
 	{
 		return firstTime;
 	}
 	
-	public void setFirstTime(String firstTime)
+	public void setFirstTime(boolean firstTime)
 	{
 		this.firstTime = firstTime;
 		SettingController.save();
