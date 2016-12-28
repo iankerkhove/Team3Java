@@ -3,9 +3,12 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import controller.APIController;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
@@ -42,7 +45,13 @@ public class SyncTypePassRunnable implements Runnable  {
 				JSONArray mainJsonList = g3API.getJsonResult();
 				
 				ArrayList<TypePass> localList = ttDAO.selectAll();
-				ArrayList<TypePass> mainList = new ArrayList<TypePass>();
+				HashMap<UUID, TypePass> mainMap = new HashMap<UUID, TypePass>();
+				HashMap<UUID, TypePass> localMap = new HashMap<UUID, TypePass>();
+
+				for (TypePass item : localList)
+				{
+					localMap.put(item.getTypePassID(), item);
+				}
 				
 				for(int i = 0; i < mainJsonList.length(); i++)
 				{
@@ -54,53 +63,68 @@ public class SyncTypePassRunnable implements Runnable  {
 					tt.setPrice(obj.getDouble("Price"));
 					tt.setLastUpdated(obj.getLong("LastUpdated"));
 
-					mainList.add(tt);
+					mainMap.put(tt.getTypePassID(), tt);
 				}
 				
 				//update tables
-				ArrayList<TypePass> smallerList = new ArrayList<TypePass>();
-				ArrayList<TypePass> biggerList = new ArrayList<TypePass>();
+				HashMap<UUID, TypePass> smallerMap = new HashMap<UUID, TypePass>();
+				HashMap<UUID, TypePass> biggerMap = new HashMap<UUID, TypePass>();
 				
 				boolean localIsBigger = false;
 				
-				if (localList.size() < mainList.size())
+				if (localMap.size() < mainMap.size())
 				{
-					smallerList = localList;
-					biggerList = mainList;
+					smallerMap = localMap;
+					biggerMap = mainMap;
 				}
 				else
 				{
-					smallerList = mainList;
-					biggerList = localList;
+					smallerMap = mainMap;
+					biggerMap = localMap;
 					localIsBigger = true;
 				}
 				
+				TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
 				
-				for (int i = 0; i < smallerList.size(); i++)
+				for (UUID key : smallerKeys)
 				{
-					TypePass tmpS = new TypePass();
-					tmpS = smallerList.get(i);
-					
-					if (biggerList.contains(tmpS))
+					if (biggerMap.containsKey(key))
 					{
-						smallerList.remove(tmpS);
-						biggerList.remove(tmpS);
-					}
+						TypePass bItem = biggerMap.get(key);
+						TypePass sItem = smallerMap.get(key);
 						
+						if (bItem.equals(sItem))
+						{
+							if (bItem.getLastUpdated() == sItem.getLastUpdated())
+							{
+								biggerMap.remove(key);
+								smallerMap.remove(key);
+							}
+							else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+							{
+								smallerMap.replace(key, bItem);
+							}
+							else
+							{
+								biggerMap.replace(key, sItem);
+							}
+						}
+					}
 				}
+				
 				
 				
 				//update local
 				if (localIsBigger)
-					updateLocal(smallerList);
+					updateLocal(smallerMap);
 				else
-					updateLocal(biggerList);
+					updateLocal(biggerMap);
 				
 				//update main
 				if (localIsBigger)
-					updateMain(biggerList);
+					updateMain(biggerMap);
 				else
-					updateMain(smallerList);
+					updateMain(smallerMap);
 
 			}
 			catch (Exception e) {
@@ -113,25 +137,25 @@ public class SyncTypePassRunnable implements Runnable  {
 			}
 		}
 		
-		private void updateLocal(ArrayList<TypePass> typePassList)
+		private void updateLocal(HashMap<UUID, TypePass> typePassMap)
 		{
 			ttDAO.setSyncFunction();
 			
-			for (int i = 0; i < typePassList.size(); i++)
+			for (TypePass t : typePassMap.values())
 			{
-				ttDAO.insertOrUpdate(typePassList.get(i));		
+				ttDAO.insertOrUpdate(t);		
 			}
 		}
 		
-		private void updateMain(ArrayList<TypePass> typePassList)
+		private void updateMain(HashMap<UUID, TypePass> typePassMap)
 		{
 			try {
-				if (typePassList.isEmpty())
+				if (typePassMap.isEmpty())
 					return;
 				
 				HashMap<String, String> params = new HashMap<String, String>();
 				
-				JSONArray typePassListJSON = new JSONArray(typePassList);
+				JSONArray typePassListJSON = new JSONArray(typePassMap.values());
 				
 				params.put("typePassList", typePassListJSON.toString());
 				
