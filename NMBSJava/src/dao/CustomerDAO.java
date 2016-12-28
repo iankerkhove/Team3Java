@@ -104,7 +104,6 @@ public class CustomerDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			c.update();
 			ps.setString(1, c.getRailCard().getRailCardID().toString());
 			ps.setString(2, c.getAddress().getAddressID().toString());
 			ps.setString(3, c.getFirstName());

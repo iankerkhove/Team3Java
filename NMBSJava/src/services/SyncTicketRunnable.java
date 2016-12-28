@@ -3,9 +3,12 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import controller.APIController;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
@@ -43,7 +46,14 @@ public class SyncTicketRunnable implements Runnable
 			JSONArray mainJsonList = g3API.getJsonResult();
 
 			ArrayList<Ticket> localList = aDAO.selectAll();
-			ArrayList<Ticket> mainList = new ArrayList<Ticket>();
+			HashMap<UUID, Ticket> mainMap = new HashMap<UUID, Ticket>();
+			HashMap<UUID, Ticket> localMap = new HashMap<UUID, Ticket>();
+
+			for (Ticket item : localList)
+			{
+				localMap.put(item.getTicketID(), item);
+			}
+			
 
 			for (int i = 0; i < mainJsonList.length(); i++) {
 				JSONObject obj = mainJsonList.getJSONObject(i);
@@ -57,76 +67,99 @@ public class SyncTicketRunnable implements Runnable
 				a.setValidUntil(obj.getString("ValidUntil"));
 				a.setLastUpdated(obj.getLong("LastUpdated"));
 
-				mainList.add(a);
+				mainMap.put(a.getTicketID(), a);
 			}
 
-			// update tables
-			ArrayList<Ticket> smallerList = new ArrayList<Ticket>();
-			ArrayList<Ticket> biggerList = new ArrayList<Ticket>();
-
+			//update tables
+			HashMap<UUID, Ticket> smallerMap = new HashMap<UUID, Ticket>();
+			HashMap<UUID, Ticket> biggerMap = new HashMap<UUID, Ticket>();
+			
 			boolean localIsBigger = false;
-
-			if (localList.size() < mainList.size()) {
-				smallerList = localList;
-				biggerList = mainList;
+			
+			if (localMap.size() < mainMap.size())
+			{
+				smallerMap = localMap;
+				biggerMap = mainMap;
 			}
-			else {
-				smallerList = mainList;
-				biggerList = localList;
+			else
+			{
+				smallerMap = mainMap;
+				biggerMap = localMap;
 				localIsBigger = true;
 			}
-
-			for (int i = 0; i < smallerList.size(); i++) {
-				Ticket tmpA = new Ticket();
-				tmpA = smallerList.get(i);
-
-				if (biggerList.contains(tmpA)) {
-					smallerList.remove(tmpA);
-					biggerList.remove(tmpA);
+			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
+			
+			for (UUID key : smallerKeys)
+			{
+				if (biggerMap.containsKey(key))
+				{
+					Ticket bItem = biggerMap.get(key);
+					Ticket sItem = smallerMap.get(key);
+					
+					if (bItem.equals(sItem))
+					{
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
+						{
+							biggerMap.remove(key);
+							smallerMap.remove(key);
+						}
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
+					}
 				}
-
 			}
-
-			// update local
+			
+			
+			
+			//update local
 			if (localIsBigger)
-				updateLocal(smallerList);
+				updateLocal(smallerMap);
 			else
-				updateLocal(biggerList);
-
-			// update main
+				updateLocal(biggerMap);
+			
+			//update main
 			if (localIsBigger)
-				updateMain(biggerList);
+				updateMain(biggerMap);
 			else
-				updateMain(smallerList);
+				updateMain(smallerMap);
 
 		}
 		catch (Exception e) {
 			System.out.println("SyncTicketError");
 			System.out.println(e);
 		}
-		finally {
+		finally
+		{
 			System.out.println("---- Ticket ----");
 		}
 	}
-
-	private void updateLocal(ArrayList<Ticket> ticketList)
+	
+	private void updateLocal(HashMap<UUID, Ticket> ticketMap)
 	{
 		aDAO.setSyncFunction();
 		
-		for (int i = 0; i < ticketList.size(); i++) {
-			aDAO.insertOrUpdate(ticketList.get(i));
+		for (Ticket t : ticketMap.values())
+		{
+			aDAO.insertOrUpdate(t);		
 		}
 	}
-
-	private void updateMain(ArrayList<Ticket> ticketList)
+	
+	private void updateMain(HashMap<UUID, Ticket> ticketMap)
 	{
 		try {
-			if (ticketList.isEmpty())
+			if (ticketMap.isEmpty())
 				return;
-
+			
 			HashMap<String, String> params = new HashMap<String, String>();
-
-			JSONArray ticketListJSON = new JSONArray(ticketList);
+			
+			JSONArray ticketListJSON = new JSONArray(ticketMap.values());
 
 			params.put("ticketList", ticketListJSON.toString());
 

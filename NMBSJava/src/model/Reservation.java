@@ -112,4 +112,61 @@ public class Reservation
 	{
 		this.lastUpdated = Instant.now().getEpochSecond();
 	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + passengerCount;
+		long temp;
+		temp = Double.doubleToLongBits(price);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((reservationDate == null) ? 0 : reservationDate.hashCode());
+		result = prime * result + ((reservationID == null) ? 0 : reservationID.hashCode());
+		result = prime * result + ((routeID == null) ? 0 : routeID.hashCode());
+		result = prime * result + ((trainID == null) ? 0 : trainID.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Reservation other = (Reservation) obj;
+		if (passengerCount != other.passengerCount)
+			return false;
+		if (Double.doubleToLongBits(price) != Double.doubleToLongBits(other.price))
+			return false;
+		if (reservationDate == null) {
+			if (other.reservationDate != null)
+				return false;
+		}
+		else if (!reservationDate.equals(other.reservationDate))
+			return false;
+		if (reservationID == null) {
+			if (other.reservationID != null)
+				return false;
+		}
+		else if (!reservationID.equals(other.reservationID))
+			return false;
+		if (routeID == null) {
+			if (other.routeID != null)
+				return false;
+		}
+		else if (!routeID.equals(other.routeID))
+			return false;
+		if (trainID == null) {
+			if (other.trainID != null)
+				return false;
+		}
+		else if (!trainID.equals(other.trainID))
+			return false;
+		return true;
+	}
 }

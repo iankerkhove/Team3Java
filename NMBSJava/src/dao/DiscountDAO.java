@@ -91,7 +91,6 @@ public class DiscountDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			d.update();
 			ps.setString(1, d.getName());
 			ps.setDouble(2, d.getAmount());
 			ps.setLong(3, d.getLastUpdated());

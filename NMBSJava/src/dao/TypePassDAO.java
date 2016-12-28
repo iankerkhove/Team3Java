@@ -92,7 +92,6 @@ public class TypePassDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			t.update();
 			ps.setString(1, t.getName());
 			ps.setDouble(2, t.getPrice());
 			ps.setLong(3, t.getLastUpdated());
@@ -180,7 +179,7 @@ public class TypePassDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM TypePass";
+		String sql = "SELECT t.TypePassID, t.Name, t.Price, t.LastUpdated as TypePassLastUpdated FROM TypePass t;";
 
 		try {
 

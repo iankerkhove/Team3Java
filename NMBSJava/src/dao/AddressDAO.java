@@ -97,7 +97,6 @@ public class AddressDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			a.update();
 			ps.setString(1, a.getStreet());
 			ps.setInt(2, a.getNumber());
 			ps.setString(3, a.getCity());

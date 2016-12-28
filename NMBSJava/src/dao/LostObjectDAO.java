@@ -100,8 +100,7 @@ public class LostObjectDAO extends BaseDAO
 				throw new IllegalStateException("error unexpected");
 			}
 			ps = getConnection().prepareStatement(sql);
-			
-			l.update();
+
 			ps.setString(1, l.getStationID().toString());
 			ps.setString(2, l.getDescription());
 			ps.setString(3, l.getDate().toString());
@@ -357,7 +356,7 @@ public class LostObjectDAO extends BaseDAO
 				+ "`Date` varchar(11) DEFAULT NULL," 
 				+ "`TrainID` varchar(36) NOT NULL DEFAULT '0',"
 				+ "`Found` tinyint(1) DEFAULT '0',"
-				+ "`LastUpdated` bigint(14) NO NULL, " 
+				+ "`LastUpdated` bigint(14) NOT NULL, " 
 				+ "PRIMARY KEY (`ObjectID`), "
 				+ "FOREIGN KEY (`StationID`) REFERENCES `Station`(`StationID`)"
 				+ ");";

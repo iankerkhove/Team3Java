@@ -3,6 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -43,7 +44,13 @@ public class SyncCustomerRunnable implements Runnable  {
 				JSONArray mainJsonList = g3API.getJsonResult();
 				
 				ArrayList<Customer> localList = cDAO.selectAll();
-				ArrayList<Customer> mainList = new ArrayList<Customer>();
+				HashMap<UUID, Customer> mainMap = new HashMap<UUID, Customer>();
+				HashMap<UUID, Customer> localMap = new HashMap<UUID, Customer>();
+
+				for (Customer item : localList)
+				{
+					localMap.put(item.getCustomerID(), item);
+				}
 				
 				for(int i = 0; i < mainJsonList.length(); i++)
 				{
@@ -59,53 +66,68 @@ public class SyncCustomerRunnable implements Runnable  {
 					c.setEmail(obj.getString("Email"));
 					c.setLastUpdated(obj.getLong("LastUpdated"));
 
-					mainList.add(c);
+					mainMap.put(c.getCustomerID(), c);
 				}
 				
 				//update tables
-				ArrayList<Customer> smallerList = new ArrayList<Customer>();
-				ArrayList<Customer> biggerList = new ArrayList<Customer>();
+				HashMap<UUID, Customer> smallerMap = new HashMap<UUID, Customer>();
+				HashMap<UUID, Customer> biggerMap = new HashMap<UUID, Customer>();
 				
 				boolean localIsBigger = false;
 				
-				if (localList.size() < mainList.size())
+				if (localMap.size() < mainMap.size())
 				{
-					smallerList = localList;
-					biggerList = mainList;
+					smallerMap = localMap;
+					biggerMap = mainMap;
 				}
 				else
 				{
-					smallerList = mainList;
-					biggerList = localList;
+					smallerMap = mainMap;
+					biggerMap = localMap;
 					localIsBigger = true;
 				}
 				
+				TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
 				
-				for (int i = 0; i < smallerList.size(); i++)
+				for (UUID key : smallerKeys)
 				{
-					Customer tmpS = new Customer();
-					tmpS = smallerList.get(i);
-					
-					if (biggerList.contains(tmpS))
+					if (biggerMap.containsKey(key))
 					{
-						smallerList.remove(tmpS);
-						biggerList.remove(tmpS);
-					}
+						Customer bItem = biggerMap.get(key);
+						Customer sItem = smallerMap.get(key);
 						
+						if (bItem.equals(sItem))
+						{
+							if (bItem.getLastUpdated() == sItem.getLastUpdated())
+							{
+								biggerMap.remove(key);
+								smallerMap.remove(key);
+							}
+							else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+							{
+								smallerMap.replace(key, bItem);
+							}
+							else
+							{
+								biggerMap.replace(key, sItem);
+							}
+						}
+					}
 				}
+				
 				
 				
 				//update local
 				if (localIsBigger)
-					updateLocal(smallerList);
+					updateLocal(smallerMap);
 				else
-					updateLocal(biggerList);
+					updateLocal(biggerMap);
 				
 				//update main
 				if (localIsBigger)
-					updateMain(biggerList);
+					updateMain(biggerMap);
 				else
-					updateMain(smallerList);
+					updateMain(smallerMap);
 
 			}
 			catch (Exception e) {
@@ -118,25 +140,25 @@ public class SyncCustomerRunnable implements Runnable  {
 			}
 		}
 		
-		private void updateLocal(ArrayList<Customer> customerList)
+		private void updateLocal(HashMap<UUID, Customer> customerMap)
 		{
 			cDAO.setSyncFunction();
 			
-			for (int i = 0; i < customerList.size(); i++)
+			for (Customer t : customerMap.values())
 			{
-				cDAO.insertOrUpdate(customerList.get(i));		
+				cDAO.insertOrUpdate(t);		
 			}
 		}
 		
-		private void updateMain(ArrayList<Customer> customerList)
+		private void updateMain(HashMap<UUID, Customer> customerMap)
 		{
 			try {
-				if (customerList.isEmpty())
+				if (customerMap.isEmpty())
 					return;
 				
 				HashMap<String, String> params = new HashMap<String, String>();
 				
-				JSONArray customerListJSON = new JSONArray(customerList);
+				JSONArray customerListJSON = new JSONArray(customerMap.values());
 				
 				params.put("customerList", customerListJSON.toString());
 				

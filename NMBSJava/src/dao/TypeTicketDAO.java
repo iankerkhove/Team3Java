@@ -94,7 +94,6 @@ public class TypeTicketDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			t.update();
 			ps.setString(1, t.getName());
 			ps.setDouble(2, t.getPrice());
 			ps.setInt(3, t.getComfortClass());

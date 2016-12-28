@@ -93,7 +93,6 @@ public class RouteDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			r.update();
 			ps.setString(1, r.getDepartureStationID().toString());
 			ps.setString(2, r.getArrivalStationID().toString());
 			ps.setLong(3, r.getLastUpdated());

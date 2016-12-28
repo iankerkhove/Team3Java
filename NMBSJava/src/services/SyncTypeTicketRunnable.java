@@ -3,9 +3,12 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import controller.APIController;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
@@ -41,8 +44,14 @@ public class SyncTypeTicketRunnable implements Runnable {
 			JSONArray mainJsonList = g3API.getJsonResult();
 
 			ArrayList<TypeTicket> localList = ttDAO.selectAll();
-			ArrayList<TypeTicket> mainList = new ArrayList<TypeTicket>();
+			HashMap<UUID, TypeTicket> mainMap = new HashMap<UUID, TypeTicket>();
+			HashMap<UUID, TypeTicket> localMap = new HashMap<UUID, TypeTicket>();
 
+			for (TypeTicket item : localList)
+			{
+				localMap.put(item.getTypeTicketID(), item);
+			}
+			
 			for (int i = 0; i < mainJsonList.length(); i++) {
 				JSONObject obj = mainJsonList.getJSONObject(i);
 				TypeTicket tt = new TypeTicket();
@@ -53,72 +62,99 @@ public class SyncTypeTicketRunnable implements Runnable {
 				tt.setComfortClass(obj.getInt("ComfortClass"));
 				tt.setLastUpdated(obj.getLong("LastUpdated"));
 
-				mainList.add(tt);
+				mainMap.put(tt.getTypeTicketID(), tt);
 			}
 
-			// update tables
-			ArrayList<TypeTicket> smallerList = new ArrayList<TypeTicket>();
-			ArrayList<TypeTicket> biggerList = new ArrayList<TypeTicket>();
-
+			//update tables
+			HashMap<UUID, TypeTicket> smallerMap = new HashMap<UUID, TypeTicket>();
+			HashMap<UUID, TypeTicket> biggerMap = new HashMap<UUID, TypeTicket>();
+			
 			boolean localIsBigger = false;
-
-			if (localList.size() < mainList.size()) {
-				smallerList = localList;
-				biggerList = mainList;
-			} else {
-				smallerList = mainList;
-				biggerList = localList;
+			
+			if (localMap.size() < mainMap.size())
+			{
+				smallerMap = localMap;
+				biggerMap = mainMap;
+			}
+			else
+			{
+				smallerMap = mainMap;
+				biggerMap = localMap;
 				localIsBigger = true;
 			}
-
-			for (int i = 0; i < smallerList.size(); i++) {
-				TypeTicket tmpS = new TypeTicket();
-				tmpS = smallerList.get(i);
-
-				if (biggerList.contains(tmpS)) {
-					smallerList.remove(tmpS);
-					biggerList.remove(tmpS);
+			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
+			
+			for (UUID key : smallerKeys)
+			{
+				if (biggerMap.containsKey(key))
+				{
+					TypeTicket bItem = biggerMap.get(key);
+					TypeTicket sItem = smallerMap.get(key);
+					
+					if (bItem.equals(sItem))
+					{
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
+						{
+							biggerMap.remove(key);
+							smallerMap.remove(key);
+						}
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
+					}
 				}
-
 			}
-
-			// update local
+			
+			
+			
+			//update local
 			if (localIsBigger)
-				updateLocal(smallerList);
+				updateLocal(smallerMap);
 			else
-				updateLocal(biggerList);
-
-			// update main
+				updateLocal(biggerMap);
+			
+			//update main
 			if (localIsBigger)
-				updateMain(biggerList);
+				updateMain(biggerMap);
 			else
-				updateMain(smallerList);
+				updateMain(smallerMap);
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.out.println("SyncTypeTicketError");
 			System.out.println(e);
-		} finally {
+		}
+		finally
+		{
 			System.out.println("---- TypeTicket ----");
 		}
 	}
-
-	private void updateLocal(ArrayList<TypeTicket> typeTicketList) 
+	
+	private void updateLocal(HashMap<UUID, TypeTicket> TypeTicketMap)
 	{
 		ttDAO.setSyncFunction();
 		
-		for (int i = 0; i < typeTicketList.size(); i++) {
-			ttDAO.insertOrUpdate(typeTicketList.get(i));
+		for (TypeTicket t : TypeTicketMap.values())
+		{
+			ttDAO.insertOrUpdate(t);		
 		}
 	}
-
-	private void updateMain(ArrayList<TypeTicket> typeTicketList) {
+	
+	private void updateMain(HashMap<UUID, TypeTicket> TypeTicketMap)
+	{
 		try {
-			if (typeTicketList.isEmpty())
+			if (TypeTicketMap.isEmpty())
 				return;
-
+			
 			HashMap<String, String> params = new HashMap<String, String>();
-
-			JSONArray typeTicketListJSON = new JSONArray(typeTicketList);
+			
+			JSONArray typeTicketListJSON = new JSONArray(TypeTicketMap.values());
 
 			params.put("typeTicketList", typeTicketListJSON.toString());
 

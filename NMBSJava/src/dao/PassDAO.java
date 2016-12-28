@@ -98,7 +98,6 @@ public class PassDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			p.update();
 			ps.setString(1, p.getTypePassID().toString());
 			ps.setString(2, p.getDate());
 			ps.setString(3, p.getStartDate().toString());

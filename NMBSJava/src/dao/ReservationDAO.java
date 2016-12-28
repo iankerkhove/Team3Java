@@ -100,7 +100,6 @@ public class ReservationDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			r.update();
 			ps.setInt(1, r.getPassengerCount());
 			ps.setString(2, r.getTrainID());
 			ps.setDouble(3, r.getPrice());

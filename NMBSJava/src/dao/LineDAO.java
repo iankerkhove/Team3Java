@@ -40,7 +40,6 @@ public class LineDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			l.update();
 			ps.setString(1, l.getRouteID().toString());
 			ps.setString(2, l.getTrainType());
 			ps.setLong(3, l.getLastUpdated());

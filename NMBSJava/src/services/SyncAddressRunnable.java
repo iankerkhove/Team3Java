@@ -3,6 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -45,7 +46,13 @@ public class SyncAddressRunnable implements Runnable
 			JSONArray mainJsonList = g3API.getJsonResult();
 			
 			ArrayList<Address> localList = aDAO.selectAll();
-			ArrayList<Address> mainList = new ArrayList<Address>();
+			HashMap<UUID, Address> mainMap = new HashMap<UUID, Address>();
+			HashMap<UUID, Address> localMap = new HashMap<UUID, Address>();
+
+			for (Address item : localList)
+			{
+				localMap.put(item.getAddressID(), item);
+			}
 			
 			for(int i = 0; i < mainJsonList.length(); i++)
 			{
@@ -60,53 +67,68 @@ public class SyncAddressRunnable implements Runnable
 				a.setCoordinates(obj.getString("Coordinates"));
 				a.setLastUpdated(obj.getLong("LastUpdated"));
 				
-				mainList.add(a);
+				mainMap.put(a.getAddressID(), a);
 			}
 			
 			//update tables
-			ArrayList<Address> smallerList = new ArrayList<Address>();
-			ArrayList<Address> biggerList = new ArrayList<Address>();
+			HashMap<UUID, Address> smallerMap = new HashMap<UUID, Address>();
+			HashMap<UUID, Address> biggerMap = new HashMap<UUID, Address>();
 			
 			boolean localIsBigger = false;
 			
-			if (localList.size() < mainList.size())
+			if (localMap.size() < mainMap.size())
 			{
-				smallerList = localList;
-				biggerList = mainList;
+				smallerMap = localMap;
+				biggerMap = mainMap;
 			}
 			else
 			{
-				smallerList = mainList;
-				biggerList = localList;
+				smallerMap = mainMap;
+				biggerMap = localMap;
 				localIsBigger = true;
 			}
 			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
 			
-			for (int i = 0; i < smallerList.size(); i++)
+			for (UUID key : smallerKeys)
 			{
-				Address tmpA = new Address();
-				tmpA = smallerList.get(i);
-				
-				if (biggerList.contains(tmpA))
+				if (biggerMap.containsKey(key))
 				{
-					smallerList.remove(tmpA);
-					biggerList.remove(tmpA);
-				}
+					Address bItem = biggerMap.get(key);
+					Address sItem = smallerMap.get(key);
 					
+					if (bItem.equals(sItem))
+					{
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
+						{
+							biggerMap.remove(key);
+							smallerMap.remove(key);
+						}
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
+					}
+				}
 			}
+			
 			
 			
 			//update local
 			if (localIsBigger)
-				updateLocal(smallerList);
+				updateLocal(smallerMap);
 			else
-				updateLocal(biggerList);
+				updateLocal(biggerMap);
 			
 			//update main
 			if (localIsBigger)
-				updateMain(biggerList);
+				updateMain(biggerMap);
 			else
-				updateMain(smallerList);
+				updateMain(smallerMap);
 
 		}
 		catch (Exception e) {
@@ -119,25 +141,25 @@ public class SyncAddressRunnable implements Runnable
 		}
 	}
 	
-	private void updateLocal(ArrayList<Address> addressList)
+	private void updateLocal(HashMap<UUID, Address> addressMap)
 	{
 		aDAO.setSyncFunction();
 		
-		for (int i = 0; i < addressList.size(); i++)
+		for (Address t : addressMap.values())
 		{
-			aDAO.insertOrUpdate(addressList.get(i));		
+			aDAO.insertOrUpdate(t);		
 		}
 	}
 	
-	private void updateMain(ArrayList<Address> addressList)
+	private void updateMain(HashMap<UUID, Address> addressMap)
 	{
 		try {
-			if (addressList.isEmpty())
+			if (addressMap.isEmpty())
 				return;
 			
 			HashMap<String, String> params = new HashMap<String, String>();
 			
-			JSONArray addressListJSON = new JSONArray(addressList);
+			JSONArray addressListJSON = new JSONArray(addressMap.values());
 			
 			params.put("addressList", addressListJSON.toString());
 			
