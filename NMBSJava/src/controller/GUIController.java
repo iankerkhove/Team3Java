@@ -11,7 +11,7 @@ import gui.GUIFrame;
 import gui.LangageHandler;
 import model.SettingsSingleton;
 import panels.BiljetPanel;
-import panels.ConsoleLogPanel;
+import panels.ConsoleLog;
 import panels.LoginPanel;
 import panels.NavPanel;
 import panels.NieuwAbonnementPanel;
@@ -34,7 +34,7 @@ public class GUIController {
 	private static NavPanel nav;
 	// all panels
 	private static LoginPanel l;
-	private static ConsoleLogPanel console;
+	private static ConsoleLog console;
 	private static StartPanel start;
 	private static RouteberekeningPanel route;
 	private static TreinopzoekingPanel trein;
@@ -119,7 +119,7 @@ public class GUIController {
 		// fixed navbar
 		nav = new NavPanel();
 		settings = SettingsSingleton.getSettings();
-		console = new ConsoleLogPanel();
+		console = new ConsoleLog();
 		
 		if (settings.getRights() == 0) {
 			nav.getBtnPrijzenAanpassen().setEnabled(false);

@@ -9,12 +9,12 @@ import javax.swing.JScrollPane;
 
 import gui.GUIDateFormat;
 
-public class ConsoleLogPanel extends JPanel {
+public class ConsoleLog extends JPanel {
 
 	private JLabel console;
 	private String txt = "";
 
-	public ConsoleLogPanel() {
+	public ConsoleLog() {
 		setLayout(new GridLayout(1, 1, 0, 0));
 		console = new JLabel();
 		JScrollPane scroller = new JScrollPane(console, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

@@ -35,7 +35,7 @@ public class SyncCustomerRunnable implements Runnable  {
 				if (localStatus.get("Count").equals(mainStatus.getString("Count"))
 						&& localStatus.get("LastUpdated").equals(mainStatus.getString("LastUpdated"))) {
 					
-					System.out.println("Staff' up to date");
+					System.out.println("Customer up to date");
 					return;
 				}
 				
