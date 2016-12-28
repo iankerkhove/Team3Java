@@ -311,6 +311,54 @@ public class RouteDAO extends BaseDAO
 			}
 		}
 	}
+	public Route selectOneOnRoute(String van, String naar)
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT "
+				+ "r.RouteID, s1.StationID as DepartureStationID, s1.Name as DepartureName, "
+				+ "s1.CoX as DepartureCoX, s1.CoY as DepartureCoY, s1.LastUpdated as DepartureLastUpdated,"
+				+ "s2.StationID as ArrivalStationID, s2.Name as ArrivalName, "
+				+ "s2.CoX as ArrivalCoX, s2.CoY as ArrivalCoY, s2.LastUpdated as ArrivalLastUpdated, r.LastUpdated as RouteLastUpdated "
+				+ "FROM Route r "
+				+ "INNER JOIN Station s1 on s1.StationID = r.DepartureStationID "
+				+ "INNER JOIN Station s2 on s2.StationID = r.ArrivalStationID "
+				+ "WHERE s1.Name = ? AND s2.Name = ?;";
+		
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, van);
+			ps.setString(2, naar);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return resultToModel(rs);
+			else
+				return null;
+			
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
 
 
 	public static Route resultToModel(ResultSet rs) throws SQLException
@@ -330,7 +378,7 @@ public class RouteDAO extends BaseDAO
 		s2.setStationName(rs.getString("ArrivalName"));
 		s2.setCoX(rs.getString("ArrivalCoX"));
 		s2.setCoY(rs.getString("ArrivalCoY"));
-		s2.setLastUpdated(rs.getLong("ArrivalStationLastUpdated"));
+		s2.setLastUpdated(rs.getLong("ArrivalLastUpdated"));
 
 		r.setRouteID(UUID.fromString(rs.getString("RouteID")));
 		r.setDepartureStation(s1);
