@@ -104,7 +104,10 @@ public class SyncPassRunnable implements Runnable {
 		}
 	}
 
-	private void updateLocal(ArrayList<Pass> customerList) {
+	private void updateLocal(ArrayList<Pass> customerList) 
+	{
+		pDAO.setSyncFunction();
+		
 		for (int i = 0; i < customerList.size(); i++) {
 			pDAO.insertOrUpdate(customerList.get(i));
 		}

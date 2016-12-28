@@ -94,6 +94,7 @@ public class StationDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
+			s.update();
 			ps.setString(1, s.getStationName());
 			ps.setString(2, s.getCoX());
 			ps.setString(3, s.getCoY());

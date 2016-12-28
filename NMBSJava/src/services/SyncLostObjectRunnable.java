@@ -120,6 +120,8 @@ public class SyncLostObjectRunnable implements Runnable {
 			
 			private void updateLocal(ArrayList<LostObject> lostObjectList)
 			{
+				lDAO.setSyncFunction();
+				
 				for (int i = 0; i < lostObjectList.size(); i++)
 				{
 					lDAO.insertOrUpdate(lostObjectList.get(i));		
