@@ -98,7 +98,6 @@ public class TicketDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			t.update();
 			ps.setString(1, t.getRouteID().toString());
 			ps.setString(2, t.getTypeTicketID().toString());
 			ps.setString(3, t.getDate());
