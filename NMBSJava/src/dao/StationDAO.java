@@ -5,13 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import controller.APIController.RequestType;
 import model.Station;
 
 public class StationDAO extends BaseDAO
 {
+	public final static String BASE_URL = "station/";
 
 	public StationDAO()
 	{}
@@ -45,7 +48,15 @@ public class StationDAO extends BaseDAO
 			ps.setString(4, s.getCoY());
 			ps.setLong(5, s.getLastUpdated());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("stationID", s.getStationID().toString());
+				params.put("name", s.getStationName());
+				params.put("coX", s.getCoX());
+				params.put("coY", s.getCoY());
+				params.put("lastUpdated", Long.toString(s.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -58,6 +69,8 @@ public class StationDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
 
 			}
 			catch (SQLException e) {
@@ -87,7 +100,15 @@ public class StationDAO extends BaseDAO
 			ps.setLong(4, s.getLastUpdated());
 			ps.setString(5, s.getStationID().toString());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("stationID", s.getStationID().toString());
+				params.put("name", s.getStationName());
+				params.put("coX", s.getCoX());
+				params.put("coY", s.getCoY());
+				params.put("lastUpdated", Long.toString(s.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -100,6 +121,8 @@ public class StationDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("stationID"), RequestType.PUT, params);
 
 			}
 			catch (SQLException e) {
@@ -298,7 +321,7 @@ public class StationDAO extends BaseDAO
 				+ "`Name` varchar(100) DEFAULT NULL UNIQUE,"
 				+ "`CoX` varchar(30) DEFAULT NULL,"
 				+ "`CoY` varchar(30) DEFAULT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL,"
+				+ "`LastUpdated` bigint(14) NOT NULL,"
 				+ "PRIMARY KEY (`StationID`)"
 				+ ");";
 

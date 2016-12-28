@@ -8,6 +8,7 @@ import api.TrainAPI;
 import panels.TreinopzoekingPanel;;
 
 public class TreinopzoekingController {
+
 	public static void startListening(TreinopzoekingPanel trein) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -24,6 +25,7 @@ public class TreinopzoekingController {
 								trein.getLblResult().setText("Dit verzoek kon niet verwerkt worden.");
 						} else {
 							trein.getLblResult().setText("Formulier werd niet correct ingevuld.");
+							//LangageHandler.chooseLangageLbl(trein.getLblResult(), taal, );
 						}
 
 					}

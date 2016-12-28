@@ -1,6 +1,5 @@
 package model;
 
-import java.util.Date;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -9,7 +8,7 @@ public class Reservation
 	private UUID reservationID;
 	private int passengerCount;
 	private String trainID;
-	private Date reservationDate;
+	private String reservationDate;
 	private double price;
 	private Route route;
 	private UUID routeID;
@@ -18,7 +17,7 @@ public class Reservation
 	public Reservation()
 	{}
 
-	public Reservation(int passengerCount, String trainID, double price, Date reservationDate, UUID routeID)
+	public Reservation(int passengerCount, String trainID, double price, String reservationDate, UUID routeID)
 	{
 		this.reservationID = UUID.randomUUID();
 		this.passengerCount = passengerCount;
@@ -59,12 +58,12 @@ public class Reservation
 		this.trainID = trainID;
 	}
 
-	public Date getReservationDate()
+	public String getReservationDate()
 	{
 		return reservationDate;
 	}
 
-	public void setReservationDate(Date reservationDate)
+	public void setReservationDate(String reservationDate)
 	{
 		this.reservationDate = reservationDate;
 	}
@@ -112,5 +111,62 @@ public class Reservation
 	public void update()
 	{
 		this.lastUpdated = Instant.now().getEpochSecond();
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + passengerCount;
+		long temp;
+		temp = Double.doubleToLongBits(price);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((reservationDate == null) ? 0 : reservationDate.hashCode());
+		result = prime * result + ((reservationID == null) ? 0 : reservationID.hashCode());
+		result = prime * result + ((routeID == null) ? 0 : routeID.hashCode());
+		result = prime * result + ((trainID == null) ? 0 : trainID.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Reservation other = (Reservation) obj;
+		if (passengerCount != other.passengerCount)
+			return false;
+		if (Double.doubleToLongBits(price) != Double.doubleToLongBits(other.price))
+			return false;
+		if (reservationDate == null) {
+			if (other.reservationDate != null)
+				return false;
+		}
+		else if (!reservationDate.equals(other.reservationDate))
+			return false;
+		if (reservationID == null) {
+			if (other.reservationID != null)
+				return false;
+		}
+		else if (!reservationID.equals(other.reservationID))
+			return false;
+		if (routeID == null) {
+			if (other.routeID != null)
+				return false;
+		}
+		else if (!routeID.equals(other.routeID))
+			return false;
+		if (trainID == null) {
+			if (other.trainID != null)
+				return false;
+		}
+		else if (!trainID.equals(other.trainID))
+			return false;
+		return true;
 	}
 }

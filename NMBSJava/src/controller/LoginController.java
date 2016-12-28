@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
 import dao.StaffDAO;
+import gui.LangageHandler;
 import model.SettingsSingleton;
 import model.Staff;
 import panels.LoginPanel;
@@ -19,7 +20,7 @@ import services.APIThread;
 import services.JBcryptVerifier;
 import services.ThreadListener;
 
-public class LoginController {
+public class LoginController{
 
 	private static SettingsSingleton settings;
 
@@ -30,6 +31,14 @@ public class LoginController {
 					public void actionPerformed(ActionEvent e) {
 						settings = SettingsSingleton.getSettings();
 						verify(l);
+
+					}
+				});
+				
+				l.getCmbLangage().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e){
+						LangageHandler.setTaal(l.getCmbLangage().getSelectedItem().toString());
+						GUIController.reloadLogin();
 					}
 				});
 			}
@@ -40,8 +49,15 @@ public class LoginController {
 		String usrn = l.getTxtUsername().getText().replaceAll("&", "%26");
 		String password = l.getTxtPassword().getText().replaceAll("&", "%26");
 
+		
+		
+			
 		StaffDAO handler = new StaffDAO();
-		Staff s = handler.selectOneOnUsername(usrn);
+		Staff s = null;
+		
+		if (settings.getFirstTime())
+			s = handler.selectOneOnUsername(usrn);
+		
 		
 		if (s == null)
 		{
@@ -51,7 +67,7 @@ public class LoginController {
 
 			APIThread irailsAPI = new APIThread(APIUrl.G3, "staff/login", RequestType.POST, params);
 			ThreadListener listener = new ThreadListener() {
-
+				
 				@Override
 				public void setResult(JSONArray data)
 				{
@@ -91,7 +107,7 @@ public class LoginController {
 				
 		} 
 	}
-	
+
 	private static void connection(LoginPanel l, Staff s)
 	{
 		boolean chAdmin = l.getChAdmin().isSelected();
@@ -106,7 +122,6 @@ public class LoginController {
 		} else {
 			connectionSucceed(l, s, 0);
 		}
-	
 	}
 	
 	private static void connectionSucceed(LoginPanel l, Staff s, int rights)
@@ -115,6 +130,9 @@ public class LoginController {
 		settings.setApiToken(s.getApiToken());
 		settings.setStaffID(s.getStaffID());
 		
+		if (!settings.getFirstTime())
+			SyncController.initDatabase();
+			
 		l.getLblResult().setText("");
 		GUIController.getFrame().getContentPane().removeAll();
 		GUIController.showApp();
@@ -126,10 +144,4 @@ public class LoginController {
 		l.getTxtUsername().setText("");
 		l.getTxtPassword().setText("");
 	}
-	
-	
-	
-	
-	
-	
 }

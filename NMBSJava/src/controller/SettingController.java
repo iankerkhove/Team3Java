@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.util.Properties;
 
 import model.SettingsSingleton;
-import services.InitDatabaseRunnable;
 
 /**
  * 
@@ -37,16 +36,8 @@ public class SettingController
 			properties.load(input);
 
 			SettingsSingleton settings = SettingsSingleton.getSettings();
-			String firstTime = properties.getProperty("FirstTime");
 			
-			//Set settings from file to singleton here
-			
-			if (firstTime != null)
-				if (firstTime.equals("True"))
-					return;
-			
-			Thread initdb = new Thread(new InitDatabaseRunnable());
-			initdb.run();				
+			settings.setFirstTime(Boolean.parseBoolean(properties.getProperty("FirstTime")));		
 			
 			
 
@@ -75,7 +66,7 @@ public class SettingController
 			SettingsSingleton settings = SettingsSingleton.getSettings();
 			
 			// set the properties value
-			properties.setProperty("FirstTime", settings.getFirstTime());
+			properties.setProperty("FirstTime", Boolean.toString(settings.getFirstTime()));
 	
 			// save properties to project root folder
 			properties.store(output, null);

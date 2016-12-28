@@ -5,13 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import controller.APIController.RequestType;
 import model.Address;
 
 public class AddressDAO extends BaseDAO
 {
+	public final static String BASE_URL = "address/";
 
 	public AddressDAO()
 	{}
@@ -47,7 +50,18 @@ public class AddressDAO extends BaseDAO
 			ps.setString(6, a.getCoordinates());
 			ps.setLong(7, a.getLastUpdated());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("addressID", a.getAddressID().toString());
+				params.put("street", a.getStreet());
+				params.put("number", Integer.toString(a.getNumber()));
+				params.put("city", a.getCity());
+				params.put("zipCode", Integer.toString(a.getZipCode()));
+				params.put("coordinates", a.getCoordinates());
+				params.put("lastUpdated", Long.toString(a.getLastUpdated()));
+			}
+			
 			return ps.executeUpdate();
 
 		}
@@ -59,6 +73,8 @@ public class AddressDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
 			}
 			catch (SQLException e) {
 				System.out.println(e.getMessage());
@@ -89,7 +105,17 @@ public class AddressDAO extends BaseDAO
 			ps.setLong(6, a.getLastUpdated());
 			ps.setString(7, a.getAddressID().toString());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("addressID", a.getAddressID().toString());
+				params.put("street", a.getStreet());
+				params.put("number", Integer.toString(a.getNumber()));
+				params.put("city", a.getCity());
+				params.put("zipCode", Integer.toString(a.getZipCode()));
+				params.put("coordinates", a.getCoordinates());
+				params.put("lastUpdated", Long.toString(a.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -102,6 +128,8 @@ public class AddressDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("addressID"), RequestType.PUT, params);
 			}
 			catch (SQLException e) {
 				System.out.println(e.getMessage());
@@ -263,7 +291,7 @@ public class AddressDAO extends BaseDAO
 				+ "`City` varchar(30) NOT NULL,"
 				+ "`ZipCode` int(4) NOT NULL," 
 				+ "`Coordinates` varchar(40) DEFAULT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
+				+ "`LastUpdated` bigint(14) NOT NULL," 
 				+ "PRIMARY KEY (`AddressID`)" 
 				+ ");";
 
@@ -290,5 +318,4 @@ public class AddressDAO extends BaseDAO
 			}
 		}
 	}
-
 }
