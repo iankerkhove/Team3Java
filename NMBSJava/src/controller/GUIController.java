@@ -11,7 +11,6 @@ import gui.GUIFrame;
 import gui.LangageHandler;
 import model.SettingsSingleton;
 import panels.BiljetPanel;
-import panels.ConsoleLog;
 import panels.LoginPanel;
 import panels.NavPanel;
 import panels.NieuwAbonnementPanel;
