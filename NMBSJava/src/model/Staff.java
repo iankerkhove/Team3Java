@@ -1,5 +1,6 @@
 package model;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public class Staff extends Person
@@ -11,7 +12,6 @@ public class Staff extends Person
 	private String password;
 	private int rights;
 	private String apiToken;
-
 	public Staff()
 	{}
 	public Staff(Address address, Station station, String firstName, String lastName, String userName, String password,
@@ -25,7 +25,6 @@ public class Staff extends Person
 		this.rights = rights;
 		this.apiToken = null;
 	}
-
 	public UUID getStaffID()
 	{
 		return staffID;
