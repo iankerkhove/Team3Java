@@ -5,20 +5,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import controller.APIController.RequestType;
 import model.Route;
 import model.Ticket;
 import model.TypeTicket;
 
 public class TicketDAO extends BaseDAO
 {
+	public final static String BASE_URL = "ticket/";
 
 	public TicketDAO()
-	{
-
-	}
+	{}
 	
 	public int insertOrUpdate(Ticket a) {
 		Ticket exists = this.selectOne(a.getTicketID().toString());
@@ -29,7 +30,63 @@ public class TicketDAO extends BaseDAO
 			return this.update(a);
 	}
 
-	public int update(Ticket a) {
+	public int insert(Ticket t)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "INSERT INTO Ticket VALUES(?,?,?,?,?,?,?)";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, t.getTicketID().toString());
+			ps.setString(2, t.getRouteID().toString());
+			ps.setString(3, t.getTypeTicketID().toString());
+			ps.setString(4, t.getDate().toString());
+			ps.setString(5, t.getValidFrom().toString());
+			ps.setString(6, t.getValidUntil().toString());
+			ps.setLong(7, t.getLastUpdated());
+
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("ticketID", t.getTicketID().toString());
+				params.put("routeID", t.getRouteID().toString());
+				params.put("typeTicketID", t.getTypeTicketID().toString());
+				params.put("date", t.getDate());
+				params.put("validFrom", t.getValidFrom());
+				params.put("validUntil", t.getValidUntil());
+				params.put("lastUpdated", Long.toString(t.getLastUpdated()));
+			}
+
+			return ps.executeUpdate();
+
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
+
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+
+	}
+	
+	public int update(Ticket t) {
 		PreparedStatement ps = null;
 
 		String sql = "UPDATE Ticket SET `RouteID`=?, `TypeTicketID`=?, `Date`=?, `ValidFrom`=?, `ValidUntil`=?, `LastUpdated`=? WHERE TicketID = ?";
@@ -41,15 +98,26 @@ public class TicketDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, a.getRouteID().toString());
-			ps.setString(2, a.getTypeTicketID().toString());
-			ps.setString(3, a.getDate());
-			ps.setString(4, a.getValidFrom());
-			ps.setString(5, a.getValidUntil());
-			ps.setLong(6, a.getLastUpdated());
-			ps.setString(7, a.getTicketID().toString());
+			t.update();
+			ps.setString(1, t.getRouteID().toString());
+			ps.setString(2, t.getTypeTicketID().toString());
+			ps.setString(3, t.getDate());
+			ps.setString(4, t.getValidFrom());
+			ps.setString(5, t.getValidUntil());
+			ps.setLong(6, t.getLastUpdated());
+			ps.setString(7, t.getTicketID().toString());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("ticketID", t.getTicketID().toString());
+				params.put("routeID", t.getRouteID().toString());
+				params.put("typeTicketID", t.getTypeTicketID().toString());
+				params.put("date", t.getDate());
+				params.put("validFrom", t.getValidFrom());
+				params.put("validUntil", t.getValidUntil());
+				params.put("lastUpdated", Long.toString(t.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -60,6 +128,9 @@ public class TicketDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("ticketID"), RequestType.PUT, params);
+				
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
@@ -105,50 +176,6 @@ public class TicketDAO extends BaseDAO
 				throw new RuntimeException("error.unexpected");
 			}
 		}
-	}
-
-	public int insert(Ticket t)
-	{
-		PreparedStatement ps = null;
-
-		String sql = "INSERT INTO Ticket VALUES(?,?,?,?,?,?,?)";
-
-		try {
-
-			if (getConnection().isClosed()) {
-				throw new IllegalStateException("error unexpected");
-			}
-			ps = getConnection().prepareStatement(sql);
-
-			ps.setString(1, t.getTicketID().toString());
-			ps.setString(2, t.getRouteID().toString());
-			ps.setString(3, t.getTicketID().toString());
-			ps.setString(4, t.getDate().toString());
-			ps.setString(5, t.getValidFrom().toString());
-			ps.setString(6, t.getValidUntil().toString());
-			ps.setLong(7, t.getLastUpdated());
-
-			// api call
-
-			return ps.executeUpdate();
-
-		}
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw new RuntimeException(e.getMessage());
-		}
-		finally {
-			try {
-				if (ps != null)
-					ps.close();
-
-			}
-			catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw new RuntimeException("error.unexpected");
-			}
-		}
-
 	}
 
 	public ArrayList<Ticket> selectAllSync()
