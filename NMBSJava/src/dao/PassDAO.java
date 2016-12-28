@@ -87,7 +87,7 @@ public class PassDAO extends BaseDAO
 	{
 		PreparedStatement ps = null;
 
-		String sql = "UPDATE `Pass` SET `PassID`=?,`TypePassID`=?,"
+		String sql = "UPDATE `Pass` SET `TypePassID`=?,"
 				+ "`Date`=?,`StartDate`=?,`ComfortClass`=?,"
 				+ "`LastUpdated`=? WHERE PassID = ?;";
 
@@ -98,14 +98,13 @@ public class PassDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			
-			ps.setString(1, p.getPassID().toString());
-			ps.setString(2, p.getTypePassID().toString());
-			ps.setString(3, p.getDate());
-			ps.setString(4, p.getStartDate().toString());
-			ps.setInt(5,p.getComfortClass());
-			ps.setLong(6, p.getLastUpdated());
-			ps.setString(7, p.getPassID().toString());
+			p.update();
+			ps.setString(1, p.getTypePassID().toString());
+			ps.setString(2, p.getDate());
+			ps.setString(3, p.getStartDate().toString());
+			ps.setInt(4,p.getComfortClass());
+			ps.setLong(5, p.getLastUpdated());
+			ps.setString(6, p.getPassID().toString());
 
 			if (!isSyncFunction)
 			{

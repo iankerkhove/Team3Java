@@ -90,7 +90,7 @@ public class LostObjectDAO extends BaseDAO
 	{
 		PreparedStatement ps = null;
 		
-		String sql = "UPDATE `LostObject` SET `ObjectID`=?,`StationID`=?,`Description`=?,"
+		String sql = "UPDATE `LostObject` SET `StationID`=?,`Description`=?,"
 				+ "`Date`=?,`TrainID`=?,`Found`=?,"
 				+ "`LastUpdated`=? WHERE ObjectID = ?";
 		
@@ -101,16 +101,14 @@ public class LostObjectDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			
-			ps.setString(1, l.getObjectID().toString());
-			
-			ps.setString(2, l.getStationID().toString());
-			ps.setString(3, l.getDescription());
-			ps.setString(4, l.getDate().toString());
-			ps.setString(5, l.getTrainID());
-			ps.setBoolean(6, l.getFound());
-			ps.setLong(7, l.getLastUpdated());
-			ps.setString(8, l.getObjectID().toString());
+			l.update();
+			ps.setString(1, l.getStationID().toString());
+			ps.setString(2, l.getDescription());
+			ps.setString(3, l.getDate().toString());
+			ps.setString(4, l.getTrainID());
+			ps.setBoolean(5, l.getFound());
+			ps.setLong(6, l.getLastUpdated());
+			ps.setString(7, l.getObjectID().toString());
 			
 			if (!isSyncFunction)
 			{

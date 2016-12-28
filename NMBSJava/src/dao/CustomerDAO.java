@@ -93,7 +93,7 @@ public class CustomerDAO extends BaseDAO
 	{
 		PreparedStatement ps = null;
 
-		String sql = "UPDATE `Customer` SET `CustomerID`=?,`RailCardID`=?,`AddressID`=?,"
+		String sql = "UPDATE `Customer` SET `RailCardID`=?,`AddressID`=?,"
 				+ "`FirstName`=?,`LastName`=?,`BirthDate`=?,`Email`=?,"
 				+ "`LastUpdated`=? WHERE CustomerID=?;";
 
@@ -104,17 +104,15 @@ public class CustomerDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			
-			ps.setString(1, c.getCustomerID().toString());
-			
-			ps.setString(2, c.getRailCard().getRailCardID().toString());
-			ps.setString(3, c.getAddress().getAddressID().toString());
-			ps.setString(4, c.getFirstName());
-			ps.setString(5, c.getLastName());
-			ps.setString(6, c.getBirthDate().toString());
-			ps.setString(7, c.getEmail());
-			ps.setLong(8, c.getLastUpdated());
-			ps.setString(9, c.getCustomerID().toString());
+			c.update();
+			ps.setString(1, c.getRailCard().getRailCardID().toString());
+			ps.setString(2, c.getAddress().getAddressID().toString());
+			ps.setString(3, c.getFirstName());
+			ps.setString(4, c.getLastName());
+			ps.setString(5, c.getBirthDate().toString());
+			ps.setString(6, c.getEmail());
+			ps.setLong(7, c.getLastUpdated());
+			ps.setString(8, c.getCustomerID().toString());
 
 			if (!isSyncFunction)
 			{

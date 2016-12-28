@@ -81,7 +81,7 @@ public class DiscountDAO extends BaseDAO
 	{
 		PreparedStatement ps = null;
 
-		String sql = "UPDATE `Discount` SET `DiscountID`=?,`Name`=?,"
+		String sql = "UPDATE `Discount` SET `Name`=?,"
 				+ "`Amount`=?,`LastUpdated`=? WHERE DiscountID=?;";
 
 		try {
@@ -91,13 +91,11 @@ public class DiscountDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			
-			ps.setString(1, d.getDiscountID().toString());
-			
-			ps.setString(2, d.getName());
-			ps.setDouble(3, d.getAmount());
-			ps.setLong(4, d.getLastUpdated());
-			ps.setString(5, d.getDiscountID().toString());
+			d.update();
+			ps.setString(1, d.getName());
+			ps.setDouble(2, d.getAmount());
+			ps.setLong(3, d.getLastUpdated());
+			ps.setString(4, d.getDiscountID().toString());
 
 			if (!isSyncFunction)
 			{

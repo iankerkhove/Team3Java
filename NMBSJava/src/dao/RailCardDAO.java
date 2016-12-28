@@ -79,7 +79,7 @@ public class RailCardDAO extends BaseDAO
 	{
 		PreparedStatement ps = null;
 
-		String sql = "UPDATE `RailCard` SET `CardID`=?,`LastUpdated`=? WHERE RailCardID=?;";
+		String sql = "UPDATE `RailCard` SET `LastUpdated`=? WHERE RailCardID=?;";
 
 		try {
 
@@ -88,10 +88,9 @@ public class RailCardDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			
-			ps.setString(1, r.getRailCardID().toString());
-			ps.setLong(2, r.getLastUpdated());
-			ps.setString(3, r.getRailCardID().toString());
+			r.update();
+			ps.setLong(1, r.getLastUpdated());
+			ps.setString(2, r.getRailCardID().toString());
 
 			if (!isSyncFunction)
 			{
