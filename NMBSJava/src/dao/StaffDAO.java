@@ -112,6 +112,7 @@ public class StaffDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
+			s.update();
 			ps.setString(1, s.getAddressID().toString());
 			ps.setString(2, s.getStationID().toString());
 			ps.setString(3, s.getFirstName());

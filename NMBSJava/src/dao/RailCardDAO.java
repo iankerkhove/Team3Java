@@ -5,18 +5,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import controller.APIController.RequestType;
 import model.RailCard;
 
 public class RailCardDAO extends BaseDAO
 {
+	public final static String BASE_URL = "railCard/";
 
 	public RailCardDAO()
-	{
-
-	}
+	{}
+	
 	public int insertOrUpdate(RailCard r)
 	{
 		RailCard exists = this.selectOne(r.getRailCardID().toString());
@@ -43,7 +45,12 @@ public class RailCardDAO extends BaseDAO
 			ps.setString(1, r.getRailCardID().toString());
 			ps.setLong(2, r.getLastUpdated());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("cardID", r.getRailCardID().toString());
+				params.put("lastUpdated", Long.toString(r.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -56,6 +63,8 @@ public class RailCardDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
 
 			}
 			catch (SQLException e) {
@@ -70,7 +79,7 @@ public class RailCardDAO extends BaseDAO
 	{
 		PreparedStatement ps = null;
 
-		String sql = "UPDATE `RailCard` SET `CardID`=?,`LastUpdated`=? WHERE RailCardID=?;";
+		String sql = "UPDATE `RailCard` SET `LastUpdated`=? WHERE RailCardID=?;";
 
 		try {
 
@@ -79,12 +88,16 @@ public class RailCardDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			
-			ps.setString(1, r.getRailCardID().toString());
-			ps.setLong(2, r.getLastUpdated());
-			ps.setString(3, r.getRailCardID().toString());
+			r.update();
+			ps.setLong(1, r.getLastUpdated());
+			ps.setString(2, r.getRailCardID().toString());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("cardID", r.getRailCardID().toString());
+				params.put("lastUpdated", Long.toString(r.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -97,6 +110,8 @@ public class RailCardDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("cardID"), RequestType.PUT, params);
 
 			}
 			catch (SQLException e) {
@@ -291,7 +306,7 @@ public class RailCardDAO extends BaseDAO
 
 		String sql = "CREATE TABLE IF NOT EXISTS `RailCard` (" 
 				+ "`CardID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
+				+ "`LastUpdated` bigint(14) NOT NULL," 
 				+ "PRIMARY KEY (`CardID`));";
 
 		try {

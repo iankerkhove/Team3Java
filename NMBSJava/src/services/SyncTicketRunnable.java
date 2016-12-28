@@ -4,20 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import controller.APIController;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
-import dao.DiscountDAO;
-import model.Discount;
+import dao.TicketDAO;
+import model.Ticket;
 
-public class SyncDiscountRunnable implements Runnable
+public class SyncTicketRunnable implements Runnable
 {
 
-	private DiscountDAO dDAO;
+	private TicketDAO aDAO;
 	private APIController g3API;
 
 	@Override
@@ -27,41 +25,44 @@ public class SyncDiscountRunnable implements Runnable
 
 			// check if has to update
 			HashMap<String, String> params = new HashMap<String, String>();
-			g3API = new APIController(APIUrl.G3, "discount/massUpdateStatus", RequestType.GET, params);
-			dDAO = new DiscountDAO();
+			g3API = new APIController(APIUrl.G3, "ticket/massUpdateStatus", RequestType.GET, params);
+			aDAO = new TicketDAO();
 
 			JSONObject mainStatus = g3API.getJsonResult().getJSONObject(0);
-			TreeMap<String, String> localStatus = dDAO.updateStatus();
+			TreeMap<String, String> localStatus = aDAO.updateStatus();
 
 			if (localStatus.get("Count").equals(mainStatus.getString("Count"))
 					&& localStatus.get("LastUpdated").equals(mainStatus.getString("LastUpdated"))) {
 
-				System.out.println("Discount up to date");
+				System.out.println("Ticket up to date");
 				return;
 			}
 
 			// get main table values
-			g3API.setUrl("discount");
+			g3API.setUrl("ticket");
 			JSONArray mainJsonList = g3API.getJsonResult();
 
-			ArrayList<Discount> localList = dDAO.selectAll();
-			ArrayList<Discount> mainList = new ArrayList<Discount>();
+			ArrayList<Ticket> localList = aDAO.selectAll();
+			ArrayList<Ticket> mainList = new ArrayList<Ticket>();
 
 			for (int i = 0; i < mainJsonList.length(); i++) {
 				JSONObject obj = mainJsonList.getJSONObject(i);
-				Discount d = new Discount();
+				Ticket a = new Ticket();
 
-				d.setDiscountID(UUID.fromString(obj.getString("DiscountID")));
-				d.setName(obj.getString("Name"));
-				d.setAmount(obj.getDouble("Amount"));
-				d.setLastUpdated(obj.getLong("LastUpdated"));
+				a.setTicketID(UUID.fromString(obj.getString("TicketID")));
+				a.setRouteID(UUID.fromString(obj.getJSONObject("Route").getString("RouteID")));
+				a.setTypeTicketID(UUID.fromString(obj.getJSONObject("TypeTicket").getString("TypeTicketID")));
+				a.setDate(obj.getString("Date"));
+				a.setValidFrom(obj.getString("ValidFrom"));
+				a.setValidUntil(obj.getString("ValidUntil"));
+				a.setLastUpdated(obj.getLong("LastUpdated"));
 
-				mainList.add(d);
+				mainList.add(a);
 			}
 
 			// update tables
-			ArrayList<Discount> smallerList = new ArrayList<Discount>();
-			ArrayList<Discount> biggerList = new ArrayList<Discount>();
+			ArrayList<Ticket> smallerList = new ArrayList<Ticket>();
+			ArrayList<Ticket> biggerList = new ArrayList<Ticket>();
 
 			boolean localIsBigger = false;
 
@@ -76,12 +77,12 @@ public class SyncDiscountRunnable implements Runnable
 			}
 
 			for (int i = 0; i < smallerList.size(); i++) {
-				Discount tmpS = new Discount();
-				tmpS = smallerList.get(i);
+				Ticket tmpA = new Ticket();
+				tmpA = smallerList.get(i);
 
-				if (biggerList.contains(tmpS)) {
-					smallerList.remove(tmpS);
-					biggerList.remove(tmpS);
+				if (biggerList.contains(tmpA)) {
+					smallerList.remove(tmpA);
+					biggerList.remove(tmpA);
 				}
 
 			}
@@ -100,36 +101,36 @@ public class SyncDiscountRunnable implements Runnable
 
 		}
 		catch (Exception e) {
-			System.out.println("SyncDiscountError");
+			System.out.println("SyncTicketError");
 			System.out.println(e);
 		}
 		finally {
-			System.out.println("---- Discount ----");
+			System.out.println("---- Ticket ----");
 		}
 	}
 
-	private void updateLocal(ArrayList<Discount> discountList)
+	private void updateLocal(ArrayList<Ticket> ticketList)
 	{
-		dDAO.setSyncFunction();
+		aDAO.setSyncFunction();
 		
-		for (int i = 0; i < discountList.size(); i++) {
-			dDAO.insertOrUpdate(discountList.get(i));
+		for (int i = 0; i < ticketList.size(); i++) {
+			aDAO.insertOrUpdate(ticketList.get(i));
 		}
 	}
 
-	private void updateMain(ArrayList<Discount> discountList)
+	private void updateMain(ArrayList<Ticket> ticketList)
 	{
 		try {
-			if (discountList.isEmpty())
+			if (ticketList.isEmpty())
 				return;
 
 			HashMap<String, String> params = new HashMap<String, String>();
 
-			JSONArray discountListJSON = new JSONArray(discountList);
+			JSONArray ticketListJSON = new JSONArray(ticketList);
 
-			params.put("discountList", discountListJSON.toString());
+			params.put("ticketList", ticketListJSON.toString());
 
-			g3API.setUrl("discount/massUpdate");
+			g3API.setUrl("ticket/massUpdate");
 			g3API.setRequestType(RequestType.MASSPUT);
 			g3API.setParams(params);
 			g3API.getJsonResult();
@@ -138,4 +139,5 @@ public class SyncDiscountRunnable implements Runnable
 			e.printStackTrace();
 		}
 	}
+
 }

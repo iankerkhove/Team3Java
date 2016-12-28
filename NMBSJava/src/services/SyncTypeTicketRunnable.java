@@ -102,7 +102,10 @@ public class SyncTypeTicketRunnable implements Runnable {
 		}
 	}
 
-	private void updateLocal(ArrayList<TypeTicket> typeTicketList) {
+	private void updateLocal(ArrayList<TypeTicket> typeTicketList) 
+	{
+		ttDAO.setSyncFunction();
+		
 		for (int i = 0; i < typeTicketList.size(); i++) {
 			ttDAO.insertOrUpdate(typeTicketList.get(i));
 		}

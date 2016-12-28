@@ -5,19 +5,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import controller.APIController.RequestType;
 import model.Pass;
 import model.TypePass;
 
 public class PassDAO extends BaseDAO
 {
+	public final static String BASE_URL = "pass/";
 
 	public PassDAO()
-	{
-
-	}
+	{}
+	
 	public int insertOrUpdate(Pass p)
 	{
 		Pass exists = this.selectOne(p.getPassID().toString());
@@ -44,11 +46,20 @@ public class PassDAO extends BaseDAO
 			ps.setString(1, p.getPassID().toString());
 			ps.setString(2, p.getTypePassID().toString());
 			ps.setString(3, p.getDate());
-			ps.setString(4, p.getStartDate().toString());
+			ps.setString(4, p.getStartDate());
 			ps.setInt(5, p.getComfortClass());
 			ps.setLong(6, p.getLastUpdated());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("passID", p.getPassID().toString());
+				params.put("typePassID", p.getTypePassID().toString());
+				params.put("date", p.getDate());
+				params.put("startDate", p.getStartDate());
+				params.put("comfortClass", Integer.toString(p.getComfortClass()));
+				params.put("lastUpdated", Long.toString(p.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -61,6 +72,8 @@ public class PassDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
 
 			}
 			catch (SQLException e) {
@@ -74,7 +87,7 @@ public class PassDAO extends BaseDAO
 	{
 		PreparedStatement ps = null;
 
-		String sql = "UPDATE `Pass` SET `PassID`=?,`TypePassID`=?,"
+		String sql = "UPDATE `Pass` SET `TypePassID`=?,"
 				+ "`Date`=?,`StartDate`=?,`ComfortClass`=?,"
 				+ "`LastUpdated`=? WHERE PassID = ?;";
 
@@ -85,16 +98,24 @@ public class PassDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			
-			ps.setString(1, p.getPassID().toString());
-			ps.setString(2, p.getTypePassID().toString());
-			ps.setString(3, p.getDate());
-			ps.setString(4, p.getStartDate().toString());
-			ps.setInt(5,p.getComfortClass());
-			ps.setLong(6, p.getLastUpdated());
-			ps.setString(7, p.getPassID().toString());
+			p.update();
+			ps.setString(1, p.getTypePassID().toString());
+			ps.setString(2, p.getDate());
+			ps.setString(3, p.getStartDate().toString());
+			ps.setInt(4,p.getComfortClass());
+			ps.setLong(5, p.getLastUpdated());
+			ps.setString(6, p.getPassID().toString());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("passID", p.getPassID().toString());
+				params.put("typePassID", p.getTypePassID().toString());
+				params.put("date", p.getDate());
+				params.put("startDate", p.getStartDate());
+				params.put("comfortClass", Integer.toString(p.getComfortClass()));
+				params.put("lastUpdated", Long.toString(p.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -107,6 +128,8 @@ public class PassDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("passID"), RequestType.PUT, params);
 
 			}
 			catch (SQLException e) {
@@ -321,7 +344,7 @@ public class PassDAO extends BaseDAO
 				+ "`Date` varchar(11) NOT NULL,"
 				+ "`StartDate` varchar(11) NOT NULL," 
 				+ "`ComfortClass` int(11) NOT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
+				+ "`LastUpdated` bigint(14) NOT NULL," 
 				+ "PRIMARY KEY (`PassID`) "
 				+ "FOREIGN KEY (`TypePassID`) REFERENCES `TypePass`(`TypePassID`)"
 				+ ");";

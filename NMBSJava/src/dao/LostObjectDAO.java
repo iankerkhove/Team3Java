@@ -5,19 +5,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import controller.APIController.RequestType;
 import model.LostObject;
 import model.Station;
 
 public class LostObjectDAO extends BaseDAO
 {
+	public final static String BASE_URL = "lostObject/";
 
 	public LostObjectDAO()
-	{
-
-	}
+	{}
+	
 	public int insertOrUpdate(LostObject l)
 	{
 		LostObject exists = this.selectOne(l.getObjectID().toString());
@@ -44,12 +46,22 @@ public class LostObjectDAO extends BaseDAO
 			ps.setString(1, l.getObjectID().toString());
 			ps.setString(2, l.getStationID().toString());
 			ps.setString(3, l.getDescription());
-			ps.setString(4, l.getDate().toString());
+			ps.setString(4, l.getDate());
 			ps.setString(5, l.getTrainID());
 			ps.setBoolean(6, l.getFound());
 			ps.setLong(7, l.getLastUpdated());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("objectID", l.getObjectID().toString());
+				params.put("stationID", l.getStationID().toString());
+				params.put("description", l.getDescription());
+				params.put("date", l.getDate());
+				params.put("trainID", l.getTrainID());
+				params.put("found", (l.getFound())? "1": "0");
+				params.put("lastUpdated", Long.toString(l.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -62,6 +74,8 @@ public class LostObjectDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
 
 			}
 			catch (SQLException e) {
@@ -70,6 +84,65 @@ public class LostObjectDAO extends BaseDAO
 			}
 		}
 
+	}
+	
+	public int update(LostObject l)
+	{
+		PreparedStatement ps = null;
+		
+		String sql = "UPDATE `LostObject` SET `StationID`=?,`Description`=?,"
+				+ "`Date`=?,`TrainID`=?,`Found`=?,"
+				+ "`LastUpdated`=? WHERE ObjectID = ?";
+		
+		try {
+			
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+			
+			l.update();
+			ps.setString(1, l.getStationID().toString());
+			ps.setString(2, l.getDescription());
+			ps.setString(3, l.getDate().toString());
+			ps.setString(4, l.getTrainID());
+			ps.setBoolean(5, l.getFound());
+			ps.setLong(6, l.getLastUpdated());
+			ps.setString(7, l.getObjectID().toString());
+			
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("objectID", l.getObjectID().toString());
+				params.put("stationID", l.getStationID().toString());
+				params.put("description", l.getDescription());
+				params.put("date", l.getDate());
+				params.put("trainID", l.getTrainID());
+				params.put("found", (l.getFound())? "1": "0");
+				params.put("lastUpdated", Long.toString(l.getLastUpdated()));
+			}
+			
+			return ps.executeUpdate();
+			
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("objectID"), RequestType.PUT, params);
+				
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+		
 	}
 
 	public ArrayList<LostObject> selectAllSync()
@@ -119,55 +192,6 @@ public class LostObjectDAO extends BaseDAO
 
 	}
 
-	
-	public int update(LostObject l)
-	{
-		PreparedStatement ps = null;
-
-		String sql = "UPDATE `LostObject` SET `ObjectID`=?,`StationID`=?,`Description`=?,"
-				+ "`Date`=?,`TrainID`=?,`Found`=?,"
-				+ "`LastUpdated`=? WHERE ObjectID = ?";
-
-		try {
-
-			if (getConnection().isClosed()) {
-				throw new IllegalStateException("error unexpected");
-			}
-			ps = getConnection().prepareStatement(sql);
-			
-			
-			ps.setString(1, l.getObjectID().toString());
-			
-			ps.setString(2, l.getStationID().toString());
-			ps.setString(3, l.getDescription());
-			ps.setString(4, l.getDate().toString());
-			ps.setString(5, l.getTrainID());
-			ps.setBoolean(6, l.getFound());
-			ps.setLong(7, l.getLastUpdated());
-			ps.setString(8, l.getObjectID().toString());
-
-			// api call
-
-			return ps.executeUpdate();
-
-		}
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw new RuntimeException(e.getMessage());
-		}
-		finally {
-			try {
-				if (ps != null)
-					ps.close();
-
-			}
-			catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw new RuntimeException("error.unexpected");
-			}
-		}
-
-	}
 	public ArrayList<LostObject> selectAll()
 	{
 		ArrayList<LostObject> list = null;
@@ -333,7 +357,7 @@ public class LostObjectDAO extends BaseDAO
 				+ "`Date` varchar(11) DEFAULT NULL," 
 				+ "`TrainID` varchar(36) NOT NULL DEFAULT '0',"
 				+ "`Found` tinyint(1) DEFAULT '0',"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL, " 
+				+ "`LastUpdated` bigint(14) NO NULL, " 
 				+ "PRIMARY KEY (`ObjectID`), "
 				+ "FOREIGN KEY (`StationID`) REFERENCES `Station`(`StationID`)"
 				+ ");";

@@ -115,6 +115,8 @@ public class SyncTypePassRunnable implements Runnable  {
 		
 		private void updateLocal(ArrayList<TypePass> typePassList)
 		{
+			ttDAO.setSyncFunction();
+			
 			for (int i = 0; i < typePassList.size(); i++)
 			{
 				ttDAO.insertOrUpdate(typePassList.get(i));		

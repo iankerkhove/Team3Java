@@ -40,6 +40,7 @@ public class LineDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
+			l.update();
 			ps.setString(1, l.getRouteID().toString());
 			ps.setString(2, l.getTrainType());
 			ps.setLong(3, l.getLastUpdated());
@@ -300,7 +301,7 @@ public class LineDAO extends BaseDAO
 
 		String sql = "CREATE TABLE IF NOT EXISTS `Line` (" + "`LineID` varchar(36) NOT NULL DEFAULT '0',"
 				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0'," + "`TrainType` varchar(10) NOT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," + "PRIMARY KEY (`LineID`),"
+				+ "`LastUpdated` bigint(14) NOT NULL," + "PRIMARY KEY (`LineID`),"
 				+ "FOREIGN KEY (`RouteID`) REFERENCES `Route`(`RouteID`)" + ");";
 
 		try {
