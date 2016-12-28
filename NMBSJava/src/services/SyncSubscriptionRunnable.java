@@ -17,13 +17,13 @@ public class SyncSubscriptionRunnable implements Runnable
 
 	private SubscriptionDAO aDAO;
 	private APIController g3API;
-	
+
 	@Override
 	public void run()
 	{
 		try {
 
-			//check if has to update
+			// check if has to update
 			HashMap<String, String> params = new HashMap<String, String>();
 			g3API = new APIController(APIUrl.G3, "subscription/massUpdateStatus", RequestType.GET, params);
 			aDAO = new SubscriptionDAO();
@@ -33,23 +33,22 @@ public class SyncSubscriptionRunnable implements Runnable
 
 			if (localStatus.get("Count").equals(mainStatus.getString("Count"))
 					&& localStatus.get("LastUpdated").equals(mainStatus.getString("LastUpdated"))) {
-				
+
 				System.out.println("Subscriptions up to date");
 				return;
 			}
-			
-			//get main table values
+
+			// get main table values
 			g3API.setUrl("subscription");
 			JSONArray mainJsonList = g3API.getJsonResult();
-			
+
 			ArrayList<Subscription> localList = aDAO.selectAll();
 			ArrayList<Subscription> mainList = new ArrayList<Subscription>();
-			
-			for(int i = 0; i < mainJsonList.length(); i++)
-			{
+
+			for (int i = 0; i < mainJsonList.length(); i++) {
 				JSONObject obj = mainJsonList.getJSONObject(i);
 				Subscription a = new Subscription();
-				
+
 				a.setSubscriptionID(UUID.fromString(obj.getString("SubscriptionID")));
 				a.setRailCardID(UUID.fromString(obj.getString("RailCardID")));
 				a.setRouteID(UUID.fromString(obj.getJSONObject("Route").getString("RouteID")));
@@ -57,50 +56,44 @@ public class SyncSubscriptionRunnable implements Runnable
 				a.setValidFrom(obj.getString("ValidFrom"));
 				a.setValidUntil(obj.getString("ValidUntil"));
 				a.setLastUpdated(obj.getLong("LastUpdated"));
-				
+
 				mainList.add(a);
 			}
-			
-			//update tables
+
+			// update tables
 			ArrayList<Subscription> smallerList = new ArrayList<Subscription>();
 			ArrayList<Subscription> biggerList = new ArrayList<Subscription>();
-			
+
 			boolean localIsBigger = false;
-			
-			if (localList.size() < mainList.size())
-			{
+
+			if (localList.size() < mainList.size()) {
 				smallerList = localList;
 				biggerList = mainList;
 			}
-			else
-			{
+			else {
 				smallerList = mainList;
 				biggerList = localList;
 				localIsBigger = true;
 			}
-			
-			
-			for (int i = 0; i < smallerList.size(); i++)
-			{
+
+			for (int i = 0; i < smallerList.size(); i++) {
 				Subscription tmpA = new Subscription();
 				tmpA = smallerList.get(i);
-				
-				if (biggerList.contains(tmpA))
-				{
+
+				if (biggerList.contains(tmpA)) {
 					smallerList.remove(tmpA);
 					biggerList.remove(tmpA);
 				}
-					
+
 			}
-			
-			
-			//update local
+
+			// update local
 			if (localIsBigger)
 				updateLocal(smallerList);
 			else
 				updateLocal(biggerList);
-			
-			//update main
+
+			// update main
 			if (localIsBigger)
 				updateMain(biggerList);
 			else
@@ -111,33 +104,32 @@ public class SyncSubscriptionRunnable implements Runnable
 			System.out.println("SyncSubscriptionError");
 			System.out.println(e);
 		}
-		finally
-		{
+		finally {
 			System.out.println("---- Subscription ----");
 		}
 	}
-	
+
 	private void updateLocal(ArrayList<Subscription> subscriptionList)
 	{
-		for (int i = 0; i < subscriptionList.size(); i++)
-		{
-			aDAO.insertOrUpdate(subscriptionList.get(i));		
+		aDAO.setSyncFunction();
+		
+		for (int i = 0; i < subscriptionList.size(); i++) {
+			aDAO.insertOrUpdate(subscriptionList.get(i));
 		}
 	}
-	
+
 	private void updateMain(ArrayList<Subscription> subscriptionList)
 	{
 		try {
 			if (subscriptionList.isEmpty())
 				return;
-			
+
 			HashMap<String, String> params = new HashMap<String, String>();
-			
+
 			JSONArray subscriptionListJSON = new JSONArray(subscriptionList);
-			
+
 			params.put("subscriptionList", subscriptionListJSON.toString());
-			
-			
+
 			g3API.setUrl("subscription/massUpdate");
 			g3API.setRequestType(RequestType.MASSPUT);
 			g3API.setParams(params);

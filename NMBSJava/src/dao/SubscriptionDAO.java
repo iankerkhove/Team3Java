@@ -5,15 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import controller.APIController.RequestType;
 import model.Discount;
 import model.Route;
 import model.Subscription;
 
 public class SubscriptionDAO extends BaseDAO
 {
+	public final static String BASE_URL = "subscription/";
 
 	public SubscriptionDAO()
 	{}
@@ -27,7 +30,63 @@ public class SubscriptionDAO extends BaseDAO
 			return this.update(a);
 	}
 
-	public int update(Subscription a) {
+	public int insert(Subscription s)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "INSERT INTO Subscription VALUES(?,?,?,?,?,?,?)";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, s.getSubscriptionID().toString());
+			ps.setString(2, s.getRailCardID().toString());
+			ps.setString(3, s.getRouteID().toString());
+			ps.setString(4, s.getDiscountID().toString());
+			ps.setString(5, s.getValidFrom());
+			ps.setString(6, s.getValidUntil());
+			ps.setLong(7, s.getLastUpdated());
+
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("subscriptionID", s.getSubscriptionID().toString());
+				params.put("railCardID", s.getRailCardID().toString());
+				params.put("routeID", s.getRouteID().toString());
+				params.put("discountID", s.getDiscountID().toString());
+				params.put("validFrom", s.getValidFrom());
+				params.put("validUntil", s.getValidUntil());
+				params.put("lastUpdated", Long.toString(s.getLastUpdated()));
+			}
+
+			return ps.executeUpdate();
+
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
+
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+
+	}
+	
+	public int update(Subscription s) {
 		PreparedStatement ps = null;
 
 		String sql = "UPDATE Subscription SET `RailCardID`=?, `RouteID`=?, `DiscountID`=?, `ValidFrom`=?, `ValidUntil`=?, `LastUpdated`=? WHERE SubscriptionID = ?";
@@ -39,15 +98,26 @@ public class SubscriptionDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, a.getRailCardID().toString());
-			ps.setString(2, a.getRouteID().toString());
-			ps.setString(3, a.getDiscountID().toString());
-			ps.setString(4, a.getValidFrom());
-			ps.setString(5, a.getValidUntil());
-			ps.setLong(6, a.getLastUpdated());
-			ps.setString(7, a.getSubscriptionID().toString());
+			s.update();
+			ps.setString(1, s.getRailCardID().toString());
+			ps.setString(2, s.getRouteID().toString());
+			ps.setString(3, s.getDiscountID().toString());
+			ps.setString(4, s.getValidFrom());
+			ps.setString(5, s.getValidUntil());
+			ps.setLong(6, s.getLastUpdated());
+			ps.setString(7, s.getSubscriptionID().toString());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("subscriptionID", s.getSubscriptionID().toString());
+				params.put("railCardID", s.getRailCardID().toString());
+				params.put("routeID", s.getRouteID().toString());
+				params.put("discountID", s.getDiscountID().toString());
+				params.put("validFrom", s.getValidFrom());
+				params.put("validUntil", s.getValidUntil());
+				params.put("lastUpdated", Long.toString(s.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -58,6 +128,9 @@ public class SubscriptionDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("subscriptionID"), RequestType.PUT, params);
+				
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
@@ -103,50 +176,6 @@ public class SubscriptionDAO extends BaseDAO
 				throw new RuntimeException("error.unexpected");
 			}
 		}
-	}
-
-	public int insert(Subscription s)
-	{
-		PreparedStatement ps = null;
-
-		String sql = "INSERT INTO Subscription VALUES(?,?,?,?,?,?,?)";
-
-		try {
-
-			if (getConnection().isClosed()) {
-				throw new IllegalStateException("error unexpected");
-			}
-			ps = getConnection().prepareStatement(sql);
-
-			ps.setString(1, s.getSubscriptionID().toString());
-			ps.setString(2, s.getRailCardID().toString());
-			ps.setString(3, s.getRouteID().toString());
-			ps.setString(4, s.getDiscountID().toString());
-			ps.setString(5, s.getValidFrom().toString());
-			ps.setString(6, s.getValidUntil().toString());
-			ps.setLong(7, s.getLastUpdated());
-
-			// api call
-
-			return ps.executeUpdate();
-
-		}
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw new RuntimeException(e.getMessage());
-		}
-		finally {
-			try {
-				if (ps != null)
-					ps.close();
-
-			}
-			catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw new RuntimeException("error.unexpected");
-			}
-		}
-
 	}
 
 	public ArrayList<Subscription> selectAllSync()
@@ -330,7 +359,7 @@ public class SubscriptionDAO extends BaseDAO
 				+ "`DiscountID` varchar(36) NOT NULL DEFAULT '0'," 
 				+ "`ValidFrom` varchar(20) NOT NULL,"
 				+ "`ValidUntil` varchar(20) NOT NULL," 
-				+ "`LastUpdated` bigint(14) DEFAULT NULL,"
+				+ "`LastUpdated` bigint(14) NOT NULL,"
 				+ "PRIMARY KEY (`SubscriptionID`)"
 				+ ");";
 
