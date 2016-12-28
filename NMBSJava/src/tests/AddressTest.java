@@ -3,6 +3,7 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.json.JSONObject;
 import org.junit.Before;
@@ -14,12 +15,12 @@ public class AddressTest
 {
 	private Address adres;
 	JSONObject temp;
-
+	private long lastUpdated = 1482918942;
 	@Before
 	public void setUp() throws Exception
 	{
 		adres = new Address("Nijverheidskaai", 170, "Brussel", 1000, "50.8410136 - 4.322051299999998");
-
+		adres.setLastUpdated(lastUpdated);
 	}
 
 	@Test
@@ -30,14 +31,14 @@ public class AddressTest
 		assertEquals("Brussel", adres.getCity());
 		assertEquals(1000, adres.getZipCode());
 		assertEquals("50.8410136 - 4.322051299999998", adres.getCoordinates());
-
+		assertEquals(lastUpdated,adres.getLastUpdated());
 	}
 
 	@Test
 	public void AddressIDTest()
 	{
-		// adres.setAddressID(3);
-		assertEquals(3, adres.getAddressID());
+		adres.setAddressID(UUID.fromString("4fdf41b4-f8da-413d-b73f-484821c936b8"));
+		assertEquals(UUID.fromString("4fdf41b4-f8da-413d-b73f-484821c936b8"), adres.getAddressID());
 	}
 
 	@Test
@@ -78,13 +79,18 @@ public class AddressTest
 	@Test
 	public void ToStringTest()
 	{
-		// adres.setAddressID(3);
+		adres.setAddressID(UUID.fromString("4fdf41b4-f8da-413d-b73f-484821c936b8"));
 		assertEquals(
-				"Address [addressID=3, street=Nijverheidskaai, number=170, city=Brussel, zipCode=1000, coordinates=50.8410136 - 4.322051299999998]",
+				"Address [addressID=4fdf41b4-f8da-413d-b73f-484821c936b8, street=Nijverheidskaai, number=170, city=Brussel, zipCode=1000, coordinates=50.8410136 - 4.322051299999998]",
 				adres.toString());
 	}
-
 	@Test
+	public void LastUpdatedTest(){
+		adres.setLastUpdated(1482918942);
+		assertEquals(1482918942,adres.getLastUpdated());
+	}
+
+	/*@Test
 	public void GetAPItest()
 	{
 		// adres.setAddressID(3);
@@ -96,5 +102,5 @@ public class AddressTest
 			e.printStackTrace();
 		}
 		assertEquals(3, temp.getInt("AddressID"));
-	}
+	}*/
 }
