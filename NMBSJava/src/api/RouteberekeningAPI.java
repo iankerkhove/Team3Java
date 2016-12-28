@@ -1,6 +1,5 @@
 package api;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,13 +11,11 @@ import org.json.JSONObject;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
 import controller.DateTimeConverter;
-import controller.URLCon;
 import gui.GUIDateFormat;
 import services.APIThread;
 import services.ThreadListener;
 
 public class RouteberekeningAPI {
-	private JSONObject json = null;
 
 	private String van;
 	private String naar;
@@ -28,7 +25,6 @@ public class RouteberekeningAPI {
 
 	public RouteberekeningAPI(String from, String to) 
 	{
-		
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("to", to);
 		params.put("from", from);
@@ -63,30 +59,6 @@ public class RouteberekeningAPI {
 		
 		irailsAPI.settListener(listener);
 		irailsAPI.start();
-		
-
-//		
-//		
-//		try {
-//			this.json = new JSONObject(URLCon.readUnsecureUrl("https://api.irail.be/connections/?to=" + to + "&from="
-//					+ from + "&date=" + GUIDateFormat.getRawDate() + "&time=" + GUIDateFormat.getRawTime()
-//					+ "&timeSel=depart&format=json&lang=NL"));
-//
-//			this.van = from;
-//			this.naar = to;
-//			this.version = this.json.getString("version");
-//			this.timestamp = this.json.getString("timestamp");
-//			this.connections = new ArrayList<ConnectionAPI>();
-//			for (int i = 0; i < this.json.getJSONArray("connection").length(); i++) {
-//				ConnectionAPI e = new ConnectionAPI(this.json.getJSONArray("connection").getJSONObject(i));
-//				connections.add(e);
-//			}
-//
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
 	}
 
 	public RouteberekeningAPI(String from, String to, String date, String time, TimeSelector timeSel) {
@@ -103,23 +75,45 @@ public class RouteberekeningAPI {
 				tempTimeSel = "depart";
 				break;
 			}
-			this.json = new JSONObject(URLCon.readUnsecureUrl("https://api.irail.be/connections/?to=" + to + "&from="
-					+ from + "&date=" + GUIDateFormat.getRawDate(date) + "&time=" + GUIDateFormat.getRawTime(time)
-					+ "&timeSel=" + tempTimeSel + "&format=json&lang=NL"));
+			
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("to", to);
+			params.put("from", from);
+			params.put("date", GUIDateFormat.getRawDate(date));
+			params.put("time", GUIDateFormat.getRawTime(time));
+			params.put("timeSel", tempTimeSel);
+			params.put("format", "json");
+			params.put("lang", "NL");
 
-			this.van = from;
-			this.naar = to;
-			this.version = this.json.getString("version");
-			this.timestamp = this.json.getString("timestamp");
-			this.connections = new ArrayList<ConnectionAPI>();
-			for (int i = 0; i < this.json.getJSONArray("connection").length(); i++) {
-				ConnectionAPI e = new ConnectionAPI(this.json.getJSONArray("connection").getJSONObject(i));
-				connections.add(e);
-			}
+
+			APIThread irailsAPI = new APIThread(APIUrl.IRAILS, "connections", RequestType.GET, params);
+			ThreadListener listener = new ThreadListener() {
+
+				@Override
+				public void setResult(JSONArray data)
+				{
+					JSONObject json = data.getJSONObject(0);
+					
+					van = from;
+					naar = to;
+					version = json.getString("version");
+					timestamp = json.getString("timestamp");
+					connections = new ArrayList<ConnectionAPI>();
+					
+					for (int i = 0; i < json.getJSONArray("connection").length(); i++) 
+					{
+						ConnectionAPI e = new ConnectionAPI(json.getJSONArray("connection").getJSONObject(i));
+						connections.add(e);
+					}
+					
+				}
+				
+			};
+			
+			irailsAPI.settListener(listener);
+			irailsAPI.start();
 
 		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -221,7 +215,7 @@ public class RouteberekeningAPI {
 	}
 	
 	public ArrayList<String> treinID(){
-		ArrayList<String> s = null;
+		ArrayList<String> s = new ArrayList<String>();
 		for (int i = 0; i < this.getConnections().size(); i++) {
 			s.add(this.getConnections().get(i).getDeparture().getVehicle());
 		}

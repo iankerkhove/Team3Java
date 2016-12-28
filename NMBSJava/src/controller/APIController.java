@@ -1,7 +1,9 @@
 package controller;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -41,7 +44,7 @@ public class APIController
 
 	public enum RequestType
 	{
-		GET, POST, PUT, DELETE, MASSPUT
+		GET, POST, PUT, DELETE, MASSPUT, GETFILE
 	}
 
 	public enum APIUrl
@@ -89,6 +92,10 @@ public class APIController
 		case MASSPUT:
 			response = this.massPutRequest();
 			break;
+			
+		case GETFILE:
+			response = this.getFileRequest();
+			return this.httpToFile(response);
 
 		case DELETE:
 			break;
@@ -123,6 +130,19 @@ public class APIController
 		
 		return new JSONArray(resultStr);
 	}
+	
+	private JSONArray httpToFile(HttpResponse response) throws UnsupportedOperationException, IOException
+	{
+		JSONObject result = new JSONObject();
+		
+		InputStream initialStream = response.getEntity().getContent();
+		File targetFile = new File(this.params.get("TargetFilePath"));
+		
+		FileUtils.copyInputStreamToFile(initialStream, targetFile);
+		result.append("FileSaved", true);
+
+		return new JSONArray(result);
+	}
 
 	private HttpResponse getRequest() throws ClientProtocolException, IOException
 	{
@@ -150,6 +170,18 @@ public class APIController
 				url += "&" + entry.getKey() + "=" + entry.getValue();
 			}
 		}
+
+		return client.execute(get);
+	}
+	
+	private HttpResponse getFileRequest() throws ClientProtocolException, IOException
+	{
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpGet get = new HttpGet(this.base_url + url);
+
+		// add header
+		get.setHeader("User-Agent", USER_AGENT);
+		get.setHeader("Authorization", "Bearer " + this.settings.getApiToken());
 
 		return client.execute(get);
 	}
@@ -223,12 +255,10 @@ public class APIController
 		System.out.println(urlParameters.toString());
 		System.out.println("  ");
 		
-		// put.setEntity(new UrlEncodedFormEntity(urlParameters));
 		put.setEntity(new StringEntity(urlParameters.toString()));
 
 		return client.execute(put);
 	}
-
 	
 	public String getUrl()
 	{

@@ -3,6 +3,7 @@ package tests;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.json.JSONObject;
 import org.junit.Before;
@@ -18,7 +19,7 @@ public class CustomerTest
 	private Customer customer;
 	private Address adres;
 	private RailCard railcard;
-
+	private long lastUpdated = 1482918942;
 	JSONObject temp;
 
 	@Before
@@ -27,7 +28,7 @@ public class CustomerTest
 		// c.setTime(datum);
 		adres = new Address("Nijverheidskaai", 170, "Brussel", 1000, "50.8410136 - 4.322051299999998");
 		customer = new Customer("Jan", "Paternoster", "12101989", "jan.paternoster@bbr.be", adres, railcard);
-
+		customer.setLastUpdated(lastUpdated);
 	}
 
 	@Test
@@ -39,6 +40,7 @@ public class CustomerTest
 		assertEquals("jan.paternoster@bbr.be", customer.getEmail());
 		assertEquals(adres, customer.getAddress());
 		assertEquals(railcard, customer.getRailCard());
+		assertEquals(lastUpdated,customer.getLastUpdated());
 	}
 
 	@Test
@@ -79,8 +81,8 @@ public class CustomerTest
 	@Test
 	public void CustomerIDTest()
 	{
-		// customer.setCustomerID(1);
-		assertEquals(1, customer.getCustomerID());
+		customer.setCustomerID(UUID.fromString("ba4ffdf2-9a02-4a29-8d14-0769ea42268b"));
+		assertEquals(UUID.fromString("ba4ffdf2-9a02-4a29-8d14-0769ea42268b"), customer.getCustomerID());
 	}
 
 	@Test
@@ -89,11 +91,17 @@ public class CustomerTest
 		customer.setRailCard(railcard);
 		assertEquals(railcard, customer.getRailCard());
 	}
-
+	
 	@Test
+	public void LastUpdatedTest(){
+		customer.setLastUpdated(1482918942);
+		assertEquals(1482918942,customer.getLastUpdated());
+	}
+
+	/*@Test
 	public void GetAPItest()
 	{
-		// customer.setCustomerID(1);
+		customer.setCustomerID(UUID.fromString("ba4ffdf2-9a02-4a29-8d14-0769ea42268b"));
 		try {
 			temp = new JSONObject(URLCon
 					.readUrl("http://nmbs-team.tk/api/staff/login?username=nmbsteam&password=nmbsteamrocks", "POST"));
@@ -106,5 +114,5 @@ public class CustomerTest
 			e.printStackTrace();
 		}
 		assertEquals(1, temp.getInt("AddressID"));
-	}
+	}*/
 }
