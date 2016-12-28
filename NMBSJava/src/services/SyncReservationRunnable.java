@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import controller.APIController;
+import controller.ConsoleLog;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
 import dao.ReservationDAO;
@@ -24,7 +25,7 @@ public class SyncReservationRunnable implements Runnable
 	public void run()
 	{
 		try {
-
+			ConsoleLog.setText("Syncing reservations");
 			// check if has to update
 			HashMap<String, String> params = new HashMap<String, String>();
 			g3API = new APIController(APIUrl.G3, "reservation/massUpdateStatus", RequestType.GET, params);
