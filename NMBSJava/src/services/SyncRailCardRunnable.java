@@ -101,7 +101,10 @@ public class SyncRailCardRunnable implements Runnable {
 		}
 	}
 
-	private void updateLocal(ArrayList<RailCard> railCardList) {
+	private void updateLocal(ArrayList<RailCard> railCardList) 
+	{
+		rDAO.setSyncFunction();
+		
 		for (int i = 0; i < railCardList.size(); i++) {
 			rDAO.insertOrUpdate(railCardList.get(i));
 		}
