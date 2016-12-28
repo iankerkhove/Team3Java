@@ -112,6 +112,8 @@ public class SyncReservationRunnable implements Runnable
 
 	private void updateLocal(ArrayList<Reservation> reservationList)
 	{
+		rDAO.setSyncFunction();
+		
 		for (int i = 0; i < reservationList.size(); i++) {
 			rDAO.insertOrUpdate(reservationList.get(i));
 		}
