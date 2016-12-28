@@ -11,6 +11,7 @@ import gui.GUIFrame;
 import gui.LangageHandler;
 import model.SettingsSingleton;
 import panels.BiljetPanel;
+import panels.GroepsReservatiePanel;
 import panels.LoginPanel;
 import panels.NavPanel;
 import panels.NieuwAbonnementPanel;
@@ -40,6 +41,7 @@ public class GUIController {
 	private static StationboardPanel station;
 	private static BiljetPanel biljet;
 	private static PassPanel pass;
+	private static GroepsReservatiePanel reservatie;
 	private static NieuwAbonnementPanel abonnement;
 	private static VerlengAbonnementPanel verlengAbonnement;
 	private static VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek;
@@ -204,6 +206,13 @@ public class GUIController {
 						startVerlorenVoorwerpMaak();
 					}
 				});
+				
+				nav.getBtnGroepsreservatie().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startReservatieMaak();
+					}
+				});
+				
 				nav.getBtnVoegMedewerker().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						startVoegMedewerker();
@@ -310,6 +319,15 @@ public class GUIController {
 		frame.getContentPane().add(verlengAbonnement);
 		frame.setContentPane(frame.getContentPane());
 		VerlengAbonnementController.startListening(verlengAbonnement);
+	}
+	
+	private static void startReservatieMaak() {
+		reservatie = new GroepsReservatiePanel();
+		frame.setTitle("NMBSTeam - Maak reservatie");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(reservatie);
+		frame.setContentPane(frame.getContentPane());
+		GroepsreservatieController.startListening(reservatie);
 	}
 
 	private static void startVerlorenVoorwerpZoek() {
