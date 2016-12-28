@@ -14,9 +14,7 @@ public class SettingsSingleton
 	private String apiToken;
 	
 	private SettingsSingleton()
-	{
-
-	}
+	{}
 
 	public static SettingsSingleton getSettings()
 	{

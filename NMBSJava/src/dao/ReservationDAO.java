@@ -5,20 +5,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import model.Customer;
+import controller.APIController.RequestType;
 import model.Reservation;
 import model.Route;
 
 public class ReservationDAO extends BaseDAO
 {
+	public final static String BASE_URL = "reservation/";
 
 	public ReservationDAO()
-	{
-
-	}
+	{}
+	
 	public int insertOrUpdate(Reservation r)
 	{
 		Reservation exists = this.selectOne(r.getReservationID().toString());
@@ -44,14 +45,23 @@ public class ReservationDAO extends BaseDAO
 
 			ps.setString(1, r.getReservationID().toString());
 			ps.setInt(2, r.getPassengerCount());
-			ps.setString(3, r.getTrainID().toString());
+			ps.setString(3, r.getTrainID());
 			ps.setDouble(4, r.getPrice());
-			ps.setString(5, r.getReservationDate().toString());
-			ps.setString(5, r.getRouteID().toString());
-			ps.setLong(6, r.getLastUpdated());
+			ps.setString(5, r.getReservationDate());
+			ps.setString(6, r.getRouteID().toString());
+			ps.setLong(7, r.getLastUpdated());
 
-
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("reservationID", r.getReservationID().toString());
+				params.put("passengerCount", Integer.toString(r.getPassengerCount()));
+				params.put("trainID", r.getTrainID());
+				params.put("price", Double.toString(r.getPrice()));
+				params.put("reservationDate", r.getReservationDate());
+				params.put("routeID", r.getRouteID().toString());
+				params.put("lastUpdated", Long.toString(r.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -64,6 +74,8 @@ public class ReservationDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
 
 			}
 			catch (SQLException e) {
@@ -77,7 +89,7 @@ public class ReservationDAO extends BaseDAO
 	{
 		PreparedStatement ps = null;
 
-		String sql = "UPDATE `Reservation` SET `ReservationID`=?,`PassengerCount`=?,"
+		String sql = "UPDATE `Reservation` SET `PassengerCount`=?,"
 				+ "`TrainID`=?,`Price`=?,`ReservationDate`=?,"
 				+ "`RouteID`=?,`LastUpdated`=? WHERE ReservationID = ?;";
 
@@ -88,17 +100,25 @@ public class ReservationDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			
-			ps.setString(1, r.getReservationID().toString());
-			ps.setInt(2, r.getPassengerCount());
-			ps.setString(3, r.getTrainID());
-			ps.setDouble(4, r.getPrice());
-			ps.setString(5, r.getReservationDate());
-			ps.setString(6,r.getRouteID().toString());
-			ps.setLong(7, r.getLastUpdated());
-			ps.setString(8, r.getReservationID().toString());
+			ps.setInt(1, r.getPassengerCount());
+			ps.setString(2, r.getTrainID());
+			ps.setDouble(3, r.getPrice());
+			ps.setString(4, r.getReservationDate());
+			ps.setString(5,r.getRouteID().toString());
+			ps.setLong(6, r.getLastUpdated());
+			ps.setString(7, r.getReservationID().toString());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("reservationID", r.getReservationID().toString());
+				params.put("passengerCount", Integer.toString(r.getPassengerCount()));
+				params.put("trainID", r.getTrainID());
+				params.put("price", Double.toString(r.getPrice()));
+				params.put("reservationDate", r.getReservationDate());
+				params.put("routeID", r.getRouteID().toString());
+				params.put("lastUpdated", Long.toString(r.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -111,6 +131,8 @@ public class ReservationDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("reservationID"), RequestType.PUT, params);
 
 			}
 			catch (SQLException e) {
@@ -127,7 +149,7 @@ public class ReservationDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql ="SELECT r.RouteID, r.DepartureStationID as DepartStation, r.ArrivalStationID as ArrivalStation,"
+		String sql ="SELECT r.RouteID, r.DepartureStationID as DepartStation, r.ArrivalStationID as ArrivalStation, "
 				+ " s.Name, s.CoX,s.CoY, s.LastUpdated as StationLastUpdated, "
 				+ "r.LastUpdated as RouteLastUpdated, re.ReservationID, re.PassengerCount, re.TrainID, "
 				+ "re.Price, re.ReservationDate, re.LastUpdated as ReservationLastUpdated FROM Reservation re "
@@ -315,7 +337,7 @@ public class ReservationDAO extends BaseDAO
 		re.setPassengerCount(rs.getInt("PassengerCount"));
 		re.setTrainID(rs.getString("TrainID"));
 		re.setPrice(rs.getDouble("Price"));
-		re.setReservationDate(rs.getDate("ReservationDate").toString());
+		re.setReservationDate(rs.getString("ReservationDate"));
 		re.setRoute(r);
 		re.setLastUpdated(rs.getLong("ReservationLastUpdated"));
 
@@ -328,13 +350,13 @@ public class ReservationDAO extends BaseDAO
 
 		String sql = "CREATE TABLE IF NOT EXISTS `Reservation` (  "
 				+ "`ReservationID` varchar(36) NOT NULL DEFAULT '0', " 
-				+ "`PassengerCount` int(11) NOT NULL,  "
-				+ "`TrainID` varchar(36) NOT NULL DEFAULT '0',  "
+				+ "`PassengerCount` int(11) NOT NULL, "
+				+ "`TrainID` varchar(36) NOT NULL DEFAULT '0', "
 				+ "`Price` double NOT NULL, "
-				+"`ReservationDate` varchar(40) NOT NULL,"
-				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0',"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL, "
-				+ "PRIMARY KEY (`ReservationID`),"
+				+ "`ReservationDate` varchar(40) NOT NULL, "
+				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0', "
+				+ "`LastUpdated` bigint(14) NOT NULL, "
+				+ "PRIMARY KEY (`ReservationID`), "
 				+ "FOREIGN KEY (`RouteID`) REFERENCES `Route`(`RouteID`)"
 				+ ");";
 
@@ -362,4 +384,5 @@ public class ReservationDAO extends BaseDAO
 			}
 		}
 	}
+
 }

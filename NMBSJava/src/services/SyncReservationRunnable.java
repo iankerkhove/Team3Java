@@ -1,150 +1,173 @@
 package services;
 
-	import java.util.ArrayList;
-	import java.util.HashMap;
-	import java.util.TreeMap;
-	import java.util.UUID;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.UUID;
 
-	import org.json.JSONArray;
-	import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-	import controller.APIController;
-	import controller.APIController.APIUrl;
-	import controller.APIController.RequestType;
-	import dao.ReservationDAO;
-	import model.Reservation;
+import controller.APIController;
+import controller.APIController.APIUrl;
+import controller.APIController.RequestType;
+import dao.ReservationDAO;
+import model.Reservation;
 
-public class SyncReservationRunnable implements Runnable{
-			private ReservationDAO rDAO;
-			private APIController g3API;
-			
-			@Override
-			public void run()
+public class SyncReservationRunnable implements Runnable
+{
+	private ReservationDAO rDAO;
+	private APIController g3API;
+
+	@Override
+	public void run()
+	{
+		try {
+
+			// check if has to update
+			HashMap<String, String> params = new HashMap<String, String>();
+			g3API = new APIController(APIUrl.G3, "reservation/massUpdateStatus", RequestType.GET, params);
+			rDAO = new ReservationDAO();
+
+			JSONObject mainStatus = g3API.getJsonResult().getJSONObject(0);
+			TreeMap<String, String> localStatus = rDAO.updateStatus();
+
+			if (localStatus.get("Count").equals(mainStatus.getString("Count"))
+					&& localStatus.get("LastUpdated").equals(mainStatus.getString("LastUpdated"))) {
+
+				System.out.println("Reservation up to date");
+				return;
+			}
+
+			// get main table values
+			g3API.setUrl("reservation");
+			JSONArray mainJsonList = g3API.getJsonResult();
+
+			ArrayList<Reservation> localList = rDAO.selectAll();
+			HashMap<UUID, Reservation> mainMap = new HashMap<UUID, Reservation>();
+			HashMap<UUID, Reservation> localMap = new HashMap<UUID, Reservation>();
+
+			for (Reservation item : localList)
 			{
-				try {
+				localMap.put(item.getReservationID(), item);
+			}
 
-					//check if has to update
-					HashMap<String, String> params = new HashMap<String, String>();
-					g3API = new APIController(APIUrl.G3, "customer/massUpdateStatus", RequestType.GET, params);
-					rDAO = new ReservationDAO();
+			for (int i = 0; i < mainJsonList.length(); i++) {
+				JSONObject obj = mainJsonList.getJSONObject(i);
+				Reservation r = new Reservation();
 
-					JSONObject mainStatus = g3API.getJsonResult().getJSONObject(0);
-					TreeMap<String, String> localStatus = rDAO.updateStatus();
+				r.setReservationID(UUID.fromString(obj.getString("ReservationID")));
+				r.setPassengerCount(obj.getInt("PassengerCount"));
+				r.setTrainID(obj.getString("TrainID"));
+				r.setPrice(obj.getDouble("Price"));
+				r.setReservationDate(obj.getString("ReservationDate"));
+				r.setRouteID(UUID.fromString(obj.getJSONObject("Route").getString("RouteID")));
+				r.setLastUpdated(obj.getLong("LastUpdated"));
 
-					if (localStatus.get("Count").equals(mainStatus.getString("Count"))
-							&& localStatus.get("LastUpdated").equals(mainStatus.getString("LastUpdated"))) {
-						
-						System.out.println("Reservation up to date");
-						return;
-					}
-					
-					//get main table values
-					g3API.setUrl("reservation");
-					JSONArray mainJsonList = g3API.getJsonResult();
-					
-					ArrayList<Reservation> localList = rDAO.selectAll();
-					ArrayList<Reservation> mainList = new ArrayList<Reservation>();
-					
-					for(int i = 0; i < mainJsonList.length(); i++)
-					{
-						JSONObject obj = mainJsonList.getJSONObject(i);
-						Reservation r = new Reservation();
-						
-						r.setReservationID(UUID.fromString(obj.getString("ReservationID")));
-						r.setPassengerCount(obj.getInt("PassengerCount"));
-						r.setTrainID(obj.getString("TrainID"));
-						r.setPrice(obj.getDouble("Price"));
-						r.setReservationDate(obj.getString("ReservationDate"));
-						r.setRouteID(UUID.fromString(obj.getJSONObject("Route").getString("RouteID")));
-						r.setLastUpdated(obj.getLong("LastUpdated"));
+				mainMap.put(r.getReservationID(), r);
+			}
 
-						mainList.add(r);
-					}
+			//update tables
+			HashMap<UUID, Reservation> smallerMap = new HashMap<UUID, Reservation>();
+			HashMap<UUID, Reservation> biggerMap = new HashMap<UUID, Reservation>();
+			
+			boolean localIsBigger = false;
+			
+			if (localMap.size() < mainMap.size())
+			{
+				smallerMap = localMap;
+				biggerMap = mainMap;
+			}
+			else
+			{
+				smallerMap = mainMap;
+				biggerMap = localMap;
+				localIsBigger = true;
+			}
+			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
+			
+			for (UUID key : smallerKeys)
+			{
+				if (biggerMap.containsKey(key))
+				{
+					Reservation bItem = biggerMap.get(key);
+					Reservation sItem = smallerMap.get(key);
 					
-					//update tables
-					ArrayList<Reservation> smallerList = new ArrayList<Reservation>();
-					ArrayList<Reservation> biggerList = new ArrayList<Reservation>();
-					
-					boolean localIsBigger = false;
-					
-					if (localList.size() < mainList.size())
+					if (bItem.equals(sItem))
 					{
-						smallerList = localList;
-						biggerList = mainList;
-					}
-					else
-					{
-						smallerList = mainList;
-						biggerList = localList;
-						localIsBigger = true;
-					}
-					
-					
-					for (int i = 0; i < smallerList.size(); i++)
-					{
-						Reservation tmpS = new Reservation();
-						tmpS = smallerList.get(i);
-						
-						if (biggerList.contains(tmpS))
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
 						{
-							smallerList.remove(tmpS);
-							biggerList.remove(tmpS);
+							biggerMap.remove(key);
+							smallerMap.remove(key);
 						}
-							
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
 					}
-					
-					
-					//update local
-					if (localIsBigger)
-						updateLocal(smallerList);
-					else
-						updateLocal(biggerList);
-					
-					//update main
-					if (localIsBigger)
-						updateMain(biggerList);
-					else
-						updateMain(smallerList);
+				}
+			}
+			
+			
+			
+			//update local
+			if (localIsBigger)
+				updateLocal(smallerMap);
+			else
+				updateLocal(biggerMap);
+			
+			//update main
+			if (localIsBigger)
+				updateMain(biggerMap);
+			else
+				updateMain(smallerMap);
 
-				}
-				catch (Exception e) {
-					System.out.println("SyncReservationError");
-					System.out.println(e);
-				}
-				finally
-				{
-					System.out.println("---- Reservation ----");
-				}
-			}
-			
-			private void updateLocal(ArrayList<Reservation> reservationList)
-			{
-				for (int i = 0; i < reservationList.size(); i++)
-				{
-					rDAO.insertOrUpdate(reservationList.get(i));		
-				}
-			}
-			
-			private void updateMain(ArrayList<Reservation> reservationList)
-			{
-				try {
-					if (reservationList.isEmpty())
-						return;
-					
-					HashMap<String, String> params = new HashMap<String, String>();
-					
-					JSONArray reservationListJSON = new JSONArray(reservationList);
-					
-					params.put("reservationList", reservationListJSON.toString());
-					
-					
-					g3API.setUrl("reservation/massUpdate");
-					g3API.setRequestType(RequestType.MASSPUT);
-					g3API.setParams(params);
-					g3API.getJsonResult();
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
 		}
+		catch (Exception e) {
+			System.out.println("SyncReservationError");
+			System.out.println(e);
+		}
+		finally
+		{
+			System.out.println("---- Reservation ----");
+		}
+	}
+	
+	private void updateLocal(HashMap<UUID, Reservation> reservationMap)
+	{
+		rDAO.setSyncFunction();
+		
+		for (Reservation t : reservationMap.values())
+		{
+			rDAO.insertOrUpdate(t);		
+		}
+	}
+	
+	private void updateMain(HashMap<UUID, Reservation> reservationMap)
+	{
+		try {
+			if (reservationMap.isEmpty())
+				return;
+			
+			HashMap<String, String> params = new HashMap<String, String>();
+			
+			JSONArray reservationListJSON = new JSONArray(reservationMap.values());
+
+			params.put("reservationList", reservationListJSON.toString());
+
+			g3API.setUrl("reservation/massUpdate");
+			g3API.setRequestType(RequestType.MASSPUT);
+			g3API.setParams(params);
+			g3API.getJsonResult();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

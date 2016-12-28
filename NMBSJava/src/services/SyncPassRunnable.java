@@ -3,6 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -42,7 +43,13 @@ public class SyncPassRunnable implements Runnable {
 			JSONArray mainJsonList = g3API.getJsonResult();
 
 			ArrayList<Pass> localList = pDAO.selectAll();
-			ArrayList<Pass> mainList = new ArrayList<Pass>();
+			HashMap<UUID, Pass> mainMap = new HashMap<UUID, Pass>();
+			HashMap<UUID, Pass> localMap = new HashMap<UUID, Pass>();
+
+			for (Pass item : localList)
+			{
+				localMap.put(item.getPassID(), item);
+			}
 
 			for (int i = 0; i < mainJsonList.length(); i++) {
 				JSONObject obj = mainJsonList.getJSONObject(i);
@@ -55,69 +62,99 @@ public class SyncPassRunnable implements Runnable {
 				p.setComfortClass(obj.getInt("ComfortClass"));
 				p.setLastUpdated(obj.getLong("LastUpdated"));
 
-				mainList.add(p);
+				mainMap.put(p.getPassID(), p);
 			}
 
-			// update tables
-			ArrayList<Pass> smallerList = new ArrayList<Pass>();
-			ArrayList<Pass> biggerList = new ArrayList<Pass>();
-
+			//update tables
+			HashMap<UUID, Pass> smallerMap = new HashMap<UUID, Pass>();
+			HashMap<UUID, Pass> biggerMap = new HashMap<UUID, Pass>();
+			
 			boolean localIsBigger = false;
-
-			if (localList.size() < mainList.size()) {
-				smallerList = localList;
-				biggerList = mainList;
-			} else {
-				smallerList = mainList;
-				biggerList = localList;
+			
+			if (localMap.size() < mainMap.size())
+			{
+				smallerMap = localMap;
+				biggerMap = mainMap;
+			}
+			else
+			{
+				smallerMap = mainMap;
+				biggerMap = localMap;
 				localIsBigger = true;
 			}
-
-			for (int i = 0; i < smallerList.size(); i++) {
-				Pass tmpS = new Pass();
-				tmpS = smallerList.get(i);
-
-				if (biggerList.contains(tmpS)) {
-					smallerList.remove(tmpS);
-					biggerList.remove(tmpS);
+			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
+			
+			for (UUID key : smallerKeys)
+			{
+				if (biggerMap.containsKey(key))
+				{
+					Pass bItem = biggerMap.get(key);
+					Pass sItem = smallerMap.get(key);
+					
+					if (bItem.equals(sItem))
+					{
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
+						{
+							biggerMap.remove(key);
+							smallerMap.remove(key);
+						}
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
+					}
 				}
-
 			}
-
-			// update local
+			
+			
+			
+			//update local
 			if (localIsBigger)
-				updateLocal(smallerList);
+				updateLocal(smallerMap);
 			else
-				updateLocal(biggerList);
-
-			// update main
+				updateLocal(biggerMap);
+			
+			//update main
 			if (localIsBigger)
-				updateMain(biggerList);
+				updateMain(biggerMap);
 			else
-				updateMain(smallerList);
+				updateMain(smallerMap);
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.out.println("SyncPassError");
 			System.out.println(e);
-		} finally {
+		}
+		finally
+		{
 			System.out.println("---- Pass ----");
 		}
 	}
-
-	private void updateLocal(ArrayList<Pass> customerList) {
-		for (int i = 0; i < customerList.size(); i++) {
-			pDAO.insertOrUpdate(customerList.get(i));
+	
+	private void updateLocal(HashMap<UUID, Pass> passMap)
+	{
+		pDAO.setSyncFunction();
+		
+		for (Pass t : passMap.values())
+		{
+			pDAO.insertOrUpdate(t);		
 		}
 	}
-
-	private void updateMain(ArrayList<Pass> passList) {
+	
+	private void updateMain(HashMap<UUID, Pass> passMap)
+	{
 		try {
-			if (passList.isEmpty())
+			if (passMap.isEmpty())
 				return;
-
+			
 			HashMap<String, String> params = new HashMap<String, String>();
-
-			JSONArray passListJSON = new JSONArray(passList);
+			
+			JSONArray passListJSON = new JSONArray(passMap.values());
 
 			params.put("passList", passListJSON.toString());
 

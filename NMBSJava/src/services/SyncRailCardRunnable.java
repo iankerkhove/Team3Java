@@ -3,6 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -43,7 +44,13 @@ public class SyncRailCardRunnable implements Runnable {
 			JSONArray mainJsonList = g3API.getJsonResult();
 
 			ArrayList<RailCard> localList = rDAO.selectAll();
-			ArrayList<RailCard> mainList = new ArrayList<RailCard>();
+			HashMap<UUID, RailCard> mainMap = new HashMap<UUID, RailCard>();
+			HashMap<UUID, RailCard> localMap = new HashMap<UUID, RailCard>();
+
+			for (RailCard item : localList)
+			{
+				localMap.put(item.getRailCardID(), item);
+			}
 
 			for (int i = 0; i < mainJsonList.length(); i++) {
 				JSONObject obj = mainJsonList.getJSONObject(i);
@@ -52,69 +59,99 @@ public class SyncRailCardRunnable implements Runnable {
 				r.setRailCardID(UUID.fromString(obj.getString("CardID")));
 				r.setLastUpdated(obj.getLong("LastUpdated"));
 
-				mainList.add(r);
+				mainMap.put(r.getRailCardID(), r);
 			}
 
-			// update tables
-			ArrayList<RailCard> smallerList = new ArrayList<RailCard>();
-			ArrayList<RailCard> biggerList = new ArrayList<RailCard>();
-
+			//update tables
+			HashMap<UUID, RailCard> smallerMap = new HashMap<UUID, RailCard>();
+			HashMap<UUID, RailCard> biggerMap = new HashMap<UUID, RailCard>();
+			
 			boolean localIsBigger = false;
-
-			if (localList.size() < mainList.size()) {
-				smallerList = localList;
-				biggerList = mainList;
-			} else {
-				smallerList = mainList;
-				biggerList = localList;
+			
+			if (localMap.size() < mainMap.size())
+			{
+				smallerMap = localMap;
+				biggerMap = mainMap;
+			}
+			else
+			{
+				smallerMap = mainMap;
+				biggerMap = localMap;
 				localIsBigger = true;
 			}
-
-			for (int i = 0; i < smallerList.size(); i++) {
-				RailCard tmpS = new RailCard();
-				tmpS = smallerList.get(i);
-
-				if (biggerList.contains(tmpS)) {
-					smallerList.remove(tmpS);
-					biggerList.remove(tmpS);
+			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
+			
+			for (UUID key : smallerKeys)
+			{
+				if (biggerMap.containsKey(key))
+				{
+					RailCard bItem = biggerMap.get(key);
+					RailCard sItem = smallerMap.get(key);
+					
+					if (bItem.equals(sItem))
+					{
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
+						{
+							biggerMap.remove(key);
+							smallerMap.remove(key);
+						}
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
+					}
 				}
-
 			}
-
-			// update local
+			
+			
+			
+			//update local
 			if (localIsBigger)
-				updateLocal(smallerList);
+				updateLocal(smallerMap);
 			else
-				updateLocal(biggerList);
-
-			// update main
+				updateLocal(biggerMap);
+			
+			//update main
 			if (localIsBigger)
-				updateMain(biggerList);
+				updateMain(biggerMap);
 			else
-				updateMain(smallerList);
+				updateMain(smallerMap);
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.out.println("SyncRailCardError");
 			System.out.println(e);
-		} finally {
+		}
+		finally
+		{
 			System.out.println("---- RailCard ----");
 		}
 	}
-
-	private void updateLocal(ArrayList<RailCard> railCardList) {
-		for (int i = 0; i < railCardList.size(); i++) {
-			rDAO.insertOrUpdate(railCardList.get(i));
+	
+	private void updateLocal(HashMap<UUID, RailCard> railCardMap)
+	{
+		rDAO.setSyncFunction();
+		
+		for (RailCard t : railCardMap.values())
+		{
+			rDAO.insertOrUpdate(t);		
 		}
 	}
-
-	private void updateMain(ArrayList<RailCard> railCardList) {
+	
+	private void updateMain(HashMap<UUID, RailCard> railCardMap)
+	{
 		try {
-			if (railCardList.isEmpty())
+			if (railCardMap.isEmpty())
 				return;
-
+			
 			HashMap<String, String> params = new HashMap<String, String>();
-
-			JSONArray railCardListJSON = new JSONArray(railCardList);
+			
+			JSONArray railCardListJSON = new JSONArray(railCardMap.values());
 
 			params.put("railCardList", railCardListJSON.toString());
 

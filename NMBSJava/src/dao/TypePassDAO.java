@@ -5,18 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import controller.APIController.RequestType;
 import model.TypePass;
 
 public class TypePassDAO extends BaseDAO
 {
+	public final static String BASE_URL = "typePass/";
 
 	public TypePassDAO()
-	{
-
-	}
+	{}
 	
 	public int insertOrUpdate(TypePass tt)
 	{
@@ -27,12 +28,12 @@ public class TypePassDAO extends BaseDAO
 		else
 			return this.update(tt);
 	}
-	
-	public int update(TypePass a)
+
+	public int insert(TypePass t)
 	{
 		PreparedStatement ps = null;
 
-		String sql = "UPDATE TypePass SET `Name`=?, `Price`=?, `LastUpdated`=? WHERE TypePassID=?";
+		String sql = "INSERT INTO TypePass VALUES(?,?,?,?)";
 
 		try {
 
@@ -41,13 +42,19 @@ public class TypePassDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			a.update();
-			ps.setString(1, a.getName());
-			ps.setDouble(2, a.getPrice());
-			ps.setLong(3, a.getLastUpdated());
-			ps.setString(4, a.getTypePassID().toString());
+			ps.setString(1, t.getTypePassID().toString());
+			ps.setString(2, t.getName());
+			ps.setDouble(3, t.getPrice());
+			ps.setLong(4, t.getLastUpdated());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("typePassID", t.getTypePassID().toString());
+				params.put("name", t.getName());
+				params.put("price", Double.toString(t.getPrice()));
+				params.put("lastUpdated", Long.toString(t.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -60,6 +67,58 @@ public class TypePassDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
+
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+
+	}
+	
+	public int update(TypePass t)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "UPDATE TypePass SET `Name`=?, `Price`=?, `LastUpdated`=? WHERE TypePassID=?";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, t.getName());
+			ps.setDouble(2, t.getPrice());
+			ps.setLong(3, t.getLastUpdated());
+			ps.setString(4, t.getTypePassID().toString());
+
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("typePassID", t.getTypePassID().toString());
+				params.put("name", t.getName());
+				params.put("price", Double.toString(t.getPrice()));
+				params.put("lastUpdated", Long.toString(t.getLastUpdated()));
+			}
+
+			return ps.executeUpdate();
+
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("typePassID"), RequestType.PUT, params);
 			}
 			catch (SQLException e) {
 				System.out.println(e.getMessage());
@@ -113,47 +172,6 @@ public class TypePassDAO extends BaseDAO
 		}
 	}
 
-	public int insert(TypePass t)
-	{
-		PreparedStatement ps = null;
-
-		String sql = "INSERT INTO TypePass VALUES(?,?,?,?)";
-
-		try {
-
-			if (getConnection().isClosed()) {
-				throw new IllegalStateException("error unexpected");
-			}
-			ps = getConnection().prepareStatement(sql);
-
-			ps.setString(1, t.getTypePassID().toString());
-			ps.setString(2, t.getName());
-			ps.setDouble(3, t.getPrice());
-			ps.setLong(4, t.getLastUpdated());
-
-			// api call
-
-			return ps.executeUpdate();
-
-		}
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw new RuntimeException(e.getMessage());
-		}
-		finally {
-			try {
-				if (ps != null)
-					ps.close();
-
-			}
-			catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw new RuntimeException("error.unexpected");
-			}
-		}
-
-	}
-
 	public ArrayList<TypePass> selectAllSync()
 	{
 		ArrayList<TypePass> list = null;
@@ -161,7 +179,7 @@ public class TypePassDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM TypePass";
+		String sql = "SELECT t.TypePassID, t.Name, t.Price, t.LastUpdated as TypePassLastUpdated FROM TypePass t;";
 
 		try {
 
@@ -340,7 +358,7 @@ public class TypePassDAO extends BaseDAO
 				+ "`TypePassID` varchar(36) NOT NULL DEFAULT '0',"
 				+ "`Name` varchar(50) NOT NULL,"
 				+ "`Price` double NOT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
+				+ "`LastUpdated` bigint(14) NOT NULL," 
 				+ "PRIMARY KEY (`TypePassID`)"
 				+ ");";
 

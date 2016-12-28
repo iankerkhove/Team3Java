@@ -77,4 +77,46 @@ public class Line
 		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((lineID == null) ? 0 : lineID.hashCode());
+		result = prime * result + ((routeID == null) ? 0 : routeID.hashCode());
+		result = prime * result + ((trainType == null) ? 0 : trainType.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Line other = (Line) obj;
+		if (lineID == null) {
+			if (other.lineID != null)
+				return false;
+		}
+		else if (!lineID.equals(other.lineID))
+			return false;
+		if (routeID == null) {
+			if (other.routeID != null)
+				return false;
+		}
+		else if (!routeID.equals(other.routeID))
+			return false;
+		if (trainType == null) {
+			if (other.trainType != null)
+				return false;
+		}
+		else if (!trainType.equals(other.trainType))
+			return false;
+		return true;
+	}
+
 }

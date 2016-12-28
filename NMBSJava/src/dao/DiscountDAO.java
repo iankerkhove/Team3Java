@@ -5,15 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import model.Customer;
+import controller.APIController.RequestType;
 import model.Discount;
 
 
 public class DiscountDAO extends BaseDAO
 {
+	public final static String BASE_URL = "discount/";
 
 	public DiscountDAO()
 	{
@@ -48,7 +50,14 @@ public class DiscountDAO extends BaseDAO
 			ps.setDouble(3, d.getAmount());
 			ps.setLong(4, d.getLastUpdated());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("discountID", d.getDiscountID().toString());
+				params.put("name", d.getName());
+				params.put("amount", Double.toString(d.getAmount()));
+				params.put("lastUpdated", Long.toString(d.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -59,6 +68,8 @@ public class DiscountDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
 
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
@@ -70,7 +81,7 @@ public class DiscountDAO extends BaseDAO
 	{
 		PreparedStatement ps = null;
 
-		String sql = "UPDATE `Discount` SET `DiscountID`=?,`Name`=?,"
+		String sql = "UPDATE `Discount` SET `Name`=?,"
 				+ "`Amount`=?,`LastUpdated`=? WHERE DiscountID=?;";
 
 		try {
@@ -80,15 +91,19 @@ public class DiscountDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			
-			ps.setString(1, d.getDiscountID().toString());
-			
-			ps.setString(2, d.getName());
-			ps.setDouble(3, d.getAmount());
-			ps.setLong(4, d.getLastUpdated());
-			ps.setString(5, d.getDiscountID().toString());
+			ps.setString(1, d.getName());
+			ps.setDouble(2, d.getAmount());
+			ps.setLong(3, d.getLastUpdated());
+			ps.setString(4, d.getDiscountID().toString());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("discountID", d.getDiscountID().toString());
+				params.put("name", d.getName());
+				params.put("amount", Double.toString(d.getAmount()));
+				params.put("lastUpdated", Long.toString(d.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -101,6 +116,8 @@ public class DiscountDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("discountID"), RequestType.PUT, params);
 
 			}
 			catch (SQLException e) {
@@ -110,7 +127,7 @@ public class DiscountDAO extends BaseDAO
 		}
 
 	}
-	
+
 	public ArrayList<Discount> selectAll()
 	{
 		ArrayList<Discount> list = null;
@@ -147,6 +164,7 @@ public class DiscountDAO extends BaseDAO
 					ps.close();
 				if (rs != null)
 					rs.close();
+
 			}
 			catch (SQLException e) {
 
@@ -263,7 +281,7 @@ public class DiscountDAO extends BaseDAO
 				+ "`DiscountID` varchar(36) NOT NULL DEFAULT '0',"
 				+ "`Name` varchar(20) NOT NULL," 
 				+ "`Amount` double NOT NULL,"
-				+ "`LastUpdated` bigint(14) DEFAULT NULL," 
+				+ "`LastUpdated` bigint(14) NOT NULL," 
 				+ "PRIMARY KEY (`DiscountID`)"
 				+ ");";
 

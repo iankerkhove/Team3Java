@@ -1,9 +1,16 @@
 package panels;
 
-import javax.swing.*;
-
-import java.awt.GridLayout;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import gui.LangageHandler;
 
@@ -130,5 +137,4 @@ public class LoginPanel extends JPanel {
 		return btnEn;
 	}*/
 
-	
 }

@@ -1,16 +1,12 @@
 package panels;
 
-import java.awt.BorderLayout;
-
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.util.Properties;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;

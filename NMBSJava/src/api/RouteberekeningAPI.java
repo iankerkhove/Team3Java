@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,11 +11,7 @@ import org.json.JSONObject;
 
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
-import controller.CacheExistingSations;
-import controller.CachePassTypes;
-import controller.CacheTicketTypes;
 import controller.DateTimeConverter;
-import controller.GUIController;
 import controller.URLCon;
 import gui.GUIDateFormat;
 import services.APIThread;
