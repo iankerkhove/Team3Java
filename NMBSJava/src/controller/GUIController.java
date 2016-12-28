@@ -116,7 +116,7 @@ public class GUIController {
 		
 		if (settings.getRights() == 0) {
 			nav.getBtnPrijzenAanpassen().setEnabled(false);
-			nav.getBtnStaffBeheer().setEnabled(false);
+			nav.getBtnVoegMedewerker().setEnabled(false);
 		}
 		// startpanel
 		start = new StartPanel();

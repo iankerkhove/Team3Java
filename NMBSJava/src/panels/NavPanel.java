@@ -21,11 +21,6 @@ public class NavPanel extends JPanel {
 	private JButton btnAbonnementVerlengen;
 	private JButton btnPrijzenAanpassen;
 	private JButton btnVoegMedewerker;
-	public JButton getBtnVoegMedewerker() {
-		return btnVoegMedewerker;
-	}
-
-	private JButton btnStaffBeheer;
 	private JButton btnLogout;
 	private JLabel madeBy;
 
@@ -84,12 +79,6 @@ public class NavPanel extends JPanel {
 		
 		btnLogout = new JButton();
 		LangageHandler.chooseLangageBtn(btnLogout, "Uitloggen");
-
-		btnStaffBeheer = new JButton("Beheer Staff");
-		btnStaffBeheer.setHorizontalAlignment(SwingConstants.LEFT);
-
-		btnLogout = new JButton("Uitloggen");
-
 		btnLogout.setHorizontalAlignment(SwingConstants.LEFT);
 		
 		madeBy = new JLabel("By Groep 3");
@@ -106,11 +95,7 @@ public class NavPanel extends JPanel {
 		this.add(btnVerlorenVoorwerpenZoek);
 		this.add(btnbtnVerlorenVoorwerpenVoegToe);
 		this.add(btnPrijzenAanpassen);
-
 		this.add(btnVoegMedewerker);
-
-		//this.add(btnStaffBeheer);
-
 		this.add(btnLogout);
 		this.add(madeBy);
 	}
@@ -155,7 +140,7 @@ public class NavPanel extends JPanel {
 		return btnLogout;
 	}
 
-	public JButton getBtnStaffBeheer() {
-		return btnStaffBeheer;
+	public JButton getBtnVoegMedewerker() {
+		return btnVoegMedewerker;
 	}
 }
