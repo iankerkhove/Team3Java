@@ -5,14 +5,18 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
+
 import gui.GUIFrame;
 import gui.LangageHandler;
 import model.SettingsSingleton;
 import panels.BiljetPanel;
+import panels.ConsoleLogPanel;
 import panels.LoginPanel;
 import panels.NavPanel;
 import panels.NieuwAbonnementPanel;
 import panels.PasPrijzenAanPanel;
+import panels.PassPanel;
 import panels.RouteberekeningPanel;
 import panels.StaffToevoegenPanel;
 import panels.StartPanel;
@@ -30,11 +34,13 @@ public class GUIController {
 	private static NavPanel nav;
 	// all panels
 	private static LoginPanel l;
+	private static ConsoleLogPanel console;
 	private static StartPanel start;
 	private static RouteberekeningPanel route;
 	private static TreinopzoekingPanel trein;
 	private static StationboardPanel station;
 	private static BiljetPanel biljet;
+	private static PassPanel pass;
 	private static NieuwAbonnementPanel abonnement;
 	private static VerlengAbonnementPanel verlengAbonnement;
 	private static VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek;
@@ -113,6 +119,7 @@ public class GUIController {
 		// fixed navbar
 		nav = new NavPanel();
 		settings = SettingsSingleton.getSettings();
+		console = new ConsoleLogPanel();
 		
 		if (settings.getRights() == 0) {
 			nav.getBtnPrijzenAanpassen().setEnabled(false);
@@ -124,6 +131,7 @@ public class GUIController {
 		startListeningOnNav();
 		// create startframe
 		frame.getContentPane().add(nav, BorderLayout.WEST);
+		frame.getContentPane().add(console, BorderLayout.SOUTH);
 		frame.getContentPane().add(start, BorderLayout.CENTER);
 		frame.setContentPane(frame.getContentPane());
 	}
@@ -168,6 +176,13 @@ public class GUIController {
 						startKoopBiljet();
 					}
 				});
+				
+				nav.getBtnPassKoop().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startKoopPass();
+					}
+				});
+				
 				nav.getBtnAbonnementKoop().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						startKoopAbonnement();
@@ -269,6 +284,15 @@ public class GUIController {
 		frame.getContentPane().add(biljet);
 		frame.setContentPane(frame.getContentPane());
 		KoopBiljetController.startListening(biljet);
+	}
+	
+	private static void startKoopPass() {
+		pass = new PassPanel();
+		frame.setTitle("NMBSTeam - Koop Pass");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(pass);
+		frame.setContentPane(frame.getContentPane());
+		KoopPassController.startListening(pass);
 	}
 
 	private static void startKoopAbonnement() {
