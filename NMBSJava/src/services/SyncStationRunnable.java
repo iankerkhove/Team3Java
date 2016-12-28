@@ -3,6 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -44,7 +45,13 @@ public class SyncStationRunnable implements Runnable
 			JSONArray mainJsonList = g3API.getJsonResult();
 			
 			ArrayList<Station> localList = sDAO.selectAll();
-			ArrayList<Station> mainList = new ArrayList<Station>();
+			HashMap<UUID, Station> mainMap = new HashMap<UUID, Station>();
+			HashMap<UUID, Station> localMap = new HashMap<UUID, Station>();
+
+			for (Station item : localList)
+			{
+				localMap.put(item.getStationID(), item);
+			}
 			
 			for(int i = 0; i < mainJsonList.length(); i++)
 			{
@@ -57,85 +64,99 @@ public class SyncStationRunnable implements Runnable
 				s.setCoY(obj.getString("CoY"));
 				s.setLastUpdated(obj.getLong("LastUpdated"));
 				
-				mainList.add(s);
+				mainMap.put(s.getStationID(), s);
 			}
 			
 			//update tables
-			ArrayList<Station> smallerList = new ArrayList<Station>();
-			ArrayList<Station> biggerList = new ArrayList<Station>();
+			HashMap<UUID, Station> smallerMap = new HashMap<UUID, Station>();
+			HashMap<UUID, Station> biggerMap = new HashMap<UUID, Station>();
 			
 			boolean localIsBigger = false;
 			
-			if (localList.size() < mainList.size())
+			if (localMap.size() < mainMap.size())
 			{
-				smallerList = localList;
-				biggerList = mainList;
+				smallerMap = localMap;
+				biggerMap = mainMap;
 			}
 			else
 			{
-				smallerList = mainList;
-				biggerList = localList;
+				smallerMap = mainMap;
+				biggerMap = localMap;
 				localIsBigger = true;
 			}
 			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
 			
-			for (int i = 0; i < smallerList.size(); i++)
+			for (UUID key : smallerKeys)
 			{
-				Station tmpS = new Station();
-				tmpS = smallerList.get(i);
-				
-				if (biggerList.contains(tmpS))
+				if (biggerMap.containsKey(key))
 				{
-					smallerList.remove(tmpS);
-					biggerList.remove(tmpS);
-				}
+					Station bItem = biggerMap.get(key);
+					Station sItem = smallerMap.get(key);
 					
+					if (bItem.equals(sItem))
+					{
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
+						{
+							biggerMap.remove(key);
+							smallerMap.remove(key);
+						}
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
+					}
+				}
 			}
+			
 			
 			
 			//update local
 			if (localIsBigger)
-				updateLocal(smallerList);
+				updateLocal(smallerMap);
 			else
-				updateLocal(biggerList);
+				updateLocal(biggerMap);
 			
 			//update main
 			if (localIsBigger)
-				updateMain(biggerList);
+				updateMain(biggerMap);
 			else
-				updateMain(smallerList);
+				updateMain(smallerMap);
 
 		}
 		catch (Exception e) {
 			System.out.println("SyncStationError");
 			System.out.println(e);
-			e.printStackTrace();
 		}
 		finally
 		{
-			System.out.println("---- Stations ----");
+			System.out.println("---- Station ----");
 		}
 	}
 	
-	private void updateLocal(ArrayList<Station> stationList)
+	private void updateLocal(HashMap<UUID, Station> stationMap)
 	{
 		sDAO.setSyncFunction();
 		
-		for (int i = 0; i < stationList.size(); i++)
+		for (Station t : stationMap.values())
 		{
-			sDAO.insertOrUpdate(stationList.get(i));
+			sDAO.insertOrUpdate(t);		
 		}
 	}
 	
-	private void updateMain(ArrayList<Station> stationList)
+	private void updateMain(HashMap<UUID, Station> stationMap)
 	{
 		try {
-			if (stationList.isEmpty())
+			if (stationMap.isEmpty())
 				return;
 			
 			HashMap<String, String> params = new HashMap<String, String>();
 			
-			JSONArray stationListJSON = new JSONArray(stationList);
+			JSONArray stationListJSON = new JSONArray(stationMap.values());
 			
 			params.put("stationList", stationListJSON.toString());
 			

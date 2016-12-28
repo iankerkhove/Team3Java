@@ -3,9 +3,12 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import controller.APIController;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
@@ -43,7 +46,13 @@ public class SyncSubscriptionRunnable implements Runnable
 			JSONArray mainJsonList = g3API.getJsonResult();
 
 			ArrayList<Subscription> localList = aDAO.selectAll();
-			ArrayList<Subscription> mainList = new ArrayList<Subscription>();
+			HashMap<UUID, Subscription> mainMap = new HashMap<UUID, Subscription>();
+			HashMap<UUID, Subscription> localMap = new HashMap<UUID, Subscription>();
+
+			for (Subscription item : localList)
+			{
+				localMap.put(item.getSubscriptionID(), item);
+			}
 
 			for (int i = 0; i < mainJsonList.length(); i++) {
 				JSONObject obj = mainJsonList.getJSONObject(i);
@@ -57,76 +66,99 @@ public class SyncSubscriptionRunnable implements Runnable
 				a.setValidUntil(obj.getString("ValidUntil"));
 				a.setLastUpdated(obj.getLong("LastUpdated"));
 
-				mainList.add(a);
+				mainMap.put(a.getSubscriptionID(), a);
 			}
 
-			// update tables
-			ArrayList<Subscription> smallerList = new ArrayList<Subscription>();
-			ArrayList<Subscription> biggerList = new ArrayList<Subscription>();
-
+			//update tables
+			HashMap<UUID, Subscription> smallerMap = new HashMap<UUID, Subscription>();
+			HashMap<UUID, Subscription> biggerMap = new HashMap<UUID, Subscription>();
+			
 			boolean localIsBigger = false;
-
-			if (localList.size() < mainList.size()) {
-				smallerList = localList;
-				biggerList = mainList;
+			
+			if (localMap.size() < mainMap.size())
+			{
+				smallerMap = localMap;
+				biggerMap = mainMap;
 			}
-			else {
-				smallerList = mainList;
-				biggerList = localList;
+			else
+			{
+				smallerMap = mainMap;
+				biggerMap = localMap;
 				localIsBigger = true;
 			}
-
-			for (int i = 0; i < smallerList.size(); i++) {
-				Subscription tmpA = new Subscription();
-				tmpA = smallerList.get(i);
-
-				if (biggerList.contains(tmpA)) {
-					smallerList.remove(tmpA);
-					biggerList.remove(tmpA);
+			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
+			
+			for (UUID key : smallerKeys)
+			{
+				if (biggerMap.containsKey(key))
+				{
+					Subscription bItem = biggerMap.get(key);
+					Subscription sItem = smallerMap.get(key);
+					
+					if (bItem.equals(sItem))
+					{
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
+						{
+							biggerMap.remove(key);
+							smallerMap.remove(key);
+						}
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
+					}
 				}
-
 			}
-
-			// update local
+			
+			
+			
+			//update local
 			if (localIsBigger)
-				updateLocal(smallerList);
+				updateLocal(smallerMap);
 			else
-				updateLocal(biggerList);
-
-			// update main
+				updateLocal(biggerMap);
+			
+			//update main
 			if (localIsBigger)
-				updateMain(biggerList);
+				updateMain(biggerMap);
 			else
-				updateMain(smallerList);
+				updateMain(smallerMap);
 
 		}
 		catch (Exception e) {
 			System.out.println("SyncSubscriptionError");
 			System.out.println(e);
 		}
-		finally {
+		finally
+		{
 			System.out.println("---- Subscription ----");
 		}
 	}
-
-	private void updateLocal(ArrayList<Subscription> subscriptionList)
+	
+	private void updateLocal(HashMap<UUID, Subscription> subscriptionMap)
 	{
 		aDAO.setSyncFunction();
 		
-		for (int i = 0; i < subscriptionList.size(); i++) {
-			aDAO.insertOrUpdate(subscriptionList.get(i));
+		for (Subscription t : subscriptionMap.values())
+		{
+			aDAO.insertOrUpdate(t);		
 		}
 	}
-
-	private void updateMain(ArrayList<Subscription> subscriptionList)
+	
+	private void updateMain(HashMap<UUID, Subscription> subscriptionMap)
 	{
 		try {
-			if (subscriptionList.isEmpty())
+			if (subscriptionMap.isEmpty())
 				return;
-
+			
 			HashMap<String, String> params = new HashMap<String, String>();
-
-			JSONArray subscriptionListJSON = new JSONArray(subscriptionList);
+			
+			JSONArray subscriptionListJSON = new JSONArray(subscriptionMap.values());
 
 			params.put("subscriptionList", subscriptionListJSON.toString());
 

@@ -3,22 +3,6 @@ package services;
 import java.util.Queue;
 import java.util.concurrent.LinkedTransferQueue;
 
-import dao.AddressDAO;
-import dao.CustomerDAO;
-import dao.DiscountDAO;
-import dao.LineDAO;
-import dao.LostObjectDAO;
-import dao.PassDAO;
-import dao.RailCardDAO;
-import dao.ReservationDAO;
-import dao.RouteDAO;
-import dao.StaffDAO;
-import dao.StationDAO;
-import dao.SubscriptionDAO;
-import dao.TicketDAO;
-import dao.TypePassDAO;
-import dao.TypeTicketDAO;
-
 public class SyncAllRunnable implements Runnable
 {
 
