@@ -3,9 +3,12 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import controller.APIController;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
@@ -17,13 +20,13 @@ public class SyncSubscriptionRunnable implements Runnable
 
 	private SubscriptionDAO aDAO;
 	private APIController g3API;
-	
+
 	@Override
 	public void run()
 	{
 		try {
 
-			//check if has to update
+			// check if has to update
 			HashMap<String, String> params = new HashMap<String, String>();
 			g3API = new APIController(APIUrl.G3, "subscription/massUpdateStatus", RequestType.GET, params);
 			aDAO = new SubscriptionDAO();
@@ -33,23 +36,28 @@ public class SyncSubscriptionRunnable implements Runnable
 
 			if (localStatus.get("Count").equals(mainStatus.getString("Count"))
 					&& localStatus.get("LastUpdated").equals(mainStatus.getString("LastUpdated"))) {
-				
+
 				System.out.println("Subscriptions up to date");
 				return;
 			}
-			
-			//get main table values
+
+			// get main table values
 			g3API.setUrl("subscription");
 			JSONArray mainJsonList = g3API.getJsonResult();
-			
+
 			ArrayList<Subscription> localList = aDAO.selectAll();
-			ArrayList<Subscription> mainList = new ArrayList<Subscription>();
-			
-			for(int i = 0; i < mainJsonList.length(); i++)
+			HashMap<UUID, Subscription> mainMap = new HashMap<UUID, Subscription>();
+			HashMap<UUID, Subscription> localMap = new HashMap<UUID, Subscription>();
+
+			for (Subscription item : localList)
 			{
+				localMap.put(item.getSubscriptionID(), item);
+			}
+
+			for (int i = 0; i < mainJsonList.length(); i++) {
 				JSONObject obj = mainJsonList.getJSONObject(i);
 				Subscription a = new Subscription();
-				
+
 				a.setSubscriptionID(UUID.fromString(obj.getString("SubscriptionID")));
 				a.setRailCardID(UUID.fromString(obj.getString("RailCardID")));
 				a.setRouteID(UUID.fromString(obj.getJSONObject("Route").getString("RouteID")));
@@ -57,54 +65,69 @@ public class SyncSubscriptionRunnable implements Runnable
 				a.setValidFrom(obj.getString("ValidFrom"));
 				a.setValidUntil(obj.getString("ValidUntil"));
 				a.setLastUpdated(obj.getLong("LastUpdated"));
-				
-				mainList.add(a);
+
+				mainMap.put(a.getSubscriptionID(), a);
 			}
-			
+
 			//update tables
-			ArrayList<Subscription> smallerList = new ArrayList<Subscription>();
-			ArrayList<Subscription> biggerList = new ArrayList<Subscription>();
+			HashMap<UUID, Subscription> smallerMap = new HashMap<UUID, Subscription>();
+			HashMap<UUID, Subscription> biggerMap = new HashMap<UUID, Subscription>();
 			
 			boolean localIsBigger = false;
 			
-			if (localList.size() < mainList.size())
+			if (localMap.size() < mainMap.size())
 			{
-				smallerList = localList;
-				biggerList = mainList;
+				smallerMap = localMap;
+				biggerMap = mainMap;
 			}
 			else
 			{
-				smallerList = mainList;
-				biggerList = localList;
+				smallerMap = mainMap;
+				biggerMap = localMap;
 				localIsBigger = true;
 			}
 			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
 			
-			for (int i = 0; i < smallerList.size(); i++)
+			for (UUID key : smallerKeys)
 			{
-				Subscription tmpA = new Subscription();
-				tmpA = smallerList.get(i);
-				
-				if (biggerList.contains(tmpA))
+				if (biggerMap.containsKey(key))
 				{
-					smallerList.remove(tmpA);
-					biggerList.remove(tmpA);
-				}
+					Subscription bItem = biggerMap.get(key);
+					Subscription sItem = smallerMap.get(key);
 					
+					if (bItem.equals(sItem))
+					{
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
+						{
+							biggerMap.remove(key);
+							smallerMap.remove(key);
+						}
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
+					}
+				}
 			}
+			
 			
 			
 			//update local
 			if (localIsBigger)
-				updateLocal(smallerList);
+				updateLocal(smallerMap);
 			else
-				updateLocal(biggerList);
+				updateLocal(biggerMap);
 			
 			//update main
 			if (localIsBigger)
-				updateMain(biggerList);
+				updateMain(biggerMap);
 			else
-				updateMain(smallerList);
+				updateMain(smallerMap);
 
 		}
 		catch (Exception e) {
@@ -117,27 +140,28 @@ public class SyncSubscriptionRunnable implements Runnable
 		}
 	}
 	
-	private void updateLocal(ArrayList<Subscription> subscriptionList)
+	private void updateLocal(HashMap<UUID, Subscription> subscriptionMap)
 	{
-		for (int i = 0; i < subscriptionList.size(); i++)
+		aDAO.setSyncFunction();
+		
+		for (Subscription t : subscriptionMap.values())
 		{
-			aDAO.insertOrUpdate(subscriptionList.get(i));		
+			aDAO.insertOrUpdate(t);		
 		}
 	}
 	
-	private void updateMain(ArrayList<Subscription> subscriptionList)
+	private void updateMain(HashMap<UUID, Subscription> subscriptionMap)
 	{
 		try {
-			if (subscriptionList.isEmpty())
+			if (subscriptionMap.isEmpty())
 				return;
 			
 			HashMap<String, String> params = new HashMap<String, String>();
 			
-			JSONArray subscriptionListJSON = new JSONArray(subscriptionList);
-			
+			JSONArray subscriptionListJSON = new JSONArray(subscriptionMap.values());
+
 			params.put("subscriptionList", subscriptionListJSON.toString());
-			
-			
+
 			g3API.setUrl("subscription/massUpdate");
 			g3API.setRequestType(RequestType.MASSPUT);
 			g3API.setParams(params);

@@ -5,17 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
+
+import controller.APIController.RequestType;
 import model.TypeTicket;
 
 public class TypeTicketDAO extends BaseDAO
 {
+	public final static String BASE_URL = "typeTicket/";
 
 	public TypeTicketDAO()
-	{
-
-	}
+	{}
 	
 	public int insertOrUpdate(TypeTicket tt)
 	{
@@ -26,12 +28,12 @@ public class TypeTicketDAO extends BaseDAO
 		else
 			return this.update(tt);
 	}
-	
-	public int update(TypeTicket a)
+
+	public int insert(TypeTicket t)
 	{
 		PreparedStatement ps = null;
 
-		String sql = "UPDATE TypeTicket SET `Name`=?, `Price`=?, `ComfortClass`=?, `LastUpdated`=? WHERE TypeTicketID=?";
+		String sql = "INSERT INTO TypeTicket VALUES(?,?,?,?,?)";
 
 		try {
 
@@ -40,14 +42,21 @@ public class TypeTicketDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			a.update();
-			ps.setString(1, a.getName());
-			ps.setDouble(2, a.getPrice());
-			ps.setInt(3, a.getComfortClass());
-			ps.setLong(4, a.getLastUpdated());
-			ps.setString(5, a.getTypeTicketID().toString());
+			ps.setString(1, t.getTypeTicketID().toString());
+			ps.setString(2, t.getName());
+			ps.setDouble(3, t.getPrice());
+			ps.setInt(4, t.getComfortClass());
+			ps.setLong(5, t.getLastUpdated());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("typeTicketID", t.getTypeTicketID().toString());
+				params.put("name", t.getName());
+				params.put("price", Double.toString(t.getPrice()));
+				params.put("comfortClass", Integer.toString(t.getComfortClass()));
+				params.put("lastUpdated", Long.toString(t.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -60,6 +69,60 @@ public class TypeTicketDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
+
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+
+	}
+	
+	public int update(TypeTicket t)
+	{
+		PreparedStatement ps = null;
+
+		String sql = "UPDATE TypeTicket SET `Name`=?, `Price`=?, `ComfortClass`=?, `LastUpdated`=? WHERE TypeTicketID=?";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, t.getName());
+			ps.setDouble(2, t.getPrice());
+			ps.setInt(3, t.getComfortClass());
+			ps.setLong(4, t.getLastUpdated());
+			ps.setString(5, t.getTypeTicketID().toString());
+
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("typeTicketID", t.getTypeTicketID().toString());
+				params.put("name", t.getName());
+				params.put("price", Double.toString(t.getPrice()));
+				params.put("comfortClass", Integer.toString(t.getComfortClass()));
+				params.put("lastUpdated", Long.toString(t.getLastUpdated()));
+			}
+
+			return ps.executeUpdate();
+
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("typeTicketID"), RequestType.PUT, params);
 			}
 			catch (SQLException e) {
 				System.out.println(e.getMessage());
@@ -111,48 +174,6 @@ public class TypeTicketDAO extends BaseDAO
 				throw new RuntimeException("error.unexpected");
 			}
 		}
-	}
-
-	public int insert(TypeTicket t)
-	{
-		PreparedStatement ps = null;
-
-		String sql = "INSERT INTO TypeTicket VALUES(?,?,?,?,?)";
-
-		try {
-
-			if (getConnection().isClosed()) {
-				throw new IllegalStateException("error unexpected");
-			}
-			ps = getConnection().prepareStatement(sql);
-
-			ps.setString(1, t.getTypeTicketID().toString());
-			ps.setString(2, t.getName());
-			ps.setDouble(3, t.getPrice());
-			ps.setInt(4, t.getComfortClass());
-			ps.setLong(5, t.getLastUpdated());
-
-			// api call
-
-			return ps.executeUpdate();
-
-		}
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw new RuntimeException(e.getMessage());
-		}
-		finally {
-			try {
-				if (ps != null)
-					ps.close();
-
-			}
-			catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw new RuntimeException("error.unexpected");
-			}
-		}
-
 	}
 
 	public ArrayList<TypeTicket> selectAllSync()
@@ -346,7 +367,7 @@ public class TypeTicketDAO extends BaseDAO
 				+ "`Name` varchar(50) NOT NULL,"
 				+ "`Price` double NOT NULL,"
 				+ "`ComfortClass` int(11) NOT NULL,  "
-				+ "`LastUpdated` bigint(14) DEFAULT NULL,  "
+				+ "`LastUpdated` bigint(14) NOT NULL,  "
 				+ "PRIMARY KEY (`TypeTicketID`)"
 				+ ");";
 

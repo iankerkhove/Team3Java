@@ -3,9 +3,12 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import controller.APIController;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
@@ -15,93 +18,113 @@ import model.Route;
 public class SyncRouteRunnable implements Runnable
 {
 
-	private RouteDAO aDAO;
+	private RouteDAO rDao;
 	private APIController g3API;
-	
+
 	@Override
 	public void run()
 	{
 		try {
 
-			//check if has to update
+			// check if has to update
 			HashMap<String, String> params = new HashMap<String, String>();
 			g3API = new APIController(APIUrl.G3, "route/massUpdateStatus", RequestType.GET, params);
-			aDAO = new RouteDAO();
+			rDao = new RouteDAO();
 
 			JSONObject mainStatus = g3API.getJsonResult().getJSONObject(0);
-			TreeMap<String, String> localStatus = aDAO.updateStatus();
+			TreeMap<String, String> localStatus = rDao.updateStatus();
 
 			if (localStatus.get("Count").equals(mainStatus.getString("Count"))
 					&& localStatus.get("LastUpdated").equals(mainStatus.getString("LastUpdated"))) {
-				
+
 				System.out.println("Routes up to date");
 				return;
 			}
-			
-			//get main table values
+
+			// get main table values
 			g3API.setUrl("route");
 			JSONArray mainJsonList = g3API.getJsonResult();
-			
-			ArrayList<Route> localList = aDAO.selectAll();
-			ArrayList<Route> mainList = new ArrayList<Route>();
-			
-			for(int i = 0; i < mainJsonList.length(); i++)
+
+			ArrayList<Route> localList = rDao.selectAll();
+			HashMap<UUID, Route> mainMap = new HashMap<UUID, Route>();
+			HashMap<UUID, Route> localMap = new HashMap<UUID, Route>();
+
+			for (Route item : localList)
 			{
-				JSONObject obj = mainJsonList.getJSONObject(i);
-				Route a = new Route();
-				
-				a.setRouteID(UUID.fromString(obj.getString("RouteID")));
-				a.setDepartureStationID(UUID.fromString(obj.getJSONObject("DepartureStation").getString("StationID")));
-				a.setArrivalStationID(UUID.fromString(obj.getJSONObject("ArrivalStation").getString("StationID")));
-				a.setLastUpdated(obj.getLong("LastUpdated"));
-				
-				mainList.add(a);
+				localMap.put(item.getRouteID(), item);
 			}
-			
+
+			for (int i = 0; i < mainJsonList.length(); i++) {
+				JSONObject obj = mainJsonList.getJSONObject(i);
+				Route r = new Route();
+
+				r.setRouteID(UUID.fromString(obj.getString("RouteID")));
+				r.setDepartureStationID(UUID.fromString(obj.getJSONObject("DepartureStation").getString("StationID")));
+				r.setArrivalStationID(UUID.fromString(obj.getJSONObject("ArrivalStation").getString("StationID")));
+				r.setLastUpdated(obj.getLong("LastUpdated"));
+
+				mainMap.put(r.getRouteID(), r);
+			}
+
 			//update tables
-			ArrayList<Route> smallerList = new ArrayList<Route>();
-			ArrayList<Route> biggerList = new ArrayList<Route>();
+			HashMap<UUID, Route> smallerMap = new HashMap<UUID, Route>();
+			HashMap<UUID, Route> biggerMap = new HashMap<UUID, Route>();
 			
 			boolean localIsBigger = false;
 			
-			if (localList.size() < mainList.size())
+			if (localMap.size() < mainMap.size())
 			{
-				smallerList = localList;
-				biggerList = mainList;
+				smallerMap = localMap;
+				biggerMap = mainMap;
 			}
 			else
 			{
-				smallerList = mainList;
-				biggerList = localList;
+				smallerMap = mainMap;
+				biggerMap = localMap;
 				localIsBigger = true;
 			}
 			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
 			
-			for (int i = 0; i < smallerList.size(); i++)
+			for (UUID key : smallerKeys)
 			{
-				Route tmpA = new Route();
-				tmpA = smallerList.get(i);
-				
-				if (biggerList.contains(tmpA))
+				if (biggerMap.containsKey(key))
 				{
-					smallerList.remove(tmpA);
-					biggerList.remove(tmpA);
-				}
+					Route bItem = biggerMap.get(key);
+					Route sItem = smallerMap.get(key);
 					
+					if (bItem.equals(sItem))
+					{
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
+						{
+							biggerMap.remove(key);
+							smallerMap.remove(key);
+						}
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
+					}
+				}
 			}
+			
 			
 			
 			//update local
 			if (localIsBigger)
-				updateLocal(smallerList);
+				updateLocal(smallerMap);
 			else
-				updateLocal(biggerList);
+				updateLocal(biggerMap);
 			
 			//update main
 			if (localIsBigger)
-				updateMain(biggerList);
+				updateMain(biggerMap);
 			else
-				updateMain(smallerList);
+				updateMain(smallerMap);
 
 		}
 		catch (Exception e) {
@@ -114,27 +137,28 @@ public class SyncRouteRunnable implements Runnable
 		}
 	}
 	
-	private void updateLocal(ArrayList<Route> routeList)
+	private void updateLocal(HashMap<UUID, Route> routeMap)
 	{
-		for (int i = 0; i < routeList.size(); i++)
+		rDao.setSyncFunction();
+		
+		for (Route t : routeMap.values())
 		{
-			aDAO.insertOrUpdate(routeList.get(i));		
+			rDao.insertOrUpdate(t);		
 		}
 	}
 	
-	private void updateMain(ArrayList<Route> routeList)
+	private void updateMain(HashMap<UUID, Route> routeMap)
 	{
 		try {
-			if (routeList.isEmpty())
+			if (routeMap.isEmpty())
 				return;
 			
 			HashMap<String, String> params = new HashMap<String, String>();
 			
-			JSONArray routeListJSON = new JSONArray(routeList);
-			
+			JSONArray routeListJSON = new JSONArray(routeMap.values());
+
 			params.put("routeList", routeListJSON.toString());
-			
-			
+
 			g3API.setUrl("route/massUpdate");
 			g3API.setRequestType(RequestType.MASSPUT);
 			g3API.setParams(params);

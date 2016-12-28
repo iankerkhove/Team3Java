@@ -4,13 +4,11 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JLabel;
-
-import panels.PasPrijzenAanPanel;
 import dao.TypePassDAO;
 import dao.TypeTicketDAO;
 import model.TypePass;
 import model.TypeTicket;
+import panels.PasPrijzenAanPanel;
 
 public class PasPrijzenAanController {
 

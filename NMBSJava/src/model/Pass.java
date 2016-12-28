@@ -1,15 +1,14 @@
 package model;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.UUID;
 
 public class Pass
 {
 	private UUID passID;
 	private UUID typePassID;
-	private Date date;
-	private Date startDate;
+	private String date;
+	private String startDate;
 	private int comfortClass;
 	private TypePass typePass;
 	private long lastUpdated;
@@ -17,7 +16,7 @@ public class Pass
 	public Pass()
 	{}
 
-	public Pass(UUID typePassID, Date date, Date startDate, int comfortClass)
+	public Pass(UUID typePassID, String date, String startDate, int comfortClass)
 	{
 		this.passID = UUID.randomUUID();
 		this.typePassID = typePassID;
@@ -47,22 +46,22 @@ public class Pass
 		this.typePassID = typePassID;
 	}
 
-	public Date getDate()
+	public String getDate()
 	{
 		return date;
 	}
 
-	public void setDate(Date date)
+	public void setDate(String d)
 	{
-		this.date = date;
+		this.date = d;
 	}
 
-	public Date getStartDate()
+	public String getStartDate()
 	{
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate)
+	public void setStartDate(String startDate)
 	{
 		this.startDate = startDate;
 	}
@@ -100,6 +99,58 @@ public class Pass
 	public void update()
 	{
 		this.lastUpdated = Instant.now().getEpochSecond();
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + comfortClass;
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + ((passID == null) ? 0 : passID.hashCode());
+		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+		result = prime * result + ((typePassID == null) ? 0 : typePassID.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Pass other = (Pass) obj;
+		if (comfortClass != other.comfortClass)
+			return false;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		}
+		else if (!date.equals(other.date))
+			return false;
+		if (passID == null) {
+			if (other.passID != null)
+				return false;
+		}
+		else if (!passID.equals(other.passID))
+			return false;
+		if (startDate == null) {
+			if (other.startDate != null)
+				return false;
+		}
+		else if (!startDate.equals(other.startDate))
+			return false;
+		if (typePassID == null) {
+			if (other.typePassID != null)
+				return false;
+		}
+		else if (!typePassID.equals(other.typePassID))
+			return false;
+		return true;
 	}
 
 }
