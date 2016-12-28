@@ -109,4 +109,67 @@ public class Ticket {
 		this.lastUpdated = lastUpdated;
 	}
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + ((routeID == null) ? 0 : routeID.hashCode());
+		result = prime * result + ((ticketID == null) ? 0 : ticketID.hashCode());
+		result = prime * result + ((typeTicketID == null) ? 0 : typeTicketID.hashCode());
+		result = prime * result + ((validFrom == null) ? 0 : validFrom.hashCode());
+		result = prime * result + ((validUntil == null) ? 0 : validUntil.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Ticket other = (Ticket) obj;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		}
+		else if (!date.equals(other.date))
+			return false;
+		if (routeID == null) {
+			if (other.routeID != null)
+				return false;
+		}
+		else if (!routeID.equals(other.routeID))
+			return false;
+		if (ticketID == null) {
+			if (other.ticketID != null)
+				return false;
+		}
+		else if (!ticketID.equals(other.ticketID))
+			return false;
+		if (typeTicketID == null) {
+			if (other.typeTicketID != null)
+				return false;
+		}
+		else if (!typeTicketID.equals(other.typeTicketID))
+			return false;
+		if (validFrom == null) {
+			if (other.validFrom != null)
+				return false;
+		}
+		else if (!validFrom.equals(other.validFrom))
+			return false;
+		if (validUntil == null) {
+			if (other.validUntil != null)
+				return false;
+		}
+		else if (!validUntil.equals(other.validUntil))
+			return false;
+		return true;
+	}
+
 }

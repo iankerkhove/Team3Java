@@ -88,7 +88,6 @@ public class RailCardDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			r.update();
 			ps.setLong(1, r.getLastUpdated());
 			ps.setString(2, r.getRailCardID().toString());
 

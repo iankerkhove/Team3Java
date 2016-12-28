@@ -1,14 +1,11 @@
 package controller;
 
-import panels.LoginPanel;
-import panels.TaalPanel;
-
-import java.awt.*;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import gui.LangageHandler;
-import controller.GUIController;
+import panels.TaalPanel;
 
 public class TaalController {
 	

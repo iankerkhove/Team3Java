@@ -3,6 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -44,7 +45,13 @@ public class SyncReservationRunnable implements Runnable
 			JSONArray mainJsonList = g3API.getJsonResult();
 
 			ArrayList<Reservation> localList = rDAO.selectAll();
-			ArrayList<Reservation> mainList = new ArrayList<Reservation>();
+			HashMap<UUID, Reservation> mainMap = new HashMap<UUID, Reservation>();
+			HashMap<UUID, Reservation> localMap = new HashMap<UUID, Reservation>();
+
+			for (Reservation item : localList)
+			{
+				localMap.put(item.getReservationID(), item);
+			}
 
 			for (int i = 0; i < mainJsonList.length(); i++) {
 				JSONObject obj = mainJsonList.getJSONObject(i);
@@ -58,76 +65,99 @@ public class SyncReservationRunnable implements Runnable
 				r.setRouteID(UUID.fromString(obj.getJSONObject("Route").getString("RouteID")));
 				r.setLastUpdated(obj.getLong("LastUpdated"));
 
-				mainList.add(r);
+				mainMap.put(r.getReservationID(), r);
 			}
 
-			// update tables
-			ArrayList<Reservation> smallerList = new ArrayList<Reservation>();
-			ArrayList<Reservation> biggerList = new ArrayList<Reservation>();
-
+			//update tables
+			HashMap<UUID, Reservation> smallerMap = new HashMap<UUID, Reservation>();
+			HashMap<UUID, Reservation> biggerMap = new HashMap<UUID, Reservation>();
+			
 			boolean localIsBigger = false;
-
-			if (localList.size() < mainList.size()) {
-				smallerList = localList;
-				biggerList = mainList;
+			
+			if (localMap.size() < mainMap.size())
+			{
+				smallerMap = localMap;
+				biggerMap = mainMap;
 			}
-			else {
-				smallerList = mainList;
-				biggerList = localList;
+			else
+			{
+				smallerMap = mainMap;
+				biggerMap = localMap;
 				localIsBigger = true;
 			}
-
-			for (int i = 0; i < smallerList.size(); i++) {
-				Reservation tmpS = new Reservation();
-				tmpS = smallerList.get(i);
-
-				if (biggerList.contains(tmpS)) {
-					smallerList.remove(tmpS);
-					biggerList.remove(tmpS);
+			
+			TreeSet<UUID> smallerKeys = new TreeSet<UUID>(smallerMap.keySet());
+			
+			for (UUID key : smallerKeys)
+			{
+				if (biggerMap.containsKey(key))
+				{
+					Reservation bItem = biggerMap.get(key);
+					Reservation sItem = smallerMap.get(key);
+					
+					if (bItem.equals(sItem))
+					{
+						if (bItem.getLastUpdated() == sItem.getLastUpdated())
+						{
+							biggerMap.remove(key);
+							smallerMap.remove(key);
+						}
+						else if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
+						}
+					}
 				}
-
 			}
-
-			// update local
+			
+			
+			
+			//update local
 			if (localIsBigger)
-				updateLocal(smallerList);
+				updateLocal(smallerMap);
 			else
-				updateLocal(biggerList);
-
-			// update main
+				updateLocal(biggerMap);
+			
+			//update main
 			if (localIsBigger)
-				updateMain(biggerList);
+				updateMain(biggerMap);
 			else
-				updateMain(smallerList);
+				updateMain(smallerMap);
 
 		}
 		catch (Exception e) {
 			System.out.println("SyncReservationError");
 			System.out.println(e);
 		}
-		finally {
+		finally
+		{
 			System.out.println("---- Reservation ----");
 		}
 	}
-
-	private void updateLocal(ArrayList<Reservation> reservationList)
+	
+	private void updateLocal(HashMap<UUID, Reservation> reservationMap)
 	{
 		rDAO.setSyncFunction();
 		
-		for (int i = 0; i < reservationList.size(); i++) {
-			rDAO.insertOrUpdate(reservationList.get(i));
+		for (Reservation t : reservationMap.values())
+		{
+			rDAO.insertOrUpdate(t);		
 		}
 	}
-
-	private void updateMain(ArrayList<Reservation> reservationList)
+	
+	private void updateMain(HashMap<UUID, Reservation> reservationMap)
 	{
 		try {
-			if (reservationList.isEmpty())
+			if (reservationMap.isEmpty())
 				return;
-
+			
 			HashMap<String, String> params = new HashMap<String, String>();
-
-			JSONArray reservationListJSON = new JSONArray(reservationList);
+			
+			JSONArray reservationListJSON = new JSONArray(reservationMap.values());
 
 			params.put("reservationList", reservationListJSON.toString());
 

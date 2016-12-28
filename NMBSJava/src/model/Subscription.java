@@ -145,4 +145,67 @@ public class Subscription
 		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((discountID == null) ? 0 : discountID.hashCode());
+		result = prime * result + ((railCardID == null) ? 0 : railCardID.hashCode());
+		result = prime * result + ((routeID == null) ? 0 : routeID.hashCode());
+		result = prime * result + ((subscriptionID == null) ? 0 : subscriptionID.hashCode());
+		result = prime * result + ((validFrom == null) ? 0 : validFrom.hashCode());
+		result = prime * result + ((validUntil == null) ? 0 : validUntil.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Subscription other = (Subscription) obj;
+		if (discountID == null) {
+			if (other.discountID != null)
+				return false;
+		}
+		else if (!discountID.equals(other.discountID))
+			return false;
+		if (railCardID == null) {
+			if (other.railCardID != null)
+				return false;
+		}
+		else if (!railCardID.equals(other.railCardID))
+			return false;
+		if (routeID == null) {
+			if (other.routeID != null)
+				return false;
+		}
+		else if (!routeID.equals(other.routeID))
+			return false;
+		if (subscriptionID == null) {
+			if (other.subscriptionID != null)
+				return false;
+		}
+		else if (!subscriptionID.equals(other.subscriptionID))
+			return false;
+		if (validFrom == null) {
+			if (other.validFrom != null)
+				return false;
+		}
+		else if (!validFrom.equals(other.validFrom))
+			return false;
+		if (validUntil == null) {
+			if (other.validUntil != null)
+				return false;
+		}
+		else if (!validUntil.equals(other.validUntil))
+			return false;
+		return true;
+	}
+
 }

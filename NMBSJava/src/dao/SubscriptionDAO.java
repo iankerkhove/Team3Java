@@ -98,7 +98,6 @@ public class SubscriptionDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			s.update();
 			ps.setString(1, s.getRailCardID().toString());
 			ps.setString(2, s.getRouteID().toString());
 			ps.setString(3, s.getDiscountID().toString());
