@@ -1,30 +1,33 @@
 package tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import model.RailCard;
 
 public class RailcardTest
 {
 	private RailCard railcard;
 	private ArrayList subs;
-
+	private long lastUpdated;
 	@Before
 	public void setUp() throws Exception
 	{
 		railcard = new RailCard();
 		subs = new ArrayList();
+		railcard.setLastUpdated(lastUpdated);
 	}
 
 	@Test
 	public void RailcardIDTest()
 	{
-		// railcard.setRailCardID(3);
-		assertEquals(3, railcard.getRailCardID());
+		railcard.setRailCardID(UUID.fromString("2cc46ba1-620b-40f4-b60f-97c909aecb3b"));
+		assertEquals(UUID.fromString("2cc46ba1-620b-40f4-b60f-97c909aecb3b"), railcard.getRailCardID());
 	}
 
 	@Test
@@ -40,6 +43,11 @@ public class RailcardTest
 		subs.add(railcard);
 		assertEquals(1, subs.size());
 		assertEquals(railcard, subs.get(0));
+	}
+	@Test
+	public void LastUpdatedTest(){
+		railcard.setLastUpdated(1482918942);
+		assertEquals(1482918942,railcard.getLastUpdated());
 	}
 
 }

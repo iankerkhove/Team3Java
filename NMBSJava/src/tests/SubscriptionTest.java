@@ -1,84 +1,95 @@
 
-//package tests;
-//
-//import static org.junit.Assert.assertEquals;
-//
-//import java.util.Date;
-//import java.util.UUID;
-//
-//import org.junit.Before;
-//import org.junit.Test;
-//
-//import model.Subscription;
-//
-//
-//
-//
-//public class SubscriptionTest {
-//	private Subscription sub;
-//	private Subscription sub2;
-//	private UUID id = UUID.randomUUID();
-//	private UUID id2= UUID.randomUUID();
-//	private UUID id3= UUID.randomUUID();
-//	private Date datumvan = new Date(2017,03,02);
-//	private Date datumtot = new Date(2018,03,02);
-//	@Before
-//	public void setUp() throws Exception {
-//		sub = new Subscription(id, id2, id3, datumvan, datumtot);
-//		sub2 = new Subscription(id, id2, datumvan, datumtot);
-//	}
-//	
-//	@Test
-//	public void ConstructorTest1(){
-//		assertEquals(1,sub.getRailID());
-//		assertEquals(12,sub.getRouteID());
-//		assertEquals(1,sub.getDiscountID());
-//		assertEquals(datumvan,sub.getValidFrom());
-//		assertEquals(datumtot,sub.getValidUntil());
-//	}
-//	
-//	@Test
-//	public void ConstructorTest2(){
-//		assertEquals(1,sub2.getRailID());
-//		assertEquals(2,sub2.getRouteID());
-//		assertEquals(datumvan,sub2.getValidFrom());
-//		assertEquals(datumtot,sub2.getValidUntil());
-//	}
-//	
-//	@Test
-//	public void subIDtest(){
-//		//sub.setSubscriptionID(10);
-//		assertEquals(10,sub.getSubscriptionID());
-//	}
-//	
-//	@Test
-//	public void RailIDTest(){
-//		//sub.setRailID(2);
-//		assertEquals(2,sub.getRailID());
-//	}
-//	
-//	@Test
-//	public void RouteIDTest(){
-//		//sub.setRouteID(2);
-//		assertEquals(2,sub.getRouteID());
-//	}
-//	
-//	@Test
-//	public void DiscountTest(){
-//		sub.setDiscountID(id3);
-//		assertEquals(id3,sub.getDiscountID());
-//	}
-//	
-//	@Test
-//	public void ValidFromTest(){
-//		sub.setValidFrom(datumvan);
-//		assertEquals(datumvan,sub.getValidFrom());
-//	}
-//	
-//	@Test
-//	public void ValidUntilTest(){
-//		sub.setValidUntil(datumtot);
-//		assertEquals(datumtot,sub.getValidUntil());
-//	}
-//}
-//
+package tests;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.Date;
+import java.util.UUID;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import model.Subscription;
+
+
+
+
+public class SubscriptionTest {
+	private Subscription sub;
+	private Subscription sub2;
+	private UUID subscriptionID = UUID.fromString("a379845f-bb4f-4a1f-9748-9d1bb7dfc431");
+	private UUID railID = UUID.fromString("71acee22-8c4d-464e-85e1-058e7c9306ce");
+	private UUID routeID= UUID.fromString("03e20178-ea89-4450-9680-3b20855f2947");
+	private UUID discountID= UUID.fromString("8eafe702-311b-4ec2-be3a-f46c1a95b681");
+	private String datumvan ="2017,03,02";
+	private String datumtot ="2018,03,02";
+	private long lastUpdated = 1482931466;
+	@Before
+	public void setUp() throws Exception {
+		sub = new Subscription(railID, routeID, discountID, datumvan, datumtot);
+		sub2 = new Subscription(railID, routeID, datumvan, datumtot);
+		sub.setRailCardID(railID);
+		sub.setRouteID(routeID);
+		sub.setDiscountID(discountID);
+		sub.setLastUpdated(lastUpdated);
+	}
+	
+	@Test
+	public void ConstructorTest1(){
+		assertEquals(UUID.fromString("71acee22-8c4d-464e-85e1-058e7c9306ce"),sub.getRailCardID());
+		assertEquals(UUID.fromString("03e20178-ea89-4450-9680-3b20855f2947"),sub.getRouteID());
+		assertEquals(discountID,sub.getDiscountID());
+		assertEquals(datumvan,sub.getValidFrom());
+		assertEquals(datumtot,sub.getValidUntil());
+	}
+	
+	@Test
+	public void ConstructorTest2(){
+		assertEquals(railID,sub2.getRailCardID());
+		assertEquals(routeID,sub2.getRouteID());
+		assertEquals(datumvan,sub2.getValidFrom());
+		assertEquals(datumtot,sub2.getValidUntil());
+	}
+	
+	@Test
+	public void subIDtest(){
+		sub.setSubscriptionID(subscriptionID);
+		assertEquals(subscriptionID,sub.getSubscriptionID());
+	}
+	
+	@Test
+	public void RailIDTest(){
+		sub.setRailCardID(railID);
+		assertEquals(railID,sub.getRailCardID());
+	}
+	
+	@Test
+	public void RouteIDTest(){
+		sub.setRouteID(routeID);
+		assertEquals(routeID,sub.getRouteID());
+	}
+	
+	@Test
+	public void DiscountTest(){
+		sub.setDiscountID(discountID);
+		assertEquals(discountID,sub.getDiscountID());
+	}
+		
+	@Test
+	public void ValidFromTest(){
+		sub.setValidFrom(datumvan);
+		assertEquals(datumvan,sub.getValidFrom());
+	}
+	
+	@Test
+	public void ValidUntilTest(){
+		sub.setValidUntil(datumtot);
+		assertEquals(datumtot,sub.getValidUntil());
+	}
+	@Test
+	public void LastUpdatedTest(){
+		sub.setLastUpdated(1482918942);
+		assertEquals(1482918942,sub.getLastUpdated());
+	}
+}
+
