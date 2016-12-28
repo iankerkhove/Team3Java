@@ -4,6 +4,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import services.InitDatabaseRunnable;
 import services.SyncAddressRunnable;
 import services.SyncAllRunnable;
 import services.SyncCustomerRunnable;
@@ -31,6 +32,11 @@ public class SyncController
 		scheduler.scheduleWithFixedDelay(new SyncAllRunnable(), 0, 60*60, TimeUnit.SECONDS);
 	}
 	
+	public static void initDatabase()
+	{
+		Thread t = new Thread(new InitDatabaseRunnable());
+		t.run();
+	}
 
 	public static void SyncAddress()
 	{

@@ -49,8 +49,15 @@ public class LoginController{
 		String usrn = l.getTxtUsername().getText().replaceAll("&", "%26");
 		String password = l.getTxtPassword().getText().replaceAll("&", "%26");
 
+		
+		
+			
 		StaffDAO handler = new StaffDAO();
-		Staff s = handler.selectOneOnUsername(usrn);
+		Staff s = null;
+		
+		if (settings.getFirstTime())
+			s = handler.selectOneOnUsername(usrn);
+		
 		
 		if (s == null)
 		{
@@ -123,6 +130,9 @@ public class LoginController{
 		settings.setApiToken(s.getApiToken());
 		settings.setStaffID(s.getStaffID());
 		
+		if (!settings.getFirstTime())
+			SyncController.initDatabase();
+			
 		l.getLblResult().setText("");
 		GUIController.getFrame().getContentPane().removeAll();
 		GUIController.showApp();
