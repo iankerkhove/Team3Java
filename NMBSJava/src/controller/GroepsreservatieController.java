@@ -7,79 +7,82 @@ import java.util.UUID;
 
 import api.RouteberekeningAPI;
 import api.TimeSelector;
+import dao.ReservationDAO;
 import gui.GUIDateFormat;
-//import model.Groepsreservatie;
+import gui.Popup;
+import model.Reservation;
 import panels.GroepsReservatiePanel;
 
-public class GroepsreservatieController
-{
+public class GroepsreservatieController {
 
 	private static String van;
 	private static String naar;
-	private static String doordatum;
-	private static String terugdatum;
-	private static String naam;
-	private static String verantwoordelijke;
+	private static String datum;
 	private static String trein;
-	private static String aantalReizigers;
-	private static String doortime;
-	private static String terugtime;
-	private static TimeSelector timeSel;
-
-	public static void startListening(GroepsReservatiePanel reservatie)
-	{
+	private static int aantalReizigers;
+	private static String time;
+	private static boolean vanOke = false, naarOke = false;
+	private static double prijs;
+	private static UUID route;
+	public static void startListening(GroepsReservatiePanel reservatie) {
 		EventQueue.invokeLater(new Runnable() {
-			public void run()
-			{
-				reservatie.getDoorTerug().addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e)
-					{
-						if (reservatie.getDoorTerug().isSelected()) {
-							reservatie.getDteTerugDatum().getJFormattedTextField().setText(GUIDateFormat.getDate());
-							reservatie.getDteTerugDatum().setEnabled(true);
-							reservatie.getTimeTerug().setEnabled(true);
-							reservatie.getTerugpanel().setEnabled(true);
+			public void run() {
+
+				reservatie.getAutVan().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						vanOke = true;
+						if (vanOke && naarOke) {
+							zoekTreinen(reservatie);
 						}
 					}
+
 				});
+
+				reservatie.getAutNaar().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						naarOke = true;
+						if (vanOke && naarOke) {
+							zoekTreinen(reservatie);
+						}
+					}
+
+				});
+
 				reservatie.getBtnPrint().addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e)
-					{
-						van = (String) reservatie.getTxtVan().getSelectedItem();
-						naar = (String) reservatie.getTxtVan().getSelectedItem();
-						doordatum = reservatie.getDteGaanDatum().getJFormattedTextField().getText();
-						terugdatum = reservatie.getDteTerugDatum().getJFormattedTextField().getText();
-						naam = reservatie.getTxtGroepsnaam().getText();
-						verantwoordelijke = reservatie.getTxtNaamVerantwoordelijke().getText();
+					public void actionPerformed(ActionEvent e) {
+						van = (String) reservatie.getAutVan().getSelectedItem();
+						naar = (String) reservatie.getAutNaar().getSelectedItem();
+						datum = reservatie.getDteDate().getJFormattedTextField().getText();
 						trein = reservatie.getCboTrein().getSelectedItem().toString();
-						aantalReizigers = (String) reservatie.getPersonen().getValue();
-						doortime = reservatie.getTimeGaan().getText();
-						terugtime = reservatie.getTimeTerug().getText();
+						aantalReizigers = (int) reservatie.getAantPersonen().getValue();
+						time = reservatie.getTmeTime().getText();
 
-						if (!van.equals("") && !naar.equals("") && DateTimeConverter.checkDate(doordatum)
-								&& DateTimeConverter.checkDate(terugdatum) && !naam.equals("")
-								&& !verantwoordelijke.equals("") && !trein.equals(null)) {
-							// implementatie
+						if (!van.equals("") && !naar.equals("") && DateTimeConverter.checkDate(datum)
+								 && !trein.equals(null)) {
+							ReservationDAO res = new ReservationDAO();
+							Reservation r = new Reservation(aantalReizigers, trein, prijs,datum, route);
+							res.insert(r);
+							System.out.println("Reservatie succesvol aangemaakt.");
 						}
 					}
 
 				});
+
 			}
+
 		});
 
 	}
 
-	public static void ReadID()
-	{
-		KoopBiljetController.readRouteID();
-
-	}
-
-	public static void fillCombobox()
-	{
-		RouteberekeningAPI r = new RouteberekeningAPI(van, naar, doordatum, doortime, timeSel);
-		for (int i = 0; i < r.treinID().size(); i++) {
-			//GroepsReservatiePanel.getCboTrein();
+	private static void zoekTreinen(GroepsReservatiePanel reservatie) {
+		van = (String) reservatie.getAutVan().getSelectedItem();
+		naar = (String) reservatie.getAutNaar().getSelectedItem();
+		datum = reservatie.getDteDate().getJFormattedTextField().getText();
+		time = reservatie.getTmeTime().getText();
+		RouteberekeningAPI r = new RouteberekeningAPI(van, naar, datum, time, TimeSelector.VERTREK);
+		for (int i = 0; i < r.getConnections().size(); i++) {
+			reservatie.getCboTrein().addItem(r.getConnections().get(i).getDeparture().getVehicle());
 		}
 	}
+	
 }

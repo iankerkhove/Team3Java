@@ -183,7 +183,7 @@ public class TypeTicketDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, t.LastUpdated as TypeTicketLastUpdated";
+		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, t.LastUpdated as TypeTicketLastUpdated FROM TypeTicket t;";
 
 		try {
 
@@ -269,8 +269,8 @@ public class TypeTicketDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypeTicketID, t.Name, t.Price, t.ComfortClass, "
-				+ "t.LastUpdated as TypeTikcetLastUpdated FROM TypeTicket t WHERE TypeTicketID = ?;";
+		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, "
+				+ "t.LastUpdated as TypeTicketLastUpdated FROM TypeTicket t WHERE TypeTicketID = ?;";
 
 		try {
 
@@ -304,13 +304,13 @@ public class TypeTicketDAO extends BaseDAO
 		}
 	}
 	
-	public TypeTicket selectOneOnName(String typeTicketName, int comfortClass)
+	public TypeTicket selectOneOnName(String typeTicketName)
 	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT t.TypeTicketID, t.Name, t.Price, t.ComfortClass, "
-				+ "t.LastUpdated as TypeTikcetLastUpdated FROM TypeTicket t WHERE Name = ? AND ComfortClass = ?;";
+		String sql = "SELECT t.TypeTicketID, t.Name as TypeTicketName, t.Price, t.ComfortClass, "
+				+ "t.LastUpdated as TypeTicketLastUpdated FROM TypeTicket t WHERE Name = ?;";
 
 		try {
 
@@ -320,7 +320,6 @@ public class TypeTicketDAO extends BaseDAO
 			ps = getConnection().prepareStatement(sql);
 
 			ps.setString(1, typeTicketName);
-			ps.setInt(2, comfortClass);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);

@@ -44,7 +44,6 @@ public class PasPrijzenAanController {
 								String name = prijzen.getTxtName().getText();
 								Double price = Double.parseDouble(prijzen.getTxtPrice().getText());
 								int comfortClass = prijzen.getGrpKlasse().getSelection().getMnemonic();
-
 								if (!name.equals("") && price >= 0) {
 									TypeTicketDAO handler = new TypeTicketDAO();
 									handler.insert(new TypeTicket(name, price, comfortClass));
@@ -57,11 +56,10 @@ public class PasPrijzenAanController {
 								String name = (String) prijzen.getAutTicketType().getSelectedItem();
 								Double price = Double.parseDouble(prijzen.getTxtPrice().getText());
 								Double oldPrice = Double.parseDouble(prijzen.getTxtOldPrice().getText());
-								int comfortClass = prijzen.getGrpKlasse().getSelection().getMnemonic();
 
 								if (price != oldPrice) {
 									TypeTicketDAO handler = new TypeTicketDAO();
-									TypeTicket type = handler.selectOneOnName(name, comfortClass);
+									TypeTicket type = handler.selectOneOnName(name);
 									type.setName(name);
 									type.setPrice(price);
 									handler.update(type);
@@ -125,10 +123,9 @@ public class PasPrijzenAanController {
 							if (keuze == 2) {
 
 								String naam = (String) prijzen.getAutTicketType().getSelectedItem();
-								int klasse = prijzen.getGrpKlasse().getSelection().getMnemonic();
 
 								TypeTicketDAO handler = new TypeTicketDAO();
-								TypeTicket type = handler.selectOneOnName(naam, klasse);
+								TypeTicket type = handler.selectOneOnName(naam);
 
 								prijzen.getTxtOldPrice().setText(Double.toString(type.getPrice()));
 							} else {
