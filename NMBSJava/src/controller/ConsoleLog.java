@@ -1,6 +1,8 @@
 package controller;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 
 import javax.swing.JLabel;
@@ -11,25 +13,25 @@ import gui.GUIDateFormat;
 
 public class ConsoleLog extends JPanel {
 
-	private JLabel console;
-	private String txt = "";
+	private static JLabel console;
+	private static String txt = "";
 
 	public ConsoleLog() {
 		setLayout(new GridLayout(1, 1, 0, 0));
 		console = new JLabel();
-		JScrollPane scroller = new JScrollPane(console, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scroller.setSize(600, 100);
+		Color color = Color.decode("#545454");
+		console.setForeground(color);
+		console.setFont(Font.decode("console"));
+		JScrollPane scroller = new JScrollPane(console, JScrollPane.VERTICAL_SCROLLBAR_NEVER,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		this.add(scroller);
 	}
 
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(600, 50);
+		return new Dimension(600, 20);
 	};
 	
-	public void addLine(String toAdd){
-		String temp = GUIDateFormat.getTimeWithSec() + " " + toAdd + "<br>";
-		txt = temp + txt;
-		console.setText("<html>"+ txt +"</html>");
+	public static void setText(String text){
+		console.setText(GUIDateFormat.getTimeWithSec() + " " + text);
 	}
 }
