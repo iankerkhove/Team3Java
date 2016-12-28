@@ -27,6 +27,7 @@ public class URLCon {
 	private static final SSLSocketFactory defaultSF = HttpsURLConnection.getDefaultSSLSocketFactory();
 	private static SettingsSingleton settings;
 
+	@Deprecated
 	public static String readUrl(String urlString, String rqMethod) throws IOException {
 		try {
 			
@@ -51,7 +52,7 @@ public class URLCon {
 				reader.close();
 		}
 	}
-
+	@Deprecated
 	public static String readUnsecureUrl(String urlString) throws IOException {
 		try {
 			disableCertificateValidation();
@@ -71,7 +72,7 @@ public class URLCon {
 				reader.close();
 		}
 	}
-
+	@Deprecated
 	public static void disableCertificateValidation() {
 		// trust all certificates - solution found on stackoverflow
 		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
