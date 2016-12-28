@@ -5,14 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import controller.APIController.RequestType;
 import model.Route;
 import model.Station;
 
 public class RouteDAO extends BaseDAO
 {
+	public final static String BASE_URL = "route/";
 
 	public RouteDAO()
 	{}
@@ -25,8 +28,60 @@ public class RouteDAO extends BaseDAO
 		else
 			return this.update(a);
 	}
+	
+	public int insert(Route r)
+	{
+		PreparedStatement ps = null;
 
-	public int update(Route a) {
+		String sql = "INSERT INTO Route VALUES(?,?,?,?)";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, r.getRouteID().toString());
+			ps.setString(2, r.getDepartureStationID().toString());
+			ps.setString(3, r.getArrivalStationID().toString());
+			ps.setLong(4, r.getLastUpdated());
+
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("routeID", r.getRouteID().toString());
+				params.put("departureStationID", r.getDepartureStationID().toString());
+				params.put("arrivalStationID", r.getArrivalStationID().toString());
+				params.put("lastUpdated", Long.toString(r.getLastUpdated()));
+			}
+
+			return ps.executeUpdate();
+
+
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+
+			try {
+				if (ps != null)
+					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "create", RequestType.POST, params);
+
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+
+	}
+	
+	public int update(Route r) {
 		PreparedStatement ps = null;
 
 		String sql = "UPDATE Route SET `DepartureStationID`= ?,`ArrivalStationID`= ?,`LastUpdated`= ? WHERE RouteID = ?";
@@ -38,12 +93,20 @@ public class RouteDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setString(1, a.getDepartureStationID().toString());
-			ps.setString(2, a.getArrivalStationID().toString());
-			ps.setLong(3, a.getLastUpdated());
-			ps.setString(4, a.getRouteID().toString());
+			r.update();
+			ps.setString(1, r.getDepartureStationID().toString());
+			ps.setString(2, r.getArrivalStationID().toString());
+			ps.setLong(3, r.getLastUpdated());
+			ps.setString(4, r.getRouteID().toString());
 
-			// api call
+			if (!isSyncFunction)
+			{
+				params = new HashMap<String, String>();
+				params.put("routeID", r.getRouteID().toString());
+				params.put("departureStationID", r.getDepartureStationID().toString());
+				params.put("arrivalStationID", r.getArrivalStationID().toString());
+				params.put("lastUpdated", Long.toString(r.getLastUpdated()));
+			}
 
 			return ps.executeUpdate();
 
@@ -54,6 +117,9 @@ public class RouteDAO extends BaseDAO
 			try {
 				if (ps != null)
 					ps.close();
+				if (!isSyncFunction)
+					syncMainDB(BASE_URL + "update/" + params.get("routeID"), RequestType.PUT, params);
+				
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 				throw new RuntimeException("error.unexpected");
@@ -100,51 +166,6 @@ public class RouteDAO extends BaseDAO
 			}
 		}
 	}
-	
-	public int insert(Route r)
-	{
-		PreparedStatement ps = null;
-
-		String sql = "INSERT INTO Route VALUES(?,?,?,?)";
-
-		try {
-
-			if (getConnection().isClosed()) {
-				throw new IllegalStateException("error unexpected");
-			}
-			ps = getConnection().prepareStatement(sql);
-
-			ps.setString(1, r.getRouteID().toString());
-			ps.setString(2, r.getDepartureStationID().toString());
-			ps.setString(3, r.getArrivalStationID().toString());
-			ps.setLong(4, r.getLastUpdated());
-
-
-			// api call
-
-			return ps.executeUpdate();
-
-
-		}
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			throw new RuntimeException(e.getMessage());
-		}
-		finally {
-
-			try {
-				if (ps != null)
-					ps.close();
-
-			}
-			catch (SQLException e) {
-				System.out.println(e.getMessage());
-				throw new RuntimeException("error.unexpected");
-			}
-		}
-
-	}
-
 
 	public ArrayList<Route> selectAllSync()
 	{
@@ -328,7 +349,7 @@ public class RouteDAO extends BaseDAO
 				+ "`RouteID` varchar(36) NOT NULL DEFAULT '0',"
 				+ "`DepartureStationID` varchar(36) NOT NULL DEFAULT '0',"
 				+ "`ArrivalStationID` varchar(36) NOT NULL DEFAULT '0'," 
-				+ "`LastUpdated` bigint(14) DEFAULT NULL,"
+				+ "`LastUpdated` bigint(14) NOT NULL,"
 				+ "UNIQUE(`DepartureStationID`,`ArrivalStationID`),"
 				+ "PRIMARY KEY (`RouteID`),"
 				+ "FOREIGN KEY (`DepartureStationID`) REFERENCES `Station`(`StationID`),"
