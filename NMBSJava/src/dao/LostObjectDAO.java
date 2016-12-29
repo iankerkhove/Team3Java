@@ -152,9 +152,7 @@ public class LostObjectDAO extends BaseDAO
 		ResultSet rs = null;
 
 
-		String sql = "SELECT l.ObjectID, s.StationID, "
-				+ "s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
-				+ "l.Description,l.Date,l.TrainID,l.Found,l.LastUpdated as LostObjectLastUpdated " 
+		String sql = "SELECT l.ObjectID, l.Description, l.Date, l.TrainID, l.Found, l.LastUpdated as LostObjectLastUpdated " 
 				+ " FROM LostObject l ;";
 		try {
 
