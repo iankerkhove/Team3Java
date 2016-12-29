@@ -16,6 +16,7 @@ public class Customer extends Person
 	{
 		super(firstName, lastName, birthDate, emailAddress, address);
 		this.railCard = railCard;
+		this.railCardID = railCard.getRailCardID();
 		this.customerID = UUID.randomUUID();
 	}
 
