@@ -169,8 +169,15 @@ public class APIController
 		}
 		
 		String finalUrl = this.base_url + url;
-		finalUrl = finalUrl.replaceAll(" ", "_");
-		finalUrl = finalUrl.replaceAll("-", "_");
+		if (this.base_url.equals(BASE_URL_TT))
+		{
+			finalUrl = finalUrl.replace(" ", "_");
+			finalUrl = finalUrl.replace("-", "_");
+		}
+		else if (this.base_url.equals(BASE_URL_IR))
+		{
+			finalUrl = finalUrl.replace(" ", "+");
+		}
 		
 		HttpClient client = HttpClientBuilder.create().build();
 		HttpGet get = new HttpGet(finalUrl);
