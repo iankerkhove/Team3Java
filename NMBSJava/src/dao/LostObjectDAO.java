@@ -333,7 +333,7 @@ public class LostObjectDAO extends BaseDAO
 		s.setStationName(rs.getString("Name"));
 		s.setCoX(rs.getString("CoX"));
 		s.setCoY(rs.getString("CoY"));
-		s.setLastUpdated(rs.getLong("StationLasUpdated"));
+		s.setLastUpdated(rs.getLong("StationLastUpdated"));
 
 		l.setObjectID(UUID.fromString(rs.getString("ObjectID")));
 		l.setStationID(UUID.fromString(s.getStationID().toString()));

@@ -223,9 +223,16 @@ public class GUIController {
 						startPrijzenAanpassen();
 					}
 				});
+				
 				nav.getBtnLogout().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						logout();
+					}
+				});
+				
+				nav.getBtnSync().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						SyncController.Start();
 					}
 				});
 			}
