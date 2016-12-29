@@ -64,7 +64,7 @@ public abstract class Prijsberekening {
 		if (zones < 1)
 			zones = 1;
 		
-		return zones * price;
+		return price + (zones*(price / 10));
 	}
 
 	public static double degToRad(double deg) {

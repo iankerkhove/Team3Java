@@ -15,6 +15,7 @@ import org.jdatepicker.impl.UtilDateModel;
 import com.github.lgooddatepicker.components.TimePicker;
 
 import gui.GUIDateFormat;
+import gui.LangageHandler;
 import gui.StationsAutoCompletor;
 
 public class GroepsReservatiePanel extends JPanel {
@@ -22,244 +23,127 @@ public class GroepsReservatiePanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	private JTextField txtGroepsnaam;
-	private JLabel lblGroepsnaam;
-	private JTextField txtNaamVerantwoordelijke;
-	private JLabel lblNaamVerantwoordelijke;
-	private StationsAutoCompletor txtVan;
+
+	private StationsAutoCompletor autVan;
 	private JLabel lblVan;
-	private StationsAutoCompletor txtNaar;
+	private StationsAutoCompletor autNaar;
 	private JLabel lblNaar;
 	private JComboBox<String> cboTrein;
-	private JSpinner personen;
-
-	private JDatePickerImpl dteGaanDatum;
-	private JDatePickerImpl dteTerugDatum;
+	private JSpinner aantPersonen;
+	private JDatePickerImpl dteDate;
 	private JButton btnPrint;
 	private JLabel lblPrijs;
-
-	private JLabel lbltimegaan;
-	private JLabel lbltimeterug;
-	private TimePicker timeGaan;
-	private TimePicker timeTerug;
-	
-	private JRadioButton rdbVertrekd;
-	private JRadioButton rdbAankomstd;
-	private ButtonGroup grpTimeSeld;
-	
-	private JRadioButton rdbVertrekt;
-	private JRadioButton rdbAankomstt;
-	private ButtonGroup grpTimeSelt;
-	
-	private JCheckBox doorTerug;
-
-	private JPanel vanNaarpanel;
-	private JPanel comboBoxpanel;
-	private JPanel doorpanel;
-	private JPanel terugpanel;
-	private JPanel naampanel;
+	private JLabel lblTime;
+	private TimePicker tmeTime;
+	private JLabel lblTitle;
 
 	public GroepsReservatiePanel() {
-		this.setLayout(new GridLayout(4,2,5,5));
-		//panels
-		vanNaarpanel = new JPanel();
-		vanNaarpanel.setLayout(new GridLayout(2, 2, 10, 10));
-		comboBoxpanel = new JPanel();
-		comboBoxpanel.setLayout(new FlowLayout());
-		doorpanel = new JPanel();
-		doorpanel.setLayout(new GridLayout(2, 1, 10, 10));
-		terugpanel = new JPanel();
-		terugpanel.setLayout(new GridLayout(2, 1, 10, 10));
-		terugpanel.setVisible(false);
-		naampanel = new JPanel();
-		naampanel.setLayout(new GridLayout(2, 1, 10, 10));
-		//labelGroepsnaam
-		lblGroepsnaam= new JLabel("Groepsnaam: ");
-		naampanel.add(lblGroepsnaam);
-		
-		txtGroepsnaam= new JTextField(15);
-		naampanel.add(txtGroepsnaam);
-		
-		//label naam verantwoordelijke
-		lblNaamVerantwoordelijke = new JLabel("Naam vd verantwoordelijke: ");
-		naampanel.add(lblNaamVerantwoordelijke);
-		
-		txtNaamVerantwoordelijke = new JTextField(15);
-		naampanel.add(txtNaamVerantwoordelijke);
+		this.setLayout(new GridLayout(9, 2, 5, 5));
+
+		// title
+		lblTitle = new JLabel("Reservatie maken");
+		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
+
 		// labelVan
 		lblVan = new JLabel("Van: ");
-		vanNaarpanel.add(lblVan);
+		autVan = new StationsAutoCompletor();
 
-		txtVan = new StationsAutoCompletor();
-		vanNaarpanel.add(txtVan);
-		//labelNaar
+		// labelNaar
 		lblNaar = new JLabel("Naar: ");
-		vanNaarpanel.add(lblNaar);
-
-		txtNaar = new StationsAutoCompletor();
-		vanNaarpanel.add(txtNaar);
+		autNaar = new StationsAutoCompletor();
 
 		// datepicker properties
 		Properties properties = new Properties();
 		properties.put("text.today", "Today");
 		properties.put("text.month", "Month");
 		properties.put("text.year", "Year");
+
 		// datepicker
 		JDatePanelImpl datePanel1 = new JDatePanelImpl(new UtilDateModel(), properties);
-		dteGaanDatum = new JDatePickerImpl(datePanel1, new GUIDateFormat());
-		dteGaanDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
-		
-		JDatePanelImpl datePanel2 = new JDatePanelImpl(new UtilDateModel(), properties);
-		dteTerugDatum = new JDatePickerImpl(datePanel2,new GUIDateFormat());
-		//dteTerugDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
-		dteTerugDatum.setEnabled(false);
-		//time
-		timeGaan = new TimePicker();
-		timeGaan.setText(GUIDateFormat.getTime());
-		
-		timeTerug = new TimePicker();
-		timeTerug.setText(GUIDateFormat.getTime());
-		timeTerug.setEnabled(false);
-		
-		//rdb's
-		rdbVertrekd = new JRadioButton("Vertrek");
-		rdbVertrekd.setSelected(true);
-		rdbVertrekd.setMnemonic(1);
-		rdbAankomstd = new JRadioButton("Aankomst");
-		rdbAankomstd.setMnemonic(2);
-		grpTimeSeld = new ButtonGroup();
-		grpTimeSeld.add(rdbVertrekd);
-		grpTimeSeld.add(rdbAankomstd);
-		
-		JPanel timeSelPaneldoor = new JPanel();
-		timeSelPaneldoor.add(rdbVertrekd);
-		timeSelPaneldoor.add(rdbAankomstd);
-		
-		rdbVertrekt = new JRadioButton("Vertrek");
-		rdbVertrekt.setSelected(true);
-		rdbVertrekt.setMnemonic(1);
-		rdbAankomstt = new JRadioButton("Aankomst");
-		rdbAankomstt.setMnemonic(2);
-		grpTimeSelt = new ButtonGroup();
-		grpTimeSelt.add(rdbVertrekt);
-		grpTimeSelt.add(rdbAankomstt);
-		
-		JPanel timeSelPanelterug = new JPanel();
-		timeSelPanelterug.add(rdbVertrekt);
-		timeSelPanelterug.add(rdbAankomstt);
-		//combobox
-		cboTrein=new JComboBox<String>();
-		cboTrein.setPreferredSize(new Dimension(100,25));
-		cboTrein.setEditable(true);
-		cboTrein.setSelectedItem("Selecteer trein");
-		comboBoxpanel.add(cboTrein);
-		//Spinner
+		dteDate = new JDatePickerImpl(datePanel1, new GUIDateFormat());
+		dteDate.getJFormattedTextField().setText(GUIDateFormat.getDate());
+
+		// time
+		tmeTime = new TimePicker();
+		tmeTime.setText(GUIDateFormat.getTime());
+
+		// combobox
+		cboTrein = new JComboBox<String>();
+
+		// Spinner
 		SpinnerModel model = new SpinnerNumberModel(0, 0, 200, 1);
-		personen= new JSpinner(model);
-		personen.setPreferredSize(new Dimension(50,25));
-		comboBoxpanel.add(personen);
-		//print
+		aantPersonen = new JSpinner(model);
+
+		// print
 		btnPrint = new JButton("Print");
-		//prijs
+		// prijs
 		lblPrijs = new JLabel(" € 0 ");
 		lblPrijs.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPrijs.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		
-		//checbox
-		doorTerug = new JCheckBox("Heenreis en terugreis");
-		comboBoxpanel.add(doorTerug);
-		
-		doorpanel.add(new JLabel("Door: "));
-		doorpanel.add(dteGaanDatum);
-		doorpanel.add(timeSelPaneldoor);
-		doorpanel.add(timeGaan);
-		terugpanel.add(new JLabel("Terug: "));
-		terugpanel.add(dteTerugDatum);
-		terugpanel.add(timeSelPanelterug);
-		terugpanel.add(timeTerug);
-		
-		//add's
-		add(naampanel);
-		add(vanNaarpanel);
-		add(doorpanel);
-		add(terugpanel);
-		add(comboBoxpanel);
-		add(lblPrijs);
-		add(btnPrint);
-		
-		
+
+		// add's
+		this.add(lblTitle);
+		this.add(new JLabel());
+		this.add(lblVan);
+		this.add(autVan);
+		this.add(lblNaar);
+		this.add(autNaar);
+		this.add(cboTrein);
+		this.add(aantPersonen);
+		this.add(dteDate);
+		this.add(tmeTime);
+		this.add(new JLabel());
+		this.add(lblPrijs);
+		this.add(new JLabel());
+		this.add(btnPrint);
+		this.add(new JLabel());
+		this.add(new JLabel());
+		this.add(new JLabel());
+		this.add(new JLabel());
+
 	}
 
-	public JTextField getTxtGroepsnaam() {
-		return txtGroepsnaam;
+	public StationsAutoCompletor getAutVan() {
+		return autVan;
 	}
-	public JLabel getLblGroepsnaam() {
-		return lblGroepsnaam;
-	}
-	public JTextField getTxtNaamVerantwoordelijke() {
-		return txtNaamVerantwoordelijke;
-	}
-	public JLabel getLblNaamVerantwoordelijke() {
-		return lblNaamVerantwoordelijke;
-	}
-	public StationsAutoCompletor getTxtVan() {
-		return txtVan;
-	}
+
 	public JLabel getLblVan() {
 		return lblVan;
 	}
-	public StationsAutoCompletor getTxtNaar() {
-		return txtNaar;
+
+	public StationsAutoCompletor getAutNaar() {
+		return autNaar;
 	}
+
 	public JLabel getLblNaar() {
 		return lblNaar;
 	}
+
 	public JComboBox<String> getCboTrein() {
 		return cboTrein;
 	}
-	public JSpinner getPersonen() {
-		return personen;
+
+	public JSpinner getAantPersonen() {
+		return aantPersonen;
 	}
-	public JDatePickerImpl getDteGaanDatum() {
-		return dteGaanDatum;
+
+	public JDatePickerImpl getDteDate() {
+		return dteDate;
 	}
-	public JDatePickerImpl getDteTerugDatum() {
-		return dteTerugDatum;
-	}
+
 	public JButton getBtnPrint() {
 		return btnPrint;
 	}
+
 	public JLabel getLblPrijs() {
 		return lblPrijs;
 	}
-	public JLabel getLbltimegaan() {
-		return lbltimegaan;
+
+	public JLabel getLblTime() {
+		return lblTime;
 	}
-	public JLabel getLbltimeterug() {
-		return lbltimeterug;
-	}
-	public TimePicker getTimeGaan() {
-		return timeGaan;
-	}
-	public TimePicker getTimeTerug() {
-		return timeTerug;
-	}
-	public JCheckBox getDoorTerug() {
-		return doorTerug;
-	}
-	public JPanel getVanNaarpanel() {
-		return vanNaarpanel;
-	}
-	public JPanel getComboBoxpanel() {
-		return comboBoxpanel;
-	}
-	public JPanel getDoorpanel() {
-		return doorpanel;
-	}
-	public JPanel getTerugpanel() {
-		return terugpanel;
-	}
-	public JPanel getNaampanel() {
-		return naampanel;
+
+	public TimePicker getTmeTime() {
+		return tmeTime;
 	}
 }
