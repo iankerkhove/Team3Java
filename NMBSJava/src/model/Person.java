@@ -23,6 +23,7 @@ public class Person
 		this.birthDate = birthDate;
 		this.email = email;
 		this.address = address;
+		this.addressID = address.getAddressID();
 		this.lastUpdated = Instant.now().getEpochSecond();
 	}
 
