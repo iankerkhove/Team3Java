@@ -22,7 +22,7 @@ public class RouteTest {
 	@Before
 	public void setUp() throws Exception
 	{
-		route = new Route(routeID,departureStationID, arrivalStationID);
+		route = new Route(departureStationID, arrivalStationID);
 		route.setRouteID(routeID);
 		route.setLastUpdated(lastUpdated);
 		departureStation = new Station();

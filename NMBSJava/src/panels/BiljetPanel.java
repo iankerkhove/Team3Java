@@ -19,6 +19,7 @@ import org.jdatepicker.impl.UtilDateModel;
 import gui.GUIDateFormat;
 import gui.LangageHandler;
 import gui.StationsAutoCompletor;
+import gui.TicketTypesAutoCompletor;
 
 @SuppressWarnings("serial") 
 public class BiljetPanel extends JPanel {
@@ -85,8 +86,8 @@ public class BiljetPanel extends JPanel {
 		dteGaanDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
 		
 		comboBoxpanel.setLayout(new GridLayout(2, 1, 5, 5));
-		String[] s = {LangageHandler.chooseLangage("standaardbiljet") , LangageHandler.chooseLangage("goPass"), LangageHandler.chooseLangage("weekendBiljet"), LangageHandler.chooseLangage("seniorenBiljet"),LangageHandler.chooseLangage("biljetKind")};
-		cboBiljet = new JComboBox<String>(s);
+		
+		cboBiljet = new TicketTypesAutoCompletor();
 		
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteTerugDatum = new JDatePickerImpl(datePanel2,new GUIDateFormat());
@@ -103,19 +104,8 @@ public class BiljetPanel extends JPanel {
 		typeTicketpanel.setLayout(new GridLayout(2, 2, 5, 5));
 		
 		klasseTicketpanel.setLayout(new GridLayout(3,2,5,5));
-		rdbEersteKlasse = new JRadioButton();
-		LangageHandler.chooseLangageRdb(rdbEersteKlasse, "1eKlasse");
-		rdbEersteKlasse.setMnemonic(1);
-		rdbTweedeKlasse = new JRadioButton();
-		LangageHandler.chooseLangageRdb(rdbTweedeKlasse, "2eKlasse");
-		rdbTweedeKlasse.setMnemonic(2);
-		rdbTweedeKlasse.setSelected(true);
-		rdbKlasseVerhoging = new JRadioButton();
-		LangageHandler.chooseLangageRdb(rdbKlasseVerhoging, "klasseVerhoging");
-		rdbKlasseVerhoging.setMnemonic(3);
 		
 		grpHeenTerug = new ButtonGroup();
-		grpKlasseTicket = new ButtonGroup();
 		
 		btnPrint = new JButton("Print");
 		LangageHandler.chooseLangageBtn(btnPrint, "print");
@@ -132,19 +122,9 @@ public class BiljetPanel extends JPanel {
 		//adds
 		grpHeenTerug.add(rdbEnkel);
 		grpHeenTerug.add(rdbHeenTerug);
-		grpKlasseTicket.add(rdbEersteKlasse);
-		grpKlasseTicket.add(rdbTweedeKlasse);
-		grpKlasseTicket.add(rdbKlasseVerhoging);
 		comboBoxpanel.add(cboBiljet);
 		comboBoxpanel.add(new JLabel());
 		
-		
-		klasseTicketpanel.add(lblKlasse);
-		klasseTicketpanel.add(rdbEersteKlasse);
-		klasseTicketpanel.add(new JLabel());
-		klasseTicketpanel.add(rdbTweedeKlasse);
-		klasseTicketpanel.add(new JLabel());
-		klasseTicketpanel.add(rdbKlasseVerhoging);
 		
 		typeTicketpanel.add(lblType);
 		typeTicketpanel.add(rdbEnkel);
