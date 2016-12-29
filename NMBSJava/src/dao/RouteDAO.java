@@ -173,7 +173,7 @@ public class RouteDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Route";
+		String sql = "SELECT * FROM Route;";
 
 		try {
 
@@ -186,7 +186,7 @@ public class RouteDAO extends BaseDAO
 			list = new ArrayList<Route>();
 
 			while (rs.next()) {
-				list.add(resultToModel(rs));
+				list.add(syncResultToModel(rs));
 			}
 
 			return list;
@@ -384,6 +384,18 @@ public class RouteDAO extends BaseDAO
 		r.setDepartureStation(s1);
 		r.setArrivalStation(s2);
 		r.setLastUpdated(rs.getLong("RouteLastUpdated"));
+
+		return r;
+	}
+	
+	private Route syncResultToModel(ResultSet rs) throws SQLException
+	{
+		Route r = new Route();
+
+		r.setRouteID(UUID.fromString(rs.getString("RouteID")));
+		r.setDepartureStationID(UUID.fromString(rs.getString("DepartureStationID")));
+		r.setArrivalStationID(UUID.fromString(rs.getString("ArrivalStationID")));
+		r.setLastUpdated(rs.getLong("LastUpdated"));
 
 		return r;
 	}

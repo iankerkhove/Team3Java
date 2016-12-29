@@ -46,7 +46,7 @@ public class SyncTicketRunnable implements Runnable
 			g3API.setUrl("ticket");
 			JSONArray mainJsonList = g3API.getJsonResult();
 
-			ArrayList<Ticket> localList = aDAO.selectAll();
+			ArrayList<Ticket> localList = aDAO.selectAllSync();
 			HashMap<UUID, Ticket> mainMap = new HashMap<UUID, Ticket>();
 			HashMap<UUID, Ticket> localMap = new HashMap<UUID, Ticket>();
 
