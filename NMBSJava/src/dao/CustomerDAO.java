@@ -154,7 +154,7 @@ public class CustomerDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT c.CustomerID, c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
+		String sql = "SELECT c.CustomerID, c.RailCardID, c.AddressID, c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
 				+ " FROM Customer c";
 
 		try {
@@ -168,7 +168,7 @@ public class CustomerDAO extends BaseDAO
 			list = new ArrayList<Customer>();
 
 			while (rs.next()) {
-				list.add(resultToModel(rs));
+				list.add(syncResultToModel(rs));
 			}
 
 			return list;
@@ -346,6 +346,21 @@ public class CustomerDAO extends BaseDAO
 		c.setCustomerID(UUID.fromString(rs.getString("CustomerID")));
 		c.setAddress(a);
 		c.setRailCard(r);
+		c.setFirstName(rs.getString("FirstName"));
+		c.setLastName(rs.getString("LastName"));
+		c.setBirthDate(rs.getString("BirthDate"));
+		c.setEmail(rs.getString("Email"));
+		c.setLastUpdated(rs.getLong("CustomerLastUpdated"));
+		return c;
+	}
+	
+	private Customer syncResultToModel(ResultSet rs) throws SQLException
+	{
+		Customer c = new Customer();
+
+		c.setCustomerID(UUID.fromString(rs.getString("CustomerID")));
+		c.setAddressID(UUID.fromString(rs.getString("AddressID")));
+		c.setRailCardID(UUID.fromString(rs.getString("RailCardID")));
 		c.setFirstName(rs.getString("FirstName"));
 		c.setLastName(rs.getString("LastName"));
 		c.setBirthDate(rs.getString("BirthDate"));
