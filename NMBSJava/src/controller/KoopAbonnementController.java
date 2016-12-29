@@ -3,7 +3,6 @@ package controller;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +34,6 @@ public class KoopAbonnementController {
 	private static String naarID;
 	private static String routeID;
 	private static String railcardID;
-	private static int customerID;
 
 	
 	public static void startListening(NieuwAbonnementPanel abonnement) {
@@ -56,52 +54,29 @@ public class KoopAbonnementController {
 					// automatisch customer gegevens invullen adhv customerID
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						Boolean check = false;
 						abonnement.getLblFoutmelding().setText("");
 						String customerIDString = abonnement.getTxtCustomerID().getText();
-						customerIDString = customerIDString.replaceAll("\\W+", "");
-						if (customerIDString.matches("[0-9]+")) {
-							customerID = Integer.parseInt(customerIDString);
-						} else {
-							abonnement.getLblFoutmelding().setText("Fout in klant ID");
-						}
-
 						CustomerDAO daoCustomer = new CustomerDAO();
 						ArrayList<Customer>list = daoCustomer.selectAll();
-						
 						for (int i = 0; i < list.size(); i++) {
-							if(customerIDString==list.get(i).getCustomerID().toString())
+							if(customerIDString.equals(list.get(i).getCustomerID().toString()))
 							{
 								abonnement.setTxtVoornaam(list.get(i).getFirstName());
 								abonnement.setTxtNaam(list.get(i).getLastName());
 								abonnement.setTxtEmail(list.get(i).getEmail());
-								abonnement.setDteGeboorteDatum(list.get(i).getBirthDate().toString());
+								abonnement.setDteGeboorteDatum(list.get(i).getBirthDate());
 								abonnement.setTxtGemeente(list.get(i).getAddress().getCity());
 								abonnement.setTxtStraat(list.get(i).getAddress().getStreet());
 								abonnement.setTxtNummer(Integer.toString(list.get(i).getAddress().getNumber()));
 								abonnement.setTxtPostcode(Integer.toString(list.get(i).getAddress().getZipCode()));
+								check = true;
 							}
 						}
-						/*
-						try {
-
-							JSONObject customer = new JSONObject(URLCon.readUrl("http://nmbs-team.tk/api/customer/" + customerID, "GET"));
-							JSONObject address = customer.getJSONObject("Address");
-
-							abonnement.setTxtVoornaam(customer.getString("FirstName"));
-							abonnement.setTxtNaam(customer.getString("LastName"));
-							abonnement.setTxtEmail(customer.getString("Email"));
-							abonnement.setTxtGemeente(address.getString("City"));
-							abonnement.setTxtStraat(address.getString("Street"));
-							abonnement.setTxtNummer(address.getString("Number"));
-							abonnement.setTxtPostcode(address.getString("ZipCode"));
-							abonnement.setDteGeboorteDatum(customer.getString("BirthDate"));
-
-						} catch (JSONException e1) {
-							e1.printStackTrace();
-						} catch (IOException e1) {
-							e1.printStackTrace();
+						if(check == false)
+						{
+							abonnement.getLblFoutmelding().setText("Klantennummer niet gevonden.");
 						}
-*/
 					}
 				});
 
@@ -279,50 +254,13 @@ public class KoopAbonnementController {
 				abonnement.getBtnVerzenden().addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-					
-						
 						if (correctFormulier(abonnement)) {
-							// customer aanmaken
-							if (!customerCheck(abonnement)) {
+							if (!customerCheck(abonnement)) 
+							{
 								createCustomer(abonnement);
 							}
-							createAbonnement(abonnement);
-
-								/*customerURL += "?FirstName=" + voornaam + "&LastName=" + naam + "&BirthDate="
-										+ geboorteDatum + "&Email=" + email + "&Street=" + straat + "&Number=" + nummer
-										+ "&City=" + gemeente + "&ZipCode=" + postcode + "&Coordinates=" + coordinates;
-						
-								
-								int temp = createCustomer(customerURL);
-								if (temp == 200) {
-									System.out.println("Customer correct aangemaakt");
-								} else {
-									System.err.println("Fout in API, statuscode: " + temp);
-								}
-							} else {
-								abonnement.getLblFoutmelding().setText("U ben al klant!");
-							}
-							*/
-							
-							
-							
-							//abonnement aanmaken						
-							
-							/*
-							String buildURL = "http://nmbs-team.tk/api/subscription/create";
 							readRouteID();
-							
-							buildURL += "?RailCardID=3&RouteID=" + routeID + "&DiscountID=" + 1 + "&ValidFrom="
-									+ startDatum + "&ValidUntil=" + vervalDatum;
-							System.out.println(buildURL);
-							
-							int temp = createAbonnement(buildURL);
-							if (temp == 200) {
-								abonnement.getLblFoutmelding().setText("Juist abonnement");
-							} else {
-								abonnement.getLblFoutmelding().setText("Fout in API, statuscode: " + temp);
-							}
-							*/
+							createAbonnement(abonnement);			
 						}
 					}
 				});
@@ -338,7 +276,8 @@ public class KoopAbonnementController {
 	
 		//Controle op id	
 			for (int i = 0; i < list.size(); i++) {
-				if (list.get(i).getCustomerID().toString() == abonnement.getLblCustomerID().getText()){		
+				
+				if (list.get(i).getCustomerID().equals(abonnement.getTxtCustomerID().getText().toString())){		
 					
 					//Customer bestaat alreeds, dus railcardid zoeken, nodig voor abonnement te maken
 					railcard = list.get(i).getRailCard();
@@ -350,13 +289,13 @@ public class KoopAbonnementController {
 		//als bestaande customer niet gezocht is op id, dan wordt er controle uitgevoerd op emailadres
 			String email = abonnement.getTxtEmail().toString();
 			for (int i = 0; i < list.size(); i++) {
-				if(list.get(i).getEmail()==email){
+				if(list.get(i).getEmail().toString().equals(email)){
 					
 					//Customer bestaat alreeds, dus railcardid zoeken, nodig voor abonnement te maken
 					railcard = list.get(i).getRailCard();
 					railcardID = railcard.getRailCardID().toString();
 					
-					return true; //er bestaat al customer met dit emailadres
+					return true; 
 				}
 			}
 		
@@ -426,20 +365,19 @@ public class KoopAbonnementController {
 
 	public static void readRouteID() {
 		readStationID();
-
 		RouteDAO daoRoute = new RouteDAO();
 		ArrayList<Route> list = daoRoute.selectAll();
-
 		boolean goTroughVan = false;
 		boolean goTroughNaar = false;
 		int positie = 0;
 		for (int i = 0; i < list.size(); i++) {
-
-			if (naarID.equals(list.get(i).getArrivalStationID().toString())) {
+			
+		System.out.println("NaarID "+naarID);
+			if (naarID.toString().equals(list.get(i).getArrivalStationID().toString())) {
 				goTroughNaar = true;
 				positie =i;
 			}
-			if(vanID.equals(list.get(i).getDepartureStationID().toString()))
+			if(vanID.toString().equals(list.get(i).getDepartureStationID().toString()))
 			{
 				goTroughVan = true;
 				positie = i;
@@ -449,27 +387,12 @@ public class KoopAbonnementController {
 		if(goTroughVan == false || goTroughNaar==false)
 		{
 			createRoute();
+			System.out.println("oi");
 		}else{
 			routeID = list.get(positie).getRouteID().toString();
-		}
+			System.out.println(routeID + "1");
 		
-		/*try {
-			readStationID();
-			
-			JSONObject temp = new JSONObject(
-					URLCon.readUrl("http://nmbs-team.tk/api/route/" + vanID + "/" + naarID, "GET"));
-
-			if (temp.has("StatusCode")) {
-				int statusCode = temp.getInt("StatusCode");
-				if (statusCode == 404) {
-					createRoute();
-				}
-			} else {
-				routeID = temp.getInt("RouteID");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
+		}
 	}
 
 	public static void readStationID() {
@@ -498,37 +421,6 @@ public class KoopAbonnementController {
 			System.err.println("Een van de stations werd niet gevonden.");
 		}
 		
-		/*try {
-			JSONArray json = new JSONArray(URLCon.readUrl("http://nmbs-team.tk/api/station", "GET"));
-
-			boolean goTroughVan = false;
-			boolean goTroughNaar = false;
-
-			String temp = "";
-
-			for (int i = 0; i < json.length(); i++) {
-
-				temp = json.getJSONObject(i).getString("Name");
-
-				if (station1.equals(temp)) {
-					vanID = json.getJSONObject(i).getInt("StationID");
-					goTroughVan = true;
-				}
-
-				if (station2.equals(temp)) {
-					naarID = json.getJSONObject(i).getInt("StationID");
-					goTroughNaar = true;
-				}
-			}
-
-			if (goTroughVan && goTroughNaar) {
-			} else {
-				System.err.println("Een van de stations werd niet gevonden.");
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
 	}
 
 	public static void createRoute() {
@@ -538,46 +430,9 @@ public class KoopAbonnementController {
 		r.setDepartureStationID(UUID.fromString(vanID));
 		RouteDAO daoRoute = new RouteDAO();
 		daoRoute.insert(r);
-		
-		/*BufferedReader reader = null;
-		try {
-			URL url = new URL(
-					"http://nmbs-team.tk/api/route/create?DepartureStationID=" + vanID + "&ArrivalStationID=" + naarID);
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		routeID = r.getRouteID().toString();
+		System.out.println(routeID + "2");
 
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Authorization", "Bearer " + LoginController.getToken());
-			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setRequestProperty("User-Agent",
-					"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.29 Safari/537.36");
-			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			StringBuffer buffer = new StringBuffer();
-			int read;
-			char[] chars = new char[1024];
-			while ((read = reader.read(chars)) != -1)
-				buffer.append(chars, 0, read);
-
-			JSONObject temp = new JSONObject(buffer.toString());
-
-			System.out.println(temp.toString(4));
-		
-			int statusCode = temp.getInt("StatusCode");
-			if (statusCode == 200) {
-			//	routeID = temp.getInt("RouteID");
-			}
-			return statusCode;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		}
-		return 500;*/
 	}
 
 	public static void createAbonnement(NieuwAbonnementPanel abonnement) {
@@ -594,43 +449,15 @@ public class KoopAbonnementController {
 			e.printStackTrace();
 		}*/
 		
-		Subscription sub = new Subscription(UUID.fromString(railcardID), UUID.fromString(routeID), startDatum, vervalDatum);
-		SubscriptionDAO daoSubscription = new SubscriptionDAO();
-		daoSubscription.insert(sub);
+		System.out.println(UUID.fromString(railcardID));
+		System.out.println(routeID + "3");
+		
+		System.out.println(startDatum);
 
-		/*BufferedReader reader = null;
-		try {
-			URL url = new URL(buildURL);
+	//	Subscription sub = new Subscription(UUID.fromString(railcardID), UUID.fromString(routeID), startDatum, vervalDatum);
+		//SubscriptionDAO daoSubscription = new SubscriptionDAO();
+		//daoSubscription.insert(sub);
 
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Authorization", "Bearer " + LoginController.getToken());
-			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setRequestProperty("User-Agent",
-					"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.29 Safari/537.36");
-			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			StringBuffer buffer = new StringBuffer();
-			int read;
-			char[] chars = new char[1024];
-			while ((read = reader.read(chars)) != -1)
-				buffer.append(chars, 0, read);
-
-			JSONObject temp = new JSONObject(buffer.toString());
-			System.out.println(temp.toString(4));
-			int statusCode = temp.getInt("StatusCode");
-			return statusCode;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return 500;*/
 	}
 
 	public static void createCustomer(NieuwAbonnementPanel abonnement) {
@@ -643,46 +470,10 @@ public class KoopAbonnementController {
 		
 		RailCard railcard = new RailCard();
 		railcardID = railcard.getRailCardID().toString();
-		
 		Customer customer = new Customer(abonnement.getTxtVoornaam().getText(), abonnement.getTxtNaam().getText(), geboorteDatum,  abonnement.getTxtEmail().getText(), address, railcard);
 		
 		CustomerDAO daoCustomer = new CustomerDAO();
 		daoCustomer.insert(customer);
 		
-		/*BufferedReader reader = null;
-
-		try {
-			URL url = new URL(customerURL);
-
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Authorization", "Bearer " + LoginController.getToken());
-			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setRequestProperty("User-Agent",
-					"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.29 Safari/537.36");
-
-			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			StringBuffer buffer = new StringBuffer();
-			int read;
-			char[] chars = new char[1024];
-			while ((read = reader.read(chars)) != -1)
-				buffer.append(chars, 0, read);
-
-			JSONObject temp = new JSONObject(buffer.toString());
-			System.out.println(temp.toString(4));
-			int statusCode = temp.getInt("StatusCode");
-			return statusCode;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return 500;*/
 	}
 }
