@@ -454,7 +454,7 @@ public class KoopAbonnementController {
 		
 		System.out.println(startDatum);
 
-	//	Subscription sub = new Subscription(UUID.fromString(railcardID), UUID.fromString(routeID), startDatum, vervalDatum);
+		//Subscription sub = new Subscription(UUID.fromString(railcardID), UUID.fromString(routeID), UUID.fromString(abonnement.getCbxDiscount().getSelectedItem().toString()),startDatum, vervalDatum);
 		//SubscriptionDAO daoSubscription = new SubscriptionDAO();
 		//daoSubscription.insert(sub);
 
