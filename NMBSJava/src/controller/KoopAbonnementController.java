@@ -3,10 +3,7 @@ package controller;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,7 +12,9 @@ import java.util.UUID;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import dao.AddressDAO;
 import dao.CustomerDAO;
+import dao.RailCardDAO;
 import dao.RouteDAO;
 import dao.StationDAO;
 import dao.SubscriptionDAO;
@@ -638,51 +637,24 @@ public class KoopAbonnementController {
 		int postcode =  Integer.parseInt(abonnement.getTxtPostcode().getText());
 		String geboorteDatum = abonnement.getDteGeboorteDatum().getJFormattedTextField().getText();
 		
-
+		// Aanmaken new models
 		Address address = new Address(abonnement.getTxtStraat().getText(), nummer , abonnement.getTxtGemeente().getText(), postcode, "");
-		
 		RailCard railcard = new RailCard();
+				
 		railcardID = railcard.getRailCardID().toString();
 		
 		Customer customer = new Customer(abonnement.getTxtVoornaam().getText(), abonnement.getTxtNaam().getText(), geboorteDatum,  abonnement.getTxtEmail().getText(), address, railcard);
 		
-		CustomerDAO daoCustomer = new CustomerDAO();
-		daoCustomer.insert(customer);
+		// populaten extra variabelen voor dao gemakelijkheid
 		
-		/*BufferedReader reader = null;
-
-		try {
-			URL url = new URL(customerURL);
-
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Authorization", "Bearer " + LoginController.getToken());
-			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setRequestProperty("User-Agent",
-					"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.29 Safari/537.36");
-
-			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			StringBuffer buffer = new StringBuffer();
-			int read;
-			char[] chars = new char[1024];
-			while ((read = reader.read(chars)) != -1)
-				buffer.append(chars, 0, read);
-
-			JSONObject temp = new JSONObject(buffer.toString());
-			System.out.println(temp.toString(4));
-			int statusCode = temp.getInt("StatusCode");
-			return statusCode;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return 500;*/
+		//alle modelen wegschrijven naar de database in correcte order
+		
+		AddressDAO addressHandler = new AddressDAO();
+		RailCardDAO railCardHandler = new RailCardDAO();
+		CustomerDAO customerHandler = new CustomerDAO();
+		
+		addressHandler.insert(address);
+		railCardHandler.insert(railcard);
+		customerHandler.insert(customer);
 	}
 }
