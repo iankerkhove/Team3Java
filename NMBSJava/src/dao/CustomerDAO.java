@@ -122,7 +122,8 @@ public class CustomerDAO extends BaseDAO
 				params.put("addressID", c.getAddressID().toString());
 				params.put("firstName", c.getFirstName());
 				params.put("lastName", c.getLastName());
-				params.put("email", c.getBirthDate());
+				params.put("email", c.getEmail());
+				params.put("birthDate", c.getBirthDate());
 				params.put("lastUpdated", Long.toString(c.getLastUpdated()));
 			}
 
