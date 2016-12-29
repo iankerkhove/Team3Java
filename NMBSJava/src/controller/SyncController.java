@@ -29,7 +29,7 @@ public class SyncController
 	{
 		final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 		
-		//scheduler.scheduleWithFixedDelay(new SyncAllRunnable(), 0, 60*60, TimeUnit.SECONDS);
+		scheduler.scheduleWithFixedDelay(new SyncAllRunnable(), 0, 60*60, TimeUnit.SECONDS);
 	}
 	
 	public static void initDatabase()
