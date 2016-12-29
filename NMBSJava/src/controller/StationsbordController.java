@@ -7,7 +7,6 @@ import java.util.HashMap;
 
 import org.json.JSONArray;
 
-import api.StationboardAPI;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
 import model.api.Stationboard;
@@ -25,14 +24,10 @@ public class StationsbordController
 				station.getBtnZoek().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e)
 					{
-						StationboardAPI s;
 						String stationName = (String) station.getTxtStation().getSelectedItem();
 
 						if (!stationName.equals("")) {
 
-							//s = new StationboardAPI(stationName);
-							
-							//ludoerror;
 							HashMap<String, String> params = new HashMap<String, String>();
 							APIThread t = new APIThread(APIUrl.TRAINTRACKS, "stationboard/" + stationName, RequestType.GET, params);
 							ThreadListener listener = new ThreadListener() {
