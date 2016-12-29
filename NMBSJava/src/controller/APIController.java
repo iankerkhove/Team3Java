@@ -118,10 +118,14 @@ public class APIController
 		
 		String resultStr = "";
 		
+		if (result.toString().equals(""))
+			return null;
+			
 		if (!result.substring(0, 1).equals("["))
 			resultStr = "[" + result.toString() + "]";
 		else
 			resultStr = result.toString();
+	
 
 		System.out.println(url);
 		System.out.println(resultStr);
@@ -146,13 +150,6 @@ public class APIController
 
 	private HttpResponse getRequest() throws ClientProtocolException, IOException
 	{
-		HttpClient client = HttpClientBuilder.create().build();
-		HttpGet get = new HttpGet(this.base_url + url);
-
-		// add header
-		get.setHeader("User-Agent", USER_AGENT);
-		get.setHeader("Authorization", "Bearer " + this.settings.getApiToken());
-
 		if (this.base_url.equals(BASE_URL_IR)) {
 			this.params.putIfAbsent("format", "json");
 			this.params.putIfAbsent("timeSel", "depart");
@@ -170,6 +167,17 @@ public class APIController
 				url += "&" + entry.getKey() + "=" + entry.getValue();
 			}
 		}
+		
+		String finalUrl = this.base_url + url;
+		finalUrl = finalUrl.replaceAll(" ", "_");
+		finalUrl = finalUrl.replaceAll("-", "_");
+		
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpGet get = new HttpGet(finalUrl);
+
+		// add header
+		get.setHeader("User-Agent", USER_AGENT);
+		get.setHeader("Authorization", "Bearer " + this.settings.getApiToken());
 
 		return client.execute(get);
 	}
@@ -223,7 +231,7 @@ public class APIController
 
 		 put.setEntity(new UrlEncodedFormEntity(urlParameters));
 
-		return client.execute(put);
+		 return client.execute(put);
 	}
 	
 	private HttpResponse massPutRequest() throws ClientProtocolException, IOException
@@ -247,8 +255,6 @@ public class APIController
 			urlParameters.append(entry.getKey(),  list.get(0));
 			break;
 		}
-		
-
 
 		System.out.println("  ");
 		System.out.println("urlparams");

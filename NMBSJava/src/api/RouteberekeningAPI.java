@@ -57,7 +57,7 @@ public class RouteberekeningAPI {
 			
 		};
 		
-		irailsAPI.settListener(listener);
+		irailsAPI.setListener(listener);
 		irailsAPI.start();
 	}
 
@@ -110,7 +110,7 @@ public class RouteberekeningAPI {
 				
 			};
 			
-			irailsAPI.settListener(listener);
+			irailsAPI.setListener(listener);
 			irailsAPI.start();
 
 		} catch (JSONException e) {
