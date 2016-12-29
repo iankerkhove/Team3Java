@@ -145,9 +145,8 @@ public class PassDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT p.PassID, t.TypePassID, t.Name, t.Price,t.LastUpdated as TypePassLastUpdated,"
-				+ " p.Date,p.StartDate,p.ComfortClass, p.LastUpdated as PassLastUpdated" + " FROM Pass p "
-				+ "INNER JOIN TypePass t ON p.TypePassID = t.TypePassID;";
+		String sql = "SELECT p.PassID, p.Date, p.StartDate, p.ComfortClass, p.LastUpdated as PassLastUpdated" 
+				+ " FROM Pass p";
 
 		try {
 

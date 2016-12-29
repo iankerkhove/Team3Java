@@ -104,8 +104,8 @@ public class CustomerDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			ps.setString(1, c.getRailCard().getRailCardID().toString());
-			ps.setString(2, c.getAddress().getAddressID().toString());
+			ps.setString(1, c.getRailCardID().toString());
+			ps.setString(2, c.getAddressID().toString());
 			ps.setString(3, c.getFirstName());
 			ps.setString(4, c.getLastName());
 			ps.setString(5, c.getBirthDate().toString());
@@ -154,11 +154,8 @@ public class CustomerDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
-				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
-				+ " FROM Customer c" + " INNER JOIN Address a ON a.AddressID = c.AddressID"
-				+ " INNER JOIN RailCard r ON r.CardID = c.RailCardID;";
+		String sql = "SELECT c.CustomerID, c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
+				+ " FROM Customer c";
 
 		try {
 
