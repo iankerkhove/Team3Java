@@ -135,7 +135,7 @@ public class DiscountDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Discount";
+		String sql = "SELECT d.DiscountID, d.Name as DiscountName, d.Amount as DiscountAmount, d.LastUpdated as DiscountLastUpdated FROM Discount d";
 
 		try {
 
@@ -224,7 +224,7 @@ public class DiscountDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT * FROM Discount WHERE DiscountID=?";
+		String sql = "SELECT d.DiscountID, d.Name as DiscountName, d.Amount as DiscountAmount, d.LastUpdated as DiscountLastUpdated FROM Discount d WHERE DiscountID=?";
 
 		try {
 
@@ -261,13 +261,13 @@ public class DiscountDAO extends BaseDAO
 	}
 
 
-	private Discount resultToModel(ResultSet rs) throws SQLException
+	public static Discount resultToModel(ResultSet rs) throws SQLException
 	{
 		Discount d = new Discount();
 		d.setDiscountID(UUID.fromString(rs.getString("DiscountID")));
-		d.setName(rs.getString("Name"));
-		d.setAmount(rs.getDouble("Amount"));
-		d.setLastUpdated(rs.getInt("LastUpdated"));
+		d.setName(rs.getString("DiscountName"));
+		d.setAmount(rs.getDouble("DiscountAmount"));
+		d.setLastUpdated(rs.getInt("DiscountLastUpdated"));
 
 		return d;
 	}

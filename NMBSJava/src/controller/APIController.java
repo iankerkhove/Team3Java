@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
@@ -158,13 +157,14 @@ public class APIController
 
 		boolean firstItt = true;
 
-		for (Map.Entry<String, String> entry : this.params.entrySet()) {
+		for (String key : params.keySet())
+		{
 			if (firstItt) {
-				url += "?" + entry.getKey() + "=" + entry.getValue();
+				url += "?" + key + "=" + params.get(key);
 				firstItt = false;
 			}
 			else {
-				url += "&" + entry.getKey() + "=" + entry.getValue();
+				url += "&" + key + "=" + params.get(key);
 			}
 		}
 		
@@ -250,25 +250,24 @@ public class APIController
 		put.setHeader("User-Agent", USER_AGENT);
 		put.setHeader("Authorization", "Bearer " + this.settings.getApiToken());
 		put.setHeader("Content-Type", "application/json");
-
+		
 		JSONArray list = new JSONArray();
 		JSONObject urlParameters = new JSONObject();
 		
-		
-		for (Entry<String, String> entry : this.params.entrySet()) 
+		for (String key : params.keySet())
 		{
-			list = new JSONArray(entry.getValue());
+			list = new JSONArray(params.get(key));
+			
 			urlParameters = new JSONObject();
-			urlParameters.append(entry.getKey(),  list.get(0));
-			break;
+			urlParameters.put(key, list);
 		}
-
-		System.out.println("  ");
-		System.out.println("urlparams");
-		System.out.println(urlParameters.toString());
-		System.out.println("  ");
 		
-		put.setEntity(new StringEntity(urlParameters.toString()));
+		String jsonString = urlParameters.toString();
+		
+		jsonString = jsonString.replace(":false", ":0");
+		jsonString = jsonString.replace(":true", ":1");
+		
+		put.setEntity(new StringEntity(jsonString));
 
 		return client.execute(put);
 	}
