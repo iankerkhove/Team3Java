@@ -282,7 +282,7 @@ public class SubscriptionDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT s.SubscriptionID, c.CardID, c.LastUpdated as RailCardLastUpdated, "
+		String sql = "SELECT s.SubscriptionID, s.RailCardID, c.LastUpdated as RailCardLastUpdated, "
 				+ "r.RouteID, "
 				+ "r.DepartureStationID, s1.Name as DepartureName, s1.CoX as DepartureCoX, s1.CoY as DepartureCoY, s1.LastUpdated as DepartureLastUpdated,"
 				+ "r.ArrivalStationID, s2.Name as ArrivalName, s2.CoX as ArrivalCoX, s2.CoY as ArrivalCoY, s2.LastUpdated as ArrivalLastUpdated, r.LastUpdated as RouteLastUpdated, "
