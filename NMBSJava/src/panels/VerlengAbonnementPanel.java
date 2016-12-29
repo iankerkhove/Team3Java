@@ -17,23 +17,14 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import gui.GUIDateFormat;
-import gui.LangageHandler;
+import gui.StationsAutoCompletor;
 
 public class VerlengAbonnementPanel extends JPanel {
 
-	private JPanel titel;
-	private JPanel abonnementsNummer;
-	private JPanel klantenNummer;
-	private JPanel treinkaart;
-	private JPanel startdatum;
-	private JPanel duur;
-	private JPanel vervaldatum;
-	private JPanel klasse;
-	private JPanel traject;
-	private JPanel station1;
-	private JPanel station2;
-	private JPanel printEnValideer;
-	
+	private JPanel pnlZoek;
+	private JPanel pnlInfo;
+	private JPanel pnlKlasse;
+	private JPanel pnlBedrag;
 	private JLabel lblTitle;
 	private JLabel lblAbonnementsNummer;
 	private JLabel lblKlantenNummer;
@@ -44,11 +35,13 @@ public class VerlengAbonnementPanel extends JPanel {
 	private JLabel lblVervaldatum;
 	private JLabel lblVervaldatumResult;
 	private JLabel lblKlasse;
-	private JLabel lblVastTraject;
+	private JLabel lblDiscount;
 	private JLabel lblTreinkaart;
 	private JLabel lblStation1;
 	private JLabel lblStation2;
-	private JLabel lblPrint;
+	private JLabel lblBedrag;
+	private JLabel lblEuro;
+	private JLabel lblFoutmelding;
 
 	private JDatePickerImpl dteStartdatum;
 	
@@ -61,109 +54,35 @@ public class VerlengAbonnementPanel extends JPanel {
 	private ButtonGroup grpJaNee;
 	
 	private JButton btnZoek;
-	private JButton btnPrint;
+	private JButton btnVerzenden;
 	private JButton btnMeerInfo;
 	private JButton btnValideer;
 
 	private JTextField txtAbonnementsNummer;
-	private JTextField txtStation1;
-	private JTextField txtStation2;
+	
+	private StationsAutoCompletor txtStation1;
+	private StationsAutoCompletor txtStation2;
 	
 	private JComboBox cbxTreinkaart;
 	private JComboBox cbxDuur;
+	private JComboBox cbxDiscount;
 
 	public VerlengAbonnementPanel() {
-		titelPanel();
-		abonnementsNummerPanel();
-		klantenNummerPanel();
-		treinkaartPanel();
-		startdatumPanel();
-		duurPanel();
-		vervaldatumPanel();
-		klassePanel();
-		trajectPanel();
-		station1Panel();
-		station2Panel();
-		printEnValideerPanel();
-		fullPanel();
-	}
-	
-	private void fullPanel(){
-		this.setLayout(new GridLayout(12,1,1,1));
-		this.add(titel);
-		this.add(abonnementsNummer);
-		this.add(klantenNummer);
-		this.add(treinkaart);
-		this.add(startdatum);
-		this.add(duur);
-		this.add(vervaldatum);
-		this.add(klasse);
-		this.add(traject);
-		this.add(station1);
-		this.add(station2);
-		this.add(printEnValideer);
-	}
-	
-	private void titelPanel(){
-		titel=new JPanel();
-		titel.setLayout(new GridLayout(1, 1,1,1));
 		
-		lblTitle = new JLabel();
-		LangageHandler.chooseLangageLbl(lblTitle, "verlengAbo");
+		
+		
+		lblTitle = new JLabel("Verleng Abonnement");
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		
-		titel.add(lblTitle);
-	}
-	
-	private void abonnementsNummerPanel(){
-		abonnementsNummer = new JPanel();
-		abonnementsNummer.setLayout(new GridLayout(1,3,1,1));
-		
-		lblAbonnementsNummer = new JLabel();
-		LangageHandler.chooseLangageLbl(lblAbonnementsNummer, "aboNummer");
+		lblAbonnementsNummer = new JLabel("Abonnementsnummer: ");
 		txtAbonnementsNummer = new JTextField();
-		btnZoek = new JButton();
-		LangageHandler.chooseLangageBtn(btnZoek,"zoek");
-		
-		abonnementsNummer.add(lblAbonnementsNummer);
-		abonnementsNummer.add(txtAbonnementsNummer);
-		abonnementsNummer.add(btnZoek);
-	}
-	
-	private void klantenNummerPanel(){
-		klantenNummer = new JPanel();
-		klantenNummer.setLayout(new GridLayout(1,3,1,1));
-		
-		lblKlantenNummer = new JLabel();
-		LangageHandler.chooseLangageLbl(lblKlantenNummer, "klantennummer");
-		lblKLantenNummerResult = new JLabel("123456");
-		btnMeerInfo = new JButton();
-		LangageHandler.chooseLangageBtn(btnMeerInfo, "meerInfo");
-
-		klantenNummer.add(lblKlantenNummer);
-		klantenNummer.add(lblKLantenNummerResult);
-		klantenNummer.add(btnMeerInfo);	
-	}
-	
-	private void treinkaartPanel(){
-		treinkaart = new JPanel();
-		treinkaart.setLayout(new GridLayout(1,2,1,1));
-
-		lblTreinkaart = new JLabel();
-		LangageHandler.chooseLangageLbl(lblTreinkaart, "treinkaart");
-		String[] soortKaart = {LangageHandler.chooseLangage("trajecttreinkaart"), LangageHandler.chooseLangage("halftijdstreinkaart"), LangageHandler.chooseLangage("nettreinkaart"), LangageHandler.chooseLangage("schooltreinkaart") };
-		cbxTreinkaart = new JComboBox(soortKaart);
-		
-		treinkaart.add(lblTreinkaart);
-		treinkaart.add(cbxTreinkaart);
-	}
-	
-	private void startdatumPanel(){
-		startdatum = new JPanel();
-		startdatum.setLayout(new GridLayout(1,2,1,1));
-
-		lblStartdatum = new JLabel();
-		LangageHandler.chooseLangageLbl(lblStartdatum, "startdatum");
+		btnZoek = new JButton("Zoek");
+		lblKlantenNummer = new JLabel("Klantennumer: ");
+		lblKLantenNummerResult = new JLabel(" ");
+		btnMeerInfo = new JButton("Meer info");
+		lblTreinkaart = new JLabel("Treinkaart: ");
+		String[] str = { "Trajecttreinkaart", "Halftijdstreinkaart", "Nettreinkaart", "Schooltreinkaart" };
+		cbxTreinkaart = new JComboBox(str);
+		lblStartdatum = new JLabel("Startdatum: ");
 		Properties properties = new Properties();
 		properties.put("text.today", "Today");
 		properties.put("text.month", "Month");
@@ -171,162 +90,105 @@ public class VerlengAbonnementPanel extends JPanel {
 		JDatePanelImpl datePanel = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteStartdatum = new JDatePickerImpl(datePanel, new GUIDateFormat());
 		dteStartdatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
-
-		
-		startdatum.add(lblStartdatum);
-		startdatum.add(dteStartdatum);
-	}
-	
-	private void duurPanel(){
-		duur = new JPanel();
-		duur.setLayout(new GridLayout(1,2,1,1));
-
-		lblDuur = new JLabel();
-		LangageHandler.chooseLangageLbl(lblDuur, "duur");
-		String[] aantalMaanden = { LangageHandler.chooseLangage("1maand"), LangageHandler.chooseLangage("3maand"), LangageHandler.chooseLangage("12maand")};
+		lblDuur = new JLabel("Duur: ");
+		String[] aantalMaanden = { "1 maand", "3 maanden", "12 maanden"};
 		cbxDuur = new JComboBox(aantalMaanden);
-		
-		duur.add(lblDuur);
-		duur.add(cbxDuur);
-	}
-	
-	private void vervaldatumPanel(){
-		vervaldatum = new JPanel();
-		vervaldatum.setLayout(new GridLayout(1,2,1,1));
-
-		lblVervaldatum = new JLabel();
-		LangageHandler.chooseLangageLbl(lblVervaldatum, "vervaldatum");
+		lblVervaldatum = new JLabel("Vervaldatum: ");
 		lblVervaldatumResult = new JLabel(" ");
-		
-		vervaldatum.add(lblVervaldatum);
-		vervaldatum.add(lblVervaldatumResult);
-	}
-	
-	private void klassePanel(){
-		klasse = new JPanel();
-		klasse.setLayout(new GridLayout(1, 3,1,1));
-		
-		lblKlasse = new JLabel();
-		LangageHandler.chooseLangageLbl(lblKlasse, "klasse");
-		rdbEersteKlasse = new JRadioButton();
-		LangageHandler.chooseLangageRdb(rdbEersteKlasse, "1eKlasse");
-		rdbTweedeKlasse = new JRadioButton();
-		LangageHandler.chooseLangageRdb(rdbTweedeKlasse, "2eKlasse");
+		lblKlasse = new JLabel("Klasse: ");
+		rdbEersteKlasse = new JRadioButton("1e Klas");
+		rdbTweedeKlasse = new JRadioButton("2e Klas");
+		rdbTweedeKlasse.setSelected(true);
+		lblDiscount=new JLabel("Korting: ");
+		String[] soortDiscount = {"Geen", "Student", "Gepensioneerd"};
+		cbxDiscount = new JComboBox(soortDiscount);
+		lblStation1 = new JLabel("Station 1: ");
+		txtStation1 = new StationsAutoCompletor();
+		lblStation2 = new JLabel("Station 2: ");
+		txtStation2 = new StationsAutoCompletor();
+		btnVerzenden = new JButton("Verzenden");
+		lblBedrag = new JLabel("0");		
+		lblEuro = new JLabel("euro");
+		btnValideer = new JButton("Valideer");
+		lblFoutmelding = new JLabel("");
 		
 		grpKlasses = new ButtonGroup();
 		grpKlasses.add(rdbEersteKlasse);
 		grpKlasses.add(rdbTweedeKlasse);
-				
-		klasse.add(lblKlasse);
-		klasse.add(rdbEersteKlasse);
-		klasse.add(rdbTweedeKlasse);
-	}
-	
-	private void trajectPanel(){
-		traject = new JPanel();
-		traject.setLayout(new GridLayout(1, 3,1,1));
 		
-		lblVastTraject = new JLabel();
-		LangageHandler.chooseLangageLbl(lblVastTraject, "vast");
-		rdbJa = new JRadioButton();
-		LangageHandler.chooseLangageRdb(rdbJa, "ja");
-		rdbNee=new JRadioButton("Nee");
-		LangageHandler.chooseLangageRdb(rdbNee, "nee");
+		fullpanel();
 		
-		grpJaNee = new ButtonGroup();
-		grpJaNee.add(rdbJa);
-		grpJaNee.add(rdbNee);
-		
-		traject.add(lblVastTraject);
-		traject.add(rdbJa);
-		traject.add(rdbNee);
-	}
-	
-	private void station1Panel(){
-		station1 = new JPanel();
-		station1.setLayout(new GridLayout(1,2,1,1));		
-		
-		lblStation1 = new JLabel("Station 1: ");
-		txtStation1 = new JTextField();
-		
-		station1.add(lblStation1);
-		station1.add(txtStation1);
 		
 	}
 	
-	private void station2Panel(){
-		station2 = new JPanel();
-		station2.setLayout(new GridLayout(1,2,1,1));
+	public void fullpanel(){
+		this.setLayout(new GridLayout(13, 2));
+		this.add(lblTitle);
+		this.add(new JLabel());
+
+		this.add(lblAbonnementsNummer);
+		zoekPanel();
+		this.add(pnlZoek);
 		
-		lblStation2 = new JLabel("Station 2: ");
-		txtStation2 = new JTextField();
+		this.add(lblKlantenNummer);
+		infoPanel();
+		this.add(pnlInfo);
 		
-		station2.add(lblStation2);
-		station2.add(txtStation2);
+		this.add(lblTreinkaart);
+		this.add(cbxTreinkaart);
+		
+		this.add(lblKlasse);
+		klassePanel();
+		this.add(pnlKlasse);
+		
+		this.add(lblStartdatum);
+		this.add(dteStartdatum);
+		this.add(lblDuur);
+		this.add(cbxDuur);
+		this.add(lblVervaldatum);
+		this.add(lblVervaldatumResult);
+		this.add(lblDiscount);
+		this.add(cbxDiscount);
+		this.add(lblStation1);
+		this.add(txtStation1);
+		this.add(lblStation2);
+		this.add(txtStation2);
+		this.add(btnValideer);
+		bedragPanel();
+		this.add(pnlBedrag);
+		
+		this.add(btnVerzenden);
+		this.add(lblFoutmelding);
 	}
 	
+	public void zoekPanel(){
+		pnlZoek = new JPanel();
+		pnlZoek.setLayout(new GridLayout(1, 2));
+		
+		pnlZoek.add(txtAbonnementsNummer);
+		pnlZoek.add(btnZoek);
+	}
 	
-	private void printEnValideerPanel(){
-		printEnValideer = new JPanel();
-		printEnValideer.setLayout(new GridLayout(1, 3, 1, 1));
+	public void infoPanel(){
+		pnlInfo = new JPanel();
+		pnlInfo.setLayout(new GridLayout(1, 2));
 		
-		btnPrint = new JButton();
-		LangageHandler.chooseLangageBtn(btnPrint, "print");
-		lblPrint = new JLabel("€0");		
-		btnValideer = new JButton();
-		LangageHandler.chooseLangageBtn(btnValideer, "valideer");
-		
-		printEnValideer.add(btnPrint);
-		printEnValideer.add(lblPrint);
-		printEnValideer.add(btnValideer);
+		pnlInfo.add(lblKLantenNummerResult);
+		pnlInfo.add(btnMeerInfo);
 	}
-
-	public JPanel getTitel() {
-		return titel;
+	
+	private void klassePanel(){
+		pnlKlasse = new JPanel();
+		pnlKlasse.setLayout(new GridLayout(1, 2));
+		pnlKlasse.add(rdbEersteKlasse);
+		pnlKlasse.add(rdbTweedeKlasse);
 	}
-
-	public JPanel getAbonnementsNummer() {
-		return abonnementsNummer;
-	}
-
-	public JPanel getKlantenNummer() {
-		return klantenNummer;
-	}
-
-	public JPanel getTreinkaart() {
-		return treinkaart;
-	}
-
-	public JPanel getStartdatum() {
-		return startdatum;
-	}
-
-	public JPanel getDuur() {
-		return duur;
-	}
-
-	public JPanel getVervaldatum() {
-		return vervaldatum;
-	}
-
-	public JPanel getKlasse() {
-		return klasse;
-	}
-
-	public JPanel getTraject() {
-		return traject;
-	}
-
-	public JPanel getStation1() {
-		return station1;
-	}
-
-	public JPanel getStation2() {
-		return station2;
-	}
-
-	public JPanel getPrintEnValideer() {
-		return printEnValideer;
+	
+	private void bedragPanel(){
+		pnlBedrag = new JPanel();
+		pnlBedrag.setLayout(new GridLayout(1, 2));
+		pnlBedrag.add(lblBedrag);
+		pnlBedrag.add(lblEuro);
 	}
 
 	public JLabel getLblTitle() {
@@ -339,6 +201,10 @@ public class VerlengAbonnementPanel extends JPanel {
 
 	public JLabel getLblKlantenNummer() {
 		return lblKlantenNummer;
+	}
+
+	public void setLblKlantenNummer(String lblKlantenNummer) {
+		this.lblKlantenNummer.setText(lblKlantenNummer);
 	}
 
 	public JLabel getLblKLantenNummerResult() {
@@ -369,8 +235,8 @@ public class VerlengAbonnementPanel extends JPanel {
 		return lblKlasse;
 	}
 
-	public JLabel getLblVastTraject() {
-		return lblVastTraject;
+	public JLabel getLblDiscount() {
+		return lblDiscount;
 	}
 
 	public JLabel getLblTreinkaart() {
@@ -385,9 +251,10 @@ public class VerlengAbonnementPanel extends JPanel {
 		return lblStation2;
 	}
 
-	public JLabel getLblPrint() {
-		return lblPrint;
+	public JLabel getLblBedrag() {
+		return lblBedrag;
 	}
+	
 
 	public JDatePickerImpl getDteStartdatum() {
 		return dteStartdatum;
@@ -421,8 +288,8 @@ public class VerlengAbonnementPanel extends JPanel {
 		return btnZoek;
 	}
 
-	public JButton getBtnPrint() {
-		return btnPrint;
+	public JButton getBtnVerzenden() {
+		return btnVerzenden;
 	}
 
 	public JButton getBtnMeerInfo() {
@@ -437,11 +304,11 @@ public class VerlengAbonnementPanel extends JPanel {
 		return txtAbonnementsNummer;
 	}
 
-	public JTextField getTxtStation1() {
+	public StationsAutoCompletor getTxtStation1() {
 		return txtStation1;
 	}
 
-	public JTextField getTxtStation2() {
+	public StationsAutoCompletor getTxtStation2() {
 		return txtStation2;
 	}
 
@@ -451,6 +318,14 @@ public class VerlengAbonnementPanel extends JPanel {
 
 	public JComboBox getCbxDuur() {
 		return cbxDuur;
+	}
+
+	public JComboBox getCbxDiscount() {
+		return cbxDiscount;
+	}
+
+	public JLabel getLblFoutmelding(){
+		return lblFoutmelding;
 	}
 
 }
