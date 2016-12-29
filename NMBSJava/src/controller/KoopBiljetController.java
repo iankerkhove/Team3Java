@@ -94,7 +94,7 @@ public class KoopBiljetController {
 			routeID = route.getRouteID();
 		} else {
 			System.out.println("Route bestaat niet");
-			route = new Route(UUID.fromString(van), UUID.fromString(naar));
+			route = new Route(s1.getStationID(), s2.getStationID());
 			routeID = route.getRouteID();
 			r.insert(route);
 		}
