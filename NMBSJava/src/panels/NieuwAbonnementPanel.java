@@ -143,7 +143,7 @@ public class NieuwAbonnementPanel extends JPanel {
 		String[] aantalMaanden = { "1 maand", "3 maanden", "12 maanden"};
 		cbxDuur = new JComboBox(aantalMaanden);
 		
-		String[] soortDiscount = {"Geen", "Student", "Gepensioneerd"};
+		String[] soortDiscount = {"Geen korting", "Actie (-10%)", "+65 / senioren", "Studentenkorting"};
 		cbxDiscount = new JComboBox(soortDiscount);
 		
 		fullpanel();

@@ -9,18 +9,21 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import dao.CustomerDAO;
+import dao.DiscountDAO;
 import dao.RouteDAO;
 import dao.StationDAO;
 import dao.SubscriptionDAO;
 import gui.GUIDateFormat;
 import model.Address;
 import model.Customer;
+import model.Discount;
 import model.RailCard;
 import model.Route;
 import model.Station;
@@ -59,6 +62,7 @@ public class KoopAbonnementController {
 						String customerIDString = abonnement.getTxtCustomerID().getText();
 						CustomerDAO daoCustomer = new CustomerDAO();
 						ArrayList<Customer>list = daoCustomer.selectAll();
+					
 						for (int i = 0; i < list.size(); i++) {
 							if(customerIDString.equals(list.get(i).getCustomerID().toString()))
 							{
@@ -257,9 +261,12 @@ public class KoopAbonnementController {
 						if (correctFormulier(abonnement)) {
 							if (!customerCheck(abonnement)) 
 							{
+								System.out.println("nieuwe customer");
 								createCustomer(abonnement);
 							}
+							System.out.println("read route");
 							readRouteID();
+							System.out.println("create abo");
 							createAbonnement(abonnement);			
 						}
 					}
@@ -276,18 +283,16 @@ public class KoopAbonnementController {
 	
 		//Controle op id	
 			for (int i = 0; i < list.size(); i++) {
-				
-				if (list.get(i).getCustomerID().equals(abonnement.getTxtCustomerID().getText().toString())){		
+				if (list.get(i).getCustomerID().toString().equals(abonnement.getTxtCustomerID().getText().toString())){		
 					
 					//Customer bestaat alreeds, dus railcardid zoeken, nodig voor abonnement te maken
 					railcard = list.get(i).getRailCard();
 					railcardID = railcard.getRailCardID().toString();
-					
 					return true; 
 				}
 			}
 		//als bestaande customer niet gezocht is op id, dan wordt er controle uitgevoerd op emailadres
-			String email = abonnement.getTxtEmail().toString();
+			String email = abonnement.getTxtEmail().getText().toString();
 			for (int i = 0; i < list.size(); i++) {
 				if(list.get(i).getEmail().toString().equals(email)){
 					
@@ -365,19 +370,19 @@ public class KoopAbonnementController {
 
 	public static void readRouteID() {
 		readStationID();
+		System.out.println("terug bij readroute");
 		RouteDAO daoRoute = new RouteDAO();
 		ArrayList<Route> list = daoRoute.selectAll();
 		boolean goTroughVan = false;
 		boolean goTroughNaar = false;
 		int positie = 0;
+		
 		for (int i = 0; i < list.size(); i++) {
-			
-		System.out.println("NaarID "+naarID);
-			if (naarID.toString().equals(list.get(i).getArrivalStationID().toString())) {
+			if (naarID.equals(list.get(i).getArrivalStation().getStationID().toString())) {
 				goTroughNaar = true;
 				positie =i;
 			}
-			if(vanID.toString().equals(list.get(i).getDepartureStationID().toString()))
+			if(vanID.toString().equals(list.get(i).getDepartureStation().getStationID().toString()))
 			{
 				goTroughVan = true;
 				positie = i;
@@ -386,22 +391,21 @@ public class KoopAbonnementController {
 		
 		if(goTroughVan == false || goTroughNaar==false)
 		{
+			System.out.println("create route");
 			createRoute();
-			System.out.println("oi");
 		}else{
-			routeID = list.get(positie).getRouteID().toString();
-			System.out.println(routeID + "1");
-		
+			routeID = list.get(positie).getRouteID().toString();		
 		}
 	}
 
 	public static void readStationID() {
-
+		System.out.println("readstation");
 		StationDAO daoStation = new StationDAO();
 		ArrayList<Station> list = daoStation.selectAll();
 		
 		boolean goTroughVan = false;
 		boolean goTroughNaar = false;
+		
 		
 		for (int i = 0; i < list.size(); i++) {
 
@@ -425,38 +429,35 @@ public class KoopAbonnementController {
 
 	public static void createRoute() {
 
-		Route r = new Route();
-		r.setArrivalStationID(UUID.fromString(naarID));
-		r.setDepartureStationID(UUID.fromString(vanID));
+		Route r = new Route(UUID.fromString(vanID), UUID.fromString(naarID));
 		RouteDAO daoRoute = new RouteDAO();
 		daoRoute.insert(r);
 		routeID = r.getRouteID().toString();
-		System.out.println(routeID + "2");
-
 	}
 
 	public static void createAbonnement(NieuwAbonnementPanel abonnement) {
+		
+		DiscountDAO discountHandler = new DiscountDAO();
+		ArrayList<Discount> discountList = discountHandler.selectAll();
+		
+		HashMap<String, UUID> kortingMap = new HashMap<String, UUID>();
+		for(Discount d : discountList){
+			kortingMap.put(d.getName(), d.getDiscountID());
+		}
+		UUID discount = kortingMap.get(abonnement.getCbxDiscount().getSelectedItem().toString());
+
 		String vervalDatum = getVervalDatum(abonnement);
-		//String vervalDatum = abonnement.getLblVervaldatum().getText();
 		String startDatum = abonnement.getDteStartDatum().getJFormattedTextField().getText();
-	/*	DateFormat format = new SimpleDateFormat("dd, mm, yyyy");
-		Date validFrom = null;
-		Date validUntil = null;
-		try {
-			validFrom = format.parse(startDatum);
-			validUntil = format.parse(vervalDatum);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}*/
+
 		
 		System.out.println(UUID.fromString(railcardID));
 		System.out.println(routeID + "3");
 		
-		System.out.println(startDatum);
 
-		//Subscription sub = new Subscription(UUID.fromString(railcardID), UUID.fromString(routeID), UUID.fromString(abonnement.getCbxDiscount().getSelectedItem().toString()),startDatum, vervalDatum);
-		//SubscriptionDAO daoSubscription = new SubscriptionDAO();
-		//daoSubscription.insert(sub);
+		Subscription sub = new Subscription(UUID.fromString(railcardID), UUID.fromString(routeID), discount ,startDatum, vervalDatum);
+	
+		SubscriptionDAO daoSubscription = new SubscriptionDAO();
+		daoSubscription.insert(sub);
 
 	}
 
