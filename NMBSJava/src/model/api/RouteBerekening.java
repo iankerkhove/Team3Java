@@ -1,129 +1,63 @@
-package api;
+package model.api;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import controller.APIController.APIUrl;
-import controller.APIController.RequestType;
-import controller.DateTimeConverter;
-import gui.GUIDateFormat;
-import services.APIThread;
-import services.ThreadListener;
-
-public class RouteberekeningAPI {
-
+public class RouteBerekening
+{
 	private String van;
 	private String naar;
 	private String version;
 	private String timestamp;
-	private ArrayList<ConnectionAPI> connections;
-
-	public RouteberekeningAPI(String from, String to) 
+	private ArrayList<Connection> connections;
+	
+	public RouteBerekening()
 	{
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("to", to);
-		params.put("from", from);
-		params.put("date", GUIDateFormat.getRawDate());
-		params.put("time", GUIDateFormat.getRawTime());
-		params.put("timeSel", "depart");
-		params.put("format", "json");
-		params.put("lang", "NL");
-
-
-		APIThread irailsAPI = new APIThread(APIUrl.IRAILS, "connections", RequestType.GET, params);
-		ThreadListener listener = new ThreadListener() {
-
-			@Override
-			public void setResult(JSONArray data)
-			{
-				JSONObject json = data.getJSONObject(0);
-				
-				van = from;
-				naar = to;
-				version = json.getString("version");
-				timestamp = json.getString("timestamp");
-				connections = new ArrayList<ConnectionAPI>();
-				for (int i = 0; i < json.getJSONArray("connection").length(); i++) {
-					ConnectionAPI e = new ConnectionAPI(json.getJSONArray("connection").getJSONObject(i));
-					connections.add(e);
-				}
-				
-			}
-			
-		};
-		
-		irailsAPI.setListener(listener);
-		irailsAPI.start();
+		this.connections = new ArrayList<Connection>();
 	}
 
-	public RouteberekeningAPI(String from, String to, String date, String time, TimeSelector timeSel) {
-		try {
-			String tempTimeSel;
-			switch (timeSel) {
-			case VERTREK:
-				tempTimeSel = "depart";
-				break;
-			case AANKOMST:
-				tempTimeSel = "arrive";
-				break;
-			default:
-				tempTimeSel = "depart";
-				break;
-			}
-			
-			HashMap<String, String> params = new HashMap<String, String>();
-			params.put("to", to);
-			params.put("from", from);
-			params.put("date", GUIDateFormat.getRawDate(date));
-			params.put("time", GUIDateFormat.getRawTime(time));
-			params.put("timeSel", tempTimeSel);
-			params.put("format", "json");
-			params.put("lang", "NL");
-
-
-			APIThread irailsAPI = new APIThread(APIUrl.IRAILS, "connections", RequestType.GET, params);
-			ThreadListener listener = new ThreadListener() {
-
-				@Override
-				public void setResult(JSONArray data)
-				{
-					JSONObject json = data.getJSONObject(0);
-					
-					van = from;
-					naar = to;
-					version = json.getString("version");
-					timestamp = json.getString("timestamp");
-					connections = new ArrayList<ConnectionAPI>();
-					
-					for (int i = 0; i < json.getJSONArray("connection").length(); i++) 
-					{
-						ConnectionAPI e = new ConnectionAPI(json.getJSONArray("connection").getJSONObject(i));
-						connections.add(e);
-					}
-					
-				}
-				
-			};
-			
-			irailsAPI.setListener(listener);
-			irailsAPI.start();
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
+	public RouteBerekening(String van, String naar, String version, String timestamp, ArrayList<Connection> connections)
+	{
+		this.van = van;
+		this.naar = naar;
+		this.version = version;
+		this.timestamp = timestamp;
+		this.connections = connections;
+	}
+	
+	public ArrayList<String> treinID(){
+		ArrayList<String> s = new ArrayList<String>();
+		for (int i = 0; i < this.getConnections().size(); i++) {
+			s.add(this.getConnections().get(i).getDeparture().getVehicle());
+		}
+		return s;
+	}
+	
+	public RouteBerekening(JSONObject json)
+	{
+		this.connections = new ArrayList<Connection>();
+		this.timestamp = json.getString("timestamp");
+		this.version = json.getString("version");
+		
+		JSONArray connections = json.getJSONArray("connection");
+		for (int i = 0; i < connections.length(); i++)
+		{
+			Connection c = new Connection(connections.getJSONObject(i));
+			this.connections.add(c);
 		}
 	}
 
+	public String toStringHTML() {
+		return "<html>" + this.toString().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
+				.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;") + "</html>";
+	}
+	
 	@Override
 	public String toString() {
 		String temp = "";
-		for (int i = 0; i < this.getConnections().size(); i++) {
+		for (int i = 0; i < this.connections.size(); i++) {
 			// ROUTE ALGEMENE INFO
 			// Vertek
 			String ss = "Route " + (i + 1) + " -> " + this.getConnections().get(i).getDeparture().getTime();
@@ -213,41 +147,54 @@ public class RouteberekeningAPI {
 		}
 		return temp;
 	}
-	
-	public ArrayList<String> treinID(){
-		ArrayList<String> s = new ArrayList<String>();
-		for (int i = 0; i < this.getConnections().size(); i++) {
-			s.add(this.getConnections().get(i).getDeparture().getVehicle());
-		}
-		return s;
-	}
 
-	public String toStringHTML() {
-		return "<html>" + this.toString().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>")
-				.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;") + "</html>";
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public String getTimestamp() {
-		return timestamp;
-	}
-
-	public String getFormattedTimestamp() {
-		return DateTimeConverter.getDateString(this.timestamp);
-	}
-
-	public ArrayList<ConnectionAPI> getConnections() {
-		return connections;
-	}
-
-	public String getVan() {
+	public String getVan()
+	{
 		return van;
 	}
 
-	public String getNaar() {
+	public void setVan(String van)
+	{
+		this.van = van;
+	}
+
+	public String getNaar()
+	{
 		return naar;
+	}
+
+	public void setNaar(String naar)
+	{
+		this.naar = naar;
+	}
+
+	public String getVersion()
+	{
+		return version;
+	}
+
+	public void setVersion(String version)
+	{
+		this.version = version;
+	}
+
+	public String getTimestamp()
+	{
+		return timestamp;
+	}
+
+	public void setTimestamp(String timestamp)
+	{
+		this.timestamp = timestamp;
+	}
+
+	public ArrayList<Connection> getConnections()
+	{
+		return connections;
+	}
+
+	public void setConnections(ArrayList<Connection> connections)
+	{
+		this.connections = connections;
 	}
 }
