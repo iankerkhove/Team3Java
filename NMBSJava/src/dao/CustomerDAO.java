@@ -61,7 +61,8 @@ public class CustomerDAO extends BaseDAO
 				params.put("addressID", c.getAddressID().toString());
 				params.put("firstName", c.getFirstName());
 				params.put("lastName", c.getLastName());
-				params.put("email", c.getBirthDate());
+				params.put("email", c.getEmail());
+				params.put("birthDate", c.getBirthDate());
 				params.put("lastUpdated", Long.toString(c.getLastUpdated()));
 			}
 
@@ -104,8 +105,8 @@ public class CustomerDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			ps.setString(1, c.getRailCardID().toString());
-			ps.setString(2, c.getAddressID().toString());
+			ps.setString(1, c.getRailCard().getRailCardID().toString());
+			ps.setString(2, c.getAddress().getAddressID().toString());
 			ps.setString(3, c.getFirstName());
 			ps.setString(4, c.getLastName());
 			ps.setString(5, c.getBirthDate().toString());
@@ -117,11 +118,12 @@ public class CustomerDAO extends BaseDAO
 			{
 				params = new HashMap<String, String>();
 				params.put("customerID", c.getCustomerID().toString());
-				params.put("railCardID", c.getRailCardID().toString());
-				params.put("addressID", c.getAddressID().toString());
+				params.put("railCardID", c.getRailCard().getRailCardID().toString());
+				params.put("addressID", c.getAddress().getAddressID().toString());
 				params.put("firstName", c.getFirstName());
 				params.put("lastName", c.getLastName());
-				params.put("email", c.getBirthDate());
+				params.put("email", c.getEmail());
+				params.put("birthDate", c.getBirthDate());
 				params.put("lastUpdated", Long.toString(c.getLastUpdated()));
 			}
 
@@ -302,6 +304,135 @@ public class CustomerDAO extends BaseDAO
 			ps = getConnection().prepareStatement(sql);
 
 			ps.setString(1, customerID);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return resultToModel(rs);
+			else
+				return null;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+	
+	public Customer selectOne2(String railcardID)
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
+				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
+				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
+				+ " FROM Customer c" + " INNER JOIN Address a ON a.AddressID = c.AddressID"
+				+ " INNER JOIN RailCard r ON r.CardID = c.RailCardID" + " WHERE c.RailCardID = ?;";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, railcardID);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return resultToModel(rs);
+			else
+				return null;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+	
+	public Customer selectOne3(String lastname)
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
+				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
+				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
+				+ " FROM Customer c" + " INNER JOIN Address a ON a.AddressID = c.AddressID"
+				+ " INNER JOIN RailCard r ON r.CardID = c.RailCardID" + " WHERE c.LastName = ?;";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, lastname);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return resultToModel(rs);
+			else
+				return null;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+	
+	public Customer selectOne4(String firstname)
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
+				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
+				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
+				+ " FROM Customer c" + " INNER JOIN Address a ON a.AddressID = c.AddressID"
+				+ " INNER JOIN RailCard r ON r.CardID = c.RailCardID" + " WHERE c.FirstName = ?;";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, firstname);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);
