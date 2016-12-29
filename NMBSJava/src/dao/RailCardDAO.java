@@ -79,7 +79,7 @@ public class RailCardDAO extends BaseDAO
 	{
 		PreparedStatement ps = null;
 
-		String sql = "UPDATE `RailCard` SET `LastUpdated`=? WHERE RailCardID=?;";
+		String sql = "UPDATE `RailCard` SET `LastUpdated`=? WHERE CardID=?;";
 
 		try {
 
