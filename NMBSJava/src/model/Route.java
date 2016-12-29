@@ -15,9 +15,9 @@ public class Route
 	public Route()
 	{}
 
-	public Route(UUID routeID, UUID departureStationID, UUID arrivalStationID)
+	public Route(UUID departureStationID, UUID arrivalStationID)
 	{
-		this.routeID = routeID;
+		this.routeID = UUID.randomUUID();
 		this.departureStationID = departureStationID;
 		this.arrivalStationID = arrivalStationID;
 		this.lastUpdated = Instant.now().getEpochSecond();

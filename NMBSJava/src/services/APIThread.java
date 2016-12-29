@@ -31,7 +31,7 @@ public class APIThread extends Thread
 		this.metResult = metResult;
 	}
 	
-	public void settListener(ThreadListener listener)
+	public void setListener(ThreadListener listener)
 	{
 		this.listener = listener;
 	}
@@ -55,4 +55,5 @@ public class APIThread extends Thread
 	{
 		return this.api;
 	}
+
 }

@@ -90,7 +90,7 @@ public class LoginController{
 				
 			};
 			
-			irailsAPI.settListener(listener);
+			irailsAPI.setListener(listener);
 			irailsAPI.start();
 		}
 		else
