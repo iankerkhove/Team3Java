@@ -44,7 +44,7 @@ public class SyncCustomerRunnable implements Runnable  {
 				g3API.setUrl("customer");
 				JSONArray mainJsonList = g3API.getJsonResult();
 				
-				ArrayList<Customer> localList = cDAO.selectAll();
+				ArrayList<Customer> localList = cDAO.selectAllSync();
 				HashMap<UUID, Customer> mainMap = new HashMap<UUID, Customer>();
 				HashMap<UUID, Customer> localMap = new HashMap<UUID, Customer>();
 
