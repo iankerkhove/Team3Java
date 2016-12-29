@@ -7,10 +7,12 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import panels.PassesEnKaartenPanel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import dao.TypePassDAO;
+import panels.PassesEnKaartenPanel;
 
 public class PassesEnKaartenController {
 	public static void startListening(PassesEnKaartenPanel passes){
@@ -26,6 +28,8 @@ public class PassesEnKaartenController {
 							DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 							Calendar cal = Calendar.getInstance();
 							String date = dateFormat.format(cal);
+							
+						
 
 							String base = "http://nmbs-team.tk/api/pass/create";
 							String url = base + "?TypePassID="+typePass+"&Date="+date+"&StartDate="+startDatum+"&ComfortClass="+mnem;
