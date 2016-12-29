@@ -4,14 +4,13 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
-import api.StationIrailAPI;
 import controller.DateTimeConverter;
 
 public class Connection
 {
 	private String id;
-	private StationIrailAPI departure;
-	private StationIrailAPI arrival;
+	private StationIrail departure;
+	private StationIrail arrival;
 	private String duration;
 	private String numberOfVias;
 	private ArrayList<Via> vias;
@@ -19,7 +18,7 @@ public class Connection
 	public Connection()
 	{}
 	
-	public Connection(String id, StationIrailAPI departure, StationIrailAPI arrival, String duration,
+	public Connection(String id, StationIrail departure, StationIrail arrival, String duration,
 			String numberOfVias, ArrayList<Via> vias)
 	{
 		this.id = id;
@@ -33,8 +32,8 @@ public class Connection
 	public Connection(JSONObject json) {
 		
 		this.id = json.getString("id");
-		this.departure = new StationIrailAPI(json.getJSONObject("departure"));
-		this.arrival = new StationIrailAPI(json.getJSONObject("arrival"));
+		this.departure = new StationIrail(json.getJSONObject("departure"));
+		this.arrival = new StationIrail(json.getJSONObject("arrival"));
 		this.duration = json.getString("duration");
 		
 		this.vias = new ArrayList<Via>();
@@ -60,12 +59,12 @@ public class Connection
 		return id;
 	}
 
-	public StationIrailAPI getDeparture()
+	public StationIrail getDeparture()
 	{
 		return departure;
 	}
 
-	public StationIrailAPI getArrival()
+	public StationIrail getArrival()
 	{
 		return arrival;
 	}
