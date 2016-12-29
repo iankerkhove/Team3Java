@@ -197,7 +197,7 @@ public class TicketDAO extends BaseDAO
 			list = new ArrayList<Ticket>();
 
 			while (rs.next()) {
-				list.add(resultToModel(rs));
+				list.add(synResultToModel(rs));
 			}
 
 			return list;
@@ -339,6 +339,21 @@ public class TicketDAO extends BaseDAO
 		t.setValidFrom(rs.getString("ValidFrom"));
 		t.setValidUntil(rs.getString("ValidUntil"));
 		t.setLastUpdated(rs.getLong("TicketLastUpdated"));
+
+		return t;
+	}
+	
+	private Ticket synResultToModel(ResultSet rs) throws SQLException
+	{
+		Ticket t = new Ticket();
+
+		t.setTicketID(UUID.fromString(rs.getString("TicketID")));
+		t.setRouteID(UUID.fromString(rs.getString("RouteID")));
+		t.setTypeTicketID(UUID.fromString(rs.getString("TypeTicketID")));
+		t.setDate(rs.getString("Date"));
+		t.setValidFrom(rs.getString("ValidFrom"));
+		t.setValidUntil(rs.getString("ValidUntil"));
+		t.setLastUpdated(rs.getLong("LastUpdated"));
 
 		return t;
 	}
