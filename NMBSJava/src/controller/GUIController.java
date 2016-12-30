@@ -26,6 +26,8 @@ import panels.TreinopzoekingPanel;
 import panels.VerlengAbonnementPanel;
 import panels.VerlorenVoorwerpMaakPanel;
 import panels.VerlorenVoorwerpZoekPanel;
+import panels.KlantZoekPanel;
+import panels.KlantPasAanPanel;
 
 public class GUIController {
 
@@ -49,6 +51,8 @@ public class GUIController {
 	private static VerlorenVoorwerpMaakPanel verlorenVoorwerpMaak;
 	private static StaffBeheerPanel staff;
 	private static PasPrijzenAanPanel prijzenAanpassen;
+	private static KlantZoekPanel klantZoek;
+	private static KlantPasAanPanel klantPasAan;
 
 	private static SettingsSingleton settings;
 	
@@ -225,6 +229,18 @@ public class GUIController {
 					}
 				});
 				
+				nav.getBtnKlantZoek().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startKlantZoek();
+					}
+				});
+				
+				nav.getBtnKlantPasAan().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						startKlantPasAan();
+					}
+				});
+				
 				nav.getBtnLogout().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						logout();
@@ -372,6 +388,24 @@ public class GUIController {
 		frame.getContentPane().add(prijzenAanpassen);
 		frame.setContentPane(frame.getContentPane());
 		PasPrijzenAanController.startListening(prijzenAanpassen);
+	}
+	
+	private static void startKlantZoek() {
+		klantZoek = new KlantZoekPanel();
+		frame.setTitle("NMBSTeam - Zoek klant");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(klantZoek);
+		frame.setContentPane(frame.getContentPane());
+		KlantZoekController.startListening(klantZoek);
+	}
+	
+	private static void startKlantPasAan() {
+		klantPasAan = new KlantPasAanPanel();
+		frame.setTitle("NMBSTeam - Pas klant aan");
+		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
+		frame.getContentPane().add(klantPasAan);
+		frame.setContentPane(frame.getContentPane());
+		KlantPasAanController.startListening(klantPasAan);
 	}
 
 	public static GUIFrame getFrame() {

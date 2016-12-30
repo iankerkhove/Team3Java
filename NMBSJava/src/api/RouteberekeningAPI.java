@@ -3,17 +3,16 @@ package api;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import org.apache.commons.codec.language.bm.Lang;
+import java.util.UUID;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
 import controller.DateTimeConverter;
 import gui.GUIDateFormat;
 import gui.LangageHandler;
+import services.APIRequest;
 import services.APIThread;
 import services.ThreadListener;
 
@@ -47,8 +46,9 @@ public class RouteberekeningAPI {
 			params.put("lang", "EN");
 		}
 
-
-		APIThread irailsAPI = new APIThread(APIUrl.IRAILS, "connections", RequestType.GET, params);
+		UUID requestID = UUID.randomUUID();
+		APIRequest request = new APIRequest(requestID, APIUrl.IRAILS, "connections", RequestType.GET, params);
+		
 		ThreadListener listener = new ThreadListener() {
 
 			@Override
@@ -70,8 +70,9 @@ public class RouteberekeningAPI {
 			
 		};
 		
-		irailsAPI.setListener(listener);
-		irailsAPI.start();
+		APIThread apiThread = APIThread.getThread();
+		apiThread.addListener(requestID, listener);
+		apiThread.addAPIRequest(request);
 	}
 
 	public RouteberekeningAPI(String from, String to, String date, String time, TimeSelector timeSel) {
@@ -98,8 +99,9 @@ public class RouteberekeningAPI {
 			params.put("format", "json");
 			params.put("lang", "NL");
 
-
-			APIThread irailsAPI = new APIThread(APIUrl.IRAILS, "connections", RequestType.GET, params);
+			UUID requestID = UUID.randomUUID();
+			APIRequest request = new APIRequest(requestID, APIUrl.IRAILS, "connections", RequestType.GET, params);
+			
 			ThreadListener listener = new ThreadListener() {
 
 				@Override
@@ -123,8 +125,9 @@ public class RouteberekeningAPI {
 				
 			};
 			
-			irailsAPI.setListener(listener);
-			irailsAPI.start();
+			APIThread apiThread = APIThread.getThread();
+			apiThread.addListener(requestID, listener);
+			apiThread.addAPIRequest(request);
 
 		} catch (JSONException e) {
 			e.printStackTrace();

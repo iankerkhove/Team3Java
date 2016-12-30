@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.json.JSONArray;
 
@@ -12,6 +13,7 @@ import controller.APIController.RequestType;
 import gui.LangageHandler;
 import model.api.Stationboard;
 import panels.StationboardPanel;
+import services.APIRequest;
 import services.APIThread;
 import services.ThreadListener;
 
@@ -29,8 +31,10 @@ public class StationsbordController
 
 						if (!stationName.equals("")) {
 
+							UUID requestID = UUID.randomUUID();
 							HashMap<String, String> params = new HashMap<String, String>();
-							APIThread t = new APIThread(APIUrl.TRAINTRACKS, "stationboard/" + stationName, RequestType.GET, params);
+							
+							APIRequest request = new APIRequest(requestID, APIUrl.TRAINTRACKS, "stationboard/" + stationName, RequestType.GET, params);
 							ThreadListener listener = new ThreadListener() {
 
 								@Override
@@ -55,8 +59,10 @@ public class StationsbordController
 								}
 								
 							};
-							t.setListener(listener);
-							t.start();
+
+							APIThread apiThread = APIThread.getThread();
+							apiThread.addListener(requestID, listener);
+							apiThread.addAPIRequest(request);
 							
 						}
 						else {

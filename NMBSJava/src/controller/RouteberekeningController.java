@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.apache.commons.codec.language.bm.Lang;
 import org.json.JSONArray;
@@ -16,6 +17,7 @@ import gui.GUIDateFormat;
 import gui.LangageHandler;
 import model.api.RouteBerekening;
 import panels.RouteberekeningPanel;
+import services.APIRequest;
 import services.APIThread;
 import services.ThreadListener;
 
@@ -64,7 +66,8 @@ public class RouteberekeningController {
 								
 	
 	
-								APIThread t = new APIThread(APIUrl.IRAILS, "", RequestType.GET, params);
+								UUID requestID = UUID.randomUUID();
+								APIRequest request = new APIRequest(requestID, APIUrl.IRAILS, "", RequestType.GET, params);
 								ThreadListener listener = new ThreadListener() {
 	
 									@Override
@@ -87,8 +90,10 @@ public class RouteberekeningController {
 								}
 								
 								};
-								t.setListener(listener);
-								t.start();
+								
+								APIThread apiThread = APIThread.getThread();
+								apiThread.addListener(requestID, listener);
+								apiThread.addAPIRequest(request);
 								
 							}
 							catch (ParseException e1) {
