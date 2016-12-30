@@ -22,7 +22,6 @@ import dao.RouteDAO;
 import dao.StationDAO;
 import dao.SubscriptionDAO;
 import dao.TypeTicketDAO;
-import gui.DiscountAutoCompletor;
 import gui.GUIDateFormat;
 import model.Customer;
 import model.Discount;
@@ -67,16 +66,26 @@ public class VerlengAbonnementController {
 
 						CustomerDAO daoCustomer = new CustomerDAO();
 						ArrayList<Customer> list = daoCustomer.selectAll();
+            
+						//Geeft nog fout hierop, moet nog worden aangepast in subscriptionDAO
+						SubscriptionDAO subDao = new SubscriptionDAO();
+						ArrayList<Subscription> sublist = subDao.selectAll();
 
 						for (int i = 0; i < list.size(); i++) {
 							if (stringRailCardID.equals(list.get(i).getRailCard().getRailCardID().toString())) {
-								/*customerID = list.get(i).getCustomerID().toString();
-								CustomerDAO cdao = new CustomerDAO();
-								Customer c = cdao.selectOne(customerID);
-								railCardID = c.getRailCardID().toString();*/
+								customerID = list.get(i).getCustomerID().toString();
 								abonnement.getLblKLantenNummerResult().setText(list.get(i).getCustomerID().toString());
 							}
 						}
+						
+						for (int i = 0; i < sublist.size(); i++) {
+							if(stringRailCardID.equals(sublist.get(i).getRailCard().getRailCardID().toString())){
+								abonnement.getTxtStation1().setSelectedItem(sublist.get(i).getRoute().getArrivalStation().getStationName());
+								abonnement.getTxtStation2().setSelectedItem(sublist.get(i).getRoute().getArrivalStation().getStationName());
+							}
+						}
+
+					//	abonnement.getTxtStation1().setSelectedItem(list.get(i).getRailCardID());
 
 						abonnement.getBtnMeerInfo().setEnabled(true);
 					}
@@ -91,7 +100,8 @@ public class VerlengAbonnementController {
 							ArrayList<Customer> list = daoCustomer.selectAll();
 
 							for (int i = 0; i < list.size(); i++) {
-								if (customerID == list.get(i).getCustomerID().toString()) {
+								if (customerID.equals(list.get(i).getCustomerID().toString())) {
+                  
 									JFrame frame = new JFrame();
 									JOptionPane.showMessageDialog(frame, "Naam: " + list.get(i).getLastName() + "\n"
 											+ "Voornaam: " + list.get(i).getFirstName() + "\n" + "Geboortedatum: "
@@ -244,7 +254,7 @@ public class VerlengAbonnementController {
 
 								SubscriptionDAO handler3 = new SubscriptionDAO();
 								Subscription s = handler3.selectOne(UUID.fromString(abonnementsNummer).toString());
-								//s.setRailCardID(UUID.fromString(railCardID));
+								s.setRailCardID(UUID.fromString(railCardID));
 								s.setRouteID(routeID);
 								s.setDiscountID(d.getDiscountID());
 								s.setValidFrom(startdatum);
