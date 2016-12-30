@@ -7,12 +7,14 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.apache.commons.codec.language.bm.Lang;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
 import gui.GUIDateFormat;
+import gui.LangageHandler;
 import model.api.RouteBerekening;
 import panels.RouteberekeningPanel;
 import services.APIRequest;
@@ -49,7 +51,19 @@ public class RouteberekeningController {
 								params.put("time", GUIDateFormat.getRawTime(tijd));
 								params.put("timeSel", timeSel);
 								params.put("format", "json");
-								params.put("lang", "NL");
+								if(LangageHandler.getTaal().equals("Nederlands"))
+								{
+									params.put("lang", "NL");
+								}
+								else if(LangageHandler.getTaal().equals("Français"))
+								{
+									params.put("lang", "FR");
+								}
+								else if(LangageHandler.getTaal().equals("English"))
+								{
+									params.put("lang", "EN");
+								}
+								
 	
 	
 								UUID requestID = UUID.randomUUID();
@@ -70,7 +84,8 @@ public class RouteberekeningController {
 											if (!ss.contains("null"))
 												route.getLblResult().setText(rb.toStringHTML());
 											else
-												route.getLblResult().setText("Dit verzoek kon niet verwerkt worden.");
+												LangageHandler.chooseLangageLbl(route.getLblResult(), "verzoek");
+												//route.getLblResult().setText("Dit verzoek kon niet verwerkt worden.");
 									}
 								}
 								
@@ -90,7 +105,8 @@ public class RouteberekeningController {
 							
 							
 						} else {
-							route.getLblResult().setText("Formulier werd niet correct ingevuld.");
+							LangageHandler.chooseLangageLbl(route.getLblResult(), "foutRes");
+							//route.getLblResult().setText("Formulier werd niet correct ingevuld.");
 						}
 
 					}

@@ -9,6 +9,7 @@ import api.RouteberekeningAPI;
 import api.TimeSelector;
 import dao.ReservationDAO;
 import gui.GUIDateFormat;
+import gui.LangageHandler;
 import gui.Popup;
 import model.Reservation;
 import panels.GroepsReservatiePanel;
@@ -62,7 +63,7 @@ public class GroepsreservatieController {
 							ReservationDAO res = new ReservationDAO();
 							Reservation r = new Reservation(aantalReizigers, trein, prijs,datum, route);
 							res.insert(r);
-							System.out.println("Reservatie succesvol aangemaakt.");
+							System.out.println(LangageHandler.chooseLangage("resSucces"));
 						}
 					}
 

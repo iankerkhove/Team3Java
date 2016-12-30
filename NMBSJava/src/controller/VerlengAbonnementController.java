@@ -22,6 +22,7 @@ import dao.RouteDAO;
 import dao.StationDAO;
 import dao.SubscriptionDAO;
 import gui.GUIDateFormat;
+import gui.LangageHandler;
 import model.Customer;
 import model.Discount;
 import model.Route;
@@ -195,12 +196,12 @@ public class VerlengAbonnementController
 
 							abonnement.getLblBedrag().setText(Double.toString(
 									Prijsberekening.berekenPrijs(s1, s2, TypeKeuze.PASS, ticketTypeID)));
-							abonnement.getLblFoutmelding().setText("Het formulier is correct");
+							LangageHandler.chooseLangageLbl(abonnement.getLblFoutmelding(), "form");
 							abonnement.getBtnVerzenden().setEnabled(true);
 
 						}
 						else {
-							abonnement.getLblFoutmelding().setText("Het formulier is niet volledig");
+							LangageHandler.chooseLangageLbl(abonnement.getLblFoutmelding(), "formNc");
 						}
 					}
 				});

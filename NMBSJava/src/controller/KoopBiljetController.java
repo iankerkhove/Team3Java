@@ -56,8 +56,22 @@ public class KoopBiljetController {
 							TypeTicket type =handler3.selectOneOnName(soortBiljet);
 							Ticket t = new Ticket(routeID,type.getTypeTicketID(),GUIDateFormat.getDate(),begindatum,einddatum);
 							TicketDAO handler4 = new TicketDAO();
-							handler4.insert(t);
-							System.out.println("Ticket succesvol aangemaakt.");
+							
+							boolean check = false;
+							
+							try{
+								handler4.insert(t);
+								check = true;
+							} catch(NullPointerException e1) {
+								Popup.errorMessage("voorwerpWarningPopup", "voorwerpWarningPopupTitel");
+							}
+							
+							if(check == true)
+							{
+								Popup.plainMessage("koopBiljetPlainPopup", "koopBiljetPlainPopupTitel");
+							}
+							
+							//System.out.println("Ticket succesvol aangemaakt.");
 						}
 					}
 				});
