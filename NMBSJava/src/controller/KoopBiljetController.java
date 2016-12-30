@@ -103,7 +103,7 @@ public class KoopBiljetController {
 		StationDAO handler = new StationDAO();
 		Station s1 = handler.selectOneOnName(van);
 		Station s2 = handler.selectOneOnName(naar);
-		Route route = r.selectOneOnRoute(van, naar);
+		Route route = r.selectOneOnRoute(s1.getStationID().toString(), s2.getStationID().toString());
 		if (route != null) {
 			routeID = route.getRouteID();
 		} else {

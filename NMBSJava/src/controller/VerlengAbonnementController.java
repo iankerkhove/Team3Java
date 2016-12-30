@@ -21,6 +21,7 @@ import dao.DiscountDAO;
 import dao.RouteDAO;
 import dao.StationDAO;
 import dao.SubscriptionDAO;
+import dao.TypeTicketDAO;
 import gui.GUIDateFormat;
 import gui.LangageHandler;
 import model.Customer;
@@ -28,6 +29,7 @@ import model.Discount;
 import model.Route;
 import model.Station;
 import model.Subscription;
+import model.TypeTicket;
 import panels.VerlengAbonnementPanel;
 
 public class VerlengAbonnementController {
@@ -171,9 +173,43 @@ public class VerlengAbonnementController {
 							StationDAO handler = new StationDAO();
 							Station s1 = handler.selectOne(station1ID.toString());
 							Station s2 = handler.selectOne(station2ID.toString());
+							int klasse = abonnement.getGrpKlasses().getSelection().getMnemonic();
+							
+							TypeTicketDAO handler2 = new TypeTicketDAO();
+							TypeTicket type = null;
+							ArrayList<TypeTicket> list = handler2.selectAll();
+							
+							DiscountDAO handler5 = new DiscountDAO();
+							Discount d = handler5
+									.selectOneOnName((String) abonnement.getCbxDiscount().getSelectedItem());
+							
+							for (int i = 0; i < list.size(); i++) {
+								if (list.get(i).getName().contains("Standaardticket")
+										&& list.get(i).getComfortClass() == klasse) {
+									type = list.get(i);
+								}
+							}
 
-							abonnement.getLblBedrag().setText(Double
-									.toString(Prijsberekening.berekenPrijs(s1, s2, TypeKeuze.PASS, ticketTypeID)));
+							if (type != null) {
+								String duration = (String) abonnement.getCbxDuur().getSelectedItem();
+								int factor = 0;
+								double disc = d.getAmount();
+								if (duration.contains("1 maand")) {
+									factor = 1;
+								} else if (duration.contains("3 maanden")) {
+									factor = 3;
+								} else if (duration.contains("12 maanden")) {
+									factor = 12;
+								}
+
+								double prijs = Prijsberekening.berekenPrijs(s1, s2, TypeKeuze.ABONNEMENT, type.getTypeTicketID().toString()) / 12 * factor;
+								prijs = prijs - prijs * disc;
+
+								abonnement.getLblBedrag().setText(prijs + " euro");
+
+								abonnement.getBtnVerzenden().setEnabled(true);
+							}
+							
 							LangageHandler.chooseLangageLbl(abonnement.getLblFoutmelding(), "form");
 							abonnement.getBtnVerzenden().setEnabled(true);
 
@@ -203,6 +239,7 @@ public class VerlengAbonnementController {
 
 							Station s1 = handler.selectOne(station1ID);
 							Station s2 = handler.selectOne(station2ID);
+							int klasse = abonnement.getGrpKlasses().getSelection().getMnemonic();
 
 							RouteDAO r = new RouteDAO();
 							Route route = r.selectOneOnRoute(station1ID, station2ID);
@@ -211,12 +248,42 @@ public class VerlengAbonnementController {
 								route = new Route(s1.getStationID(), s2.getStationID());
 								r.insert(route);
 							}
+							
+							TypeTicketDAO handler2 = new TypeTicketDAO();
+							TypeTicket type = null;
+							ArrayList<TypeTicket> list = handler2.selectAll();
+							
+							DiscountDAO handler5 = new DiscountDAO();
+							Discount d = handler5
+									.selectOneOnName((String) abonnement.getCbxDiscount().getSelectedItem());
+							
+							for (int i = 0; i < list.size(); i++) {
+								if (list.get(i).getName().contains("Standaardticket")
+										&& list.get(i).getComfortClass() == klasse) {
+									type = list.get(i);
+								}
+							}
 
-							DiscountDAO handler4 = new DiscountDAO();
-							Discount d = handler4.selectOne(kortingID);
+							if (type != null) {
+								String duration = (String) abonnement.getCbxDuur().getSelectedItem();
+								int factor = 0;
+								double disc = d.getAmount();
+								if (duration.contains("1 maand")) {
+									factor = 1;
+								} else if (duration.contains("3 maanden")) {
+									factor = 3;
+								} else if (duration.contains("12 maanden")) {
+									factor = 12;
+								}
 
-							abonnement.getLblBedrag().setText(Double
-									.toString(Prijsberekening.berekenPrijs(s1, s2, TypeKeuze.PASS, ticketTypeID)));
+								double prijs = Prijsberekening.berekenPrijs(s1, s2, TypeKeuze.ABONNEMENT, type.getTypeTicketID().toString()) / 12 * factor;
+								prijs = prijs - prijs * disc;
+
+								abonnement.getLblBedrag().setText(prijs + " euro");
+
+								abonnement.getBtnVerzenden().setEnabled(true);
+							}
+							
 							abonnement.getLblFoutmelding().setText("Het formulier is correct");
 							abonnement.getBtnVerzenden().setEnabled(true);
 
