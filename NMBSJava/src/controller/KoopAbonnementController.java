@@ -376,7 +376,7 @@ public class KoopAbonnementController {
 		Route r = new Route(vanID, naarID);
 		RouteDAO daoRoute = new RouteDAO();
 		daoRoute.insert(r);
-
+		routeID = r.getRouteID();
 	}
 
 	public static void createAbonnement(NieuwAbonnementPanel abonnement) {
