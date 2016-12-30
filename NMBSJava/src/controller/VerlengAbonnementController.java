@@ -65,29 +65,32 @@ public class VerlengAbonnementController
 					{
 						abonnement.getBtnMeerInfo().setEnabled(true);
 
-						String subsbscriptionID = abonnement.getTxtAbonnementsNummer().getText();
-
+						String railcardID = abonnement.getTxtAbonnementsNummer().getText();
+						
 						CustomerDAO customerHandler = new CustomerDAO();
-						Customer c = customerHandler.selectOneOnSubscriptionID(subsbscriptionID);
-
-						if (c != null) {
-							customerID = c.getCustomerID();
-							railCardID = c.getRailCard().getRailCardID().toString();
-
-							abonnement.getLblKLantenNummerResult().setText(c.getCustomerID().toString());
-
-							SubscriptionDAO subscriptionHandler = new SubscriptionDAO();
-							Subscription s = subscriptionHandler.selectOne(subsbscriptionID);
-
-							if (s != null) {
-								abonnement.getTxtStation1()
-										.setSelectedItem(s.getRoute().getArrivalStation().getStationName());
-								abonnement.getTxtStation2()
-										.setSelectedItem(s.getRoute().getDepartureStation().getStationName());
+						ArrayList<Customer> list = customerHandler.selectAll();
+						
+						for (int i = 0; i < list.size(); i++) {
+							if(list.get(i).getRailCard().getRailCardID().toString().equals(railcardID))
+							{
+								customerID = list.get(i).getCustomerID();
+								railCardID = list.get(i).getRailCard().getRailCardID().toString();
+								abonnement.getLblKLantenNummerResult().setText(customerID.toString());
+							
 							}
-
 						}
 
+							SubscriptionDAO subscriptionHandler = new SubscriptionDAO();
+							ArrayList<Subscription> sublist = subscriptionHandler.selectAll();
+							
+							for (int i = 0; i < sublist.size(); i++) {
+								if(sublist.get(i).getRailCardID().toString().equals(railcardID))
+								{
+									abonnement.getTxtStation1().setSelectedItem(sublist.get(i).getRoute().getDepartureStation().getStationName());
+									abonnement.getTxtStation2().setSelectedItem(sublist.get(i).getRoute().getArrivalStation().getStationName());
+								}
+							}
+					
 						abonnement.getBtnMeerInfo().setEnabled(true);
 					}
 				});
@@ -206,7 +209,6 @@ public class VerlengAbonnementController
 					@Override
 					public void actionPerformed(ActionEvent e)
 					{
-						String abonnementsNummer = abonnement.getTxtAbonnementsNummer().getText();
 						String ticketTypeID = abonnement.getCbxTreinkaart().getSelectedDiscount().toString();
 						String kortingID = abonnement.getCbxDiscount().getSelectedDiscount().toString();
 						String duur = abonnement.getCbxDuur().getSelectedItem().toString();
@@ -215,7 +217,7 @@ public class VerlengAbonnementController
 						String station2ID = abonnement.getTxtStation2().getSelectedStation().toString();
 						String eindDatum = abonnement.getLblVervaldatumResult().getText();
 						
-						if (!abonnementsNummer.equals("") 
+						if (!railCardID.equals("") 
 							&& !duur.equals(null)
 							&& !ticketTypeID.equals("")
 							&& !kortingID.equals("")
@@ -249,14 +251,20 @@ public class VerlengAbonnementController
 							abonnement.getBtnVerzenden().setEnabled(true);
 
 							SubscriptionDAO handler3 = new SubscriptionDAO();
-							Subscription s = handler3.selectOne(UUID.fromString(abonnementsNummer).toString());
-							s.setRailCardID(UUID.fromString(railCardID));
-							s.setRouteID(route.getRouteID());
-							s.setDiscountID(d.getDiscountID());
-							s.setValidFrom(startdatum);
-							s.setValidUntil(eindDatum);
-							s.update();
-							handler3.update(s);
+							ArrayList<Subscription> sublist= handler3.selectAll();
+							
+							for (int i = 0; i < sublist.size(); i++) {
+								if(sublist.get(i).getRailCardID().toString().equals(railCardID))
+								{
+									sublist.get(i).setRailCardID(UUID.fromString(railCardID));
+									sublist.get(i).setRouteID(route.getRouteID());
+									sublist.get(i).setDiscountID(d.getDiscountID());
+									sublist.get(i).setValidFrom(startdatum);
+									sublist.get(i).setValidUntil(eindDatum);
+									sublist.get(i).update();
+									handler3.update(sublist.get(i));
+								}
+							}
 
 						}
 						else {
