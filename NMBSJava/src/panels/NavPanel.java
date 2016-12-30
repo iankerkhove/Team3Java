@@ -8,26 +8,27 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import gui.LangageHandler;
+
 @SuppressWarnings("serial")
 public class NavPanel extends JPanel {
-	
+
 	private JButton btnRouteZoek;
 	private JButton btnTreinZoek;
 	private JButton btnStationZoek;
 	private JButton btnVerlorenVoorwerpenZoek;
 	private JButton btnbtnVerlorenVoorwerpenVoegToe;
 	private JButton btnBiljetKoop;
+	private JButton btnPassKoop;
 	private JButton btnAbonnementKoop;
 	private JButton btnAbonnementVerlengen;
+	private JButton btnGroepsreservatie;
 	private JButton btnPrijzenAanpassen;
 	private JButton btnVoegMedewerker;
-	public JButton getBtnVoegMedewerker() {
-		return btnVoegMedewerker;
-	}
-
-	private JButton btnStaffBeheer;
 	private JButton btnLogout;
 	private JLabel madeBy;
+	private JButton btnSync;
+
+	private JPanel customPane;
 
 	public NavPanel() {
 		initialize();
@@ -36,13 +37,12 @@ public class NavPanel extends JPanel {
 	}
 
 	private void initialize() {
-		this.setLayout(new GridLayout(12, 1, 5, 5));
+		this.setLayout(new GridLayout(15, 1, 5, 5));
 	}
 
 	private void createComponents() {
-
 		btnRouteZoek = new JButton();
-		LangageHandler.chooseLangageBtn(btnRouteZoek,"zoekRoute");
+		LangageHandler.chooseLangageBtn(btnRouteZoek, "zoekRoute");
 		btnRouteZoek.setHorizontalAlignment(SwingConstants.LEFT);
 
 		btnTreinZoek = new JButton();
@@ -64,36 +64,42 @@ public class NavPanel extends JPanel {
 		btnBiljetKoop = new JButton();
 		LangageHandler.chooseLangageBtn(btnBiljetKoop, "koopBiljet");
 		btnBiljetKoop.setHorizontalAlignment(SwingConstants.LEFT);
+
+		btnPassKoop = new JButton("Koop Pass");
+		btnPassKoop.setHorizontalAlignment(SwingConstants.LEFT);
+
 		btnAbonnementKoop = new JButton("Koop abonnement");
 		LangageHandler.chooseLangageBtn(btnAbonnementKoop, "koopAbonnement");
-		
 		btnAbonnementKoop.setHorizontalAlignment(SwingConstants.LEFT);
 
 		btnAbonnementVerlengen = new JButton();
 		LangageHandler.chooseLangageBtn(btnAbonnementVerlengen, "verlengAbonnement");
 		btnAbonnementVerlengen.setHorizontalAlignment(SwingConstants.LEFT);
 
+		btnGroepsreservatie = new JButton("Groepsreservatie");
+		btnGroepsreservatie.setHorizontalAlignment(SwingConstants.LEFT);
+
 		btnPrijzenAanpassen = new JButton();
 		LangageHandler.chooseLangageBtn(btnPrijzenAanpassen, "pasPrijzen");
 		btnPrijzenAanpassen.setHorizontalAlignment(SwingConstants.LEFT);
 
-
 		btnVoegMedewerker = new JButton();
 		LangageHandler.chooseLangageBtn(btnVoegMedewerker, "voegMedewerker");
 		btnVoegMedewerker.setHorizontalAlignment(SwingConstants.LEFT);
-		
+
 		btnLogout = new JButton();
 		LangageHandler.chooseLangageBtn(btnLogout, "Uitloggen");
-
-		btnStaffBeheer = new JButton("Beheer Staff");
-		btnStaffBeheer.setHorizontalAlignment(SwingConstants.LEFT);
-
-		btnLogout = new JButton("Uitloggen");
-
 		btnLogout.setHorizontalAlignment(SwingConstants.LEFT);
-		
+
 		madeBy = new JLabel("By Groep 3");
 		madeBy.setHorizontalAlignment(SwingConstants.CENTER);
+
+		customPane = new JPanel();
+		customPane.setLayout(new GridLayout(2, 1, 0, 0));
+		btnSync = new JButton("Sync");
+		customPane.add(new JLabel());
+		customPane.add(btnSync);
+
 	}
 
 	private void addComponents() {
@@ -101,18 +107,17 @@ public class NavPanel extends JPanel {
 		this.add(btnTreinZoek);
 		this.add(btnStationZoek);
 		this.add(btnBiljetKoop);
+		this.add(btnPassKoop);
 		this.add(btnAbonnementKoop);
 		this.add(btnAbonnementVerlengen);
 		this.add(btnVerlorenVoorwerpenZoek);
 		this.add(btnbtnVerlorenVoorwerpenVoegToe);
+		this.add(btnGroepsreservatie);
 		this.add(btnPrijzenAanpassen);
-
 		this.add(btnVoegMedewerker);
-
-		//this.add(btnStaffBeheer);
-
 		this.add(btnLogout);
 		this.add(madeBy);
+		this.add(customPane);
 	}
 
 	public JButton getBtnRouteZoek() {
@@ -155,7 +160,19 @@ public class NavPanel extends JPanel {
 		return btnLogout;
 	}
 
-	public JButton getBtnStaffBeheer() {
-		return btnStaffBeheer;
+	public JButton getBtnVoegMedewerker() {
+		return btnVoegMedewerker;
+	}
+
+	public JButton getBtnPassKoop() {
+		return btnPassKoop;
+	}
+
+	public JButton getBtnGroepsreservatie() {
+		return btnGroepsreservatie;
+	}
+
+	public JButton getBtnSync() {
+		return btnSync;
 	}
 }

@@ -10,8 +10,10 @@ import javax.swing.JFormattedTextField.AbstractFormatter;
 public class GUIDateFormat extends AbstractFormatter {
 
 	private static String timePattern = "HH:mm";
+	private static String timeSecPattern = "HH:mm:ss";
 	private static String datePattern = "dd/MM/yyyy";
 	private static SimpleDateFormat timeFormatter = new SimpleDateFormat(timePattern);
+	private static SimpleDateFormat timeSecFormatter = new SimpleDateFormat(timeSecPattern);
 	private static SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
 
 	private static String rawTimePattern = "HHmm";
@@ -60,6 +62,11 @@ public class GUIDateFormat extends AbstractFormatter {
 
 	public static String getTime() {
 		String ss = timeFormatter.format(new Date());
+		return ss;
+	}
+
+	public static String getTimeWithSec() {
+		String ss = timeSecFormatter.format(new Date());
 		return ss;
 	}
 

@@ -197,7 +197,7 @@ public class SubscriptionDAO extends BaseDAO
 			list = new ArrayList<Subscription>();
 
 			while (rs.next()) {
-				list.add(resultToModel(rs));
+				list.add(syncResultToModel(rs));
 			}
 
 			return list;
@@ -229,12 +229,17 @@ public class SubscriptionDAO extends BaseDAO
 		ResultSet rs = null;
 
 		String sql = "SELECT s.SubscriptionID, c.CardID, c.LastUpdated as RailCardLastUpdated, "
-				+ "r.RouteID, r.DepartureStationID, r.ArrivalStationID, r.LastUpdated as RouteLastUpdated,"
-				+ "d.DiscountID, d.Name, d.Amount, d.LastUpdated as DiscountLastUpdated,"
+				+ "r.RouteID, "
+				+ "r.DepartureStationID, s1.Name as DepartureName, s1.CoX as DepartureCoX, s1.CoY as DepartureCoY, s1.LastUpdated as DepartureLastUpdated,"
+				+ "r.ArrivalStationID, s2.Name as ArrivalName, s2.CoX as ArrivalCoX, s2.CoY as ArrivalCoY, s2.LastUpdated as ArrivalLastUpdated, r.LastUpdated as RouteLastUpdated, "
+				+ "r.LastUpdated as RouteLastUpdated, "
+				+ "d.DiscountID, d.Name as DiscountName, d.Amount as DiscountAmount, d.LastUpdated as DiscountLastUpdated, "
 				+ "s.ValidFrom, s.ValidUntil, s.LastUpdated as SubscriptionLastUpdated " 
 				+ "FROM Subscription s "
 				+ "INNER JOIN RailCard c ON c.CardID = s.RailCardID "
 				+ "INNER JOIN Route r ON r.RouteID = s.RouteID "
+				+ "INNER JOIN Station s1 on s1.StationID = r.DepartureStationID "
+				+ "INNER JOIN Station s2 on s2.StationID = r.ArrivalStationID "
 				+ "INNER JOIN Discount d ON d.DiscountID = s.DiscountID;";
 
 		try {
@@ -277,13 +282,18 @@ public class SubscriptionDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT s.SubscriptionID, c.CardID, c.LastUpdated as RailCardLastUpdated, "
-				+ "r.RouteID, r.DepartureStationID, r.ArrivalStationID, r.LastUpdated as RouteLastUpdated, "
-				+ "d.DiscountID, d.Name, d.Amount, d.LastUpdated as DiscountLastUpdated, "
+		String sql = "SELECT s.SubscriptionID, s.RailCardID, c.LastUpdated as RailCardLastUpdated, "
+				+ "r.RouteID, "
+				+ "r.DepartureStationID, s1.Name as DepartureName, s1.CoX as DepartureCoX, s1.CoY as DepartureCoY, s1.LastUpdated as DepartureLastUpdated,"
+				+ "r.ArrivalStationID, s2.Name as ArrivalName, s2.CoX as ArrivalCoX, s2.CoY as ArrivalCoY, s2.LastUpdated as ArrivalLastUpdated, r.LastUpdated as RouteLastUpdated, "
+				+ "r.LastUpdated as RouteLastUpdated, "
+				+ "d.DiscountID, d.Name as DiscountName, d.Amount as DiscountAmount, d.LastUpdated as DiscountLastUpdated, "
 				+ "s.ValidFrom, s.ValidUntil, s.LastUpdated as SubscriptionLastUpdated " 
 				+ "FROM Subscription s "
 				+ "INNER JOIN RailCard c ON c.CardID = s.RailCardID "
 				+ "INNER JOIN Route r ON r.RouteID = s.RouteID "
+				+ "INNER JOIN Station s1 on s1.StationID = r.DepartureStationID "
+				+ "INNER JOIN Station s2 on s2.StationID = r.ArrivalStationID "
 				+ "INNER JOIN Discount d ON d.DiscountID = s.DiscountID "
 				+ "WHERE SubscriptionID = ?;";
 		try {
@@ -323,18 +333,9 @@ public class SubscriptionDAO extends BaseDAO
 		Subscription s = new Subscription();
 		Route r = new Route();
 		Discount d = new Discount();
-
-		r.setRouteID(UUID.fromString(rs.getString("RouteID")));
-		r.setDepartureStationID(UUID.fromString(rs.getString("DepartureStationID")));
-		r.setArrivalStationID(UUID.fromString(rs.getString("ArrivalStationID")));
-		r.setLastUpdated(rs.getLong("RouteLastUpdated"));
-
-		d.setDiscountID(UUID.fromString(rs.getString("DiscountID")));
-		d.setName(rs.getString("Name"));
-		d.setAmount(rs.getDouble("Amount"));
-		d.setLastUpdated(rs.getLong("LastUpdated"));
-
-		// static functie maken zodat er geen dubbele code is
+		
+		r = RouteDAO.resultToModel(rs);
+		d = DiscountDAO.resultToModel(rs);
 
 		s.setSubscriptionID(UUID.fromString(rs.getString("SubscriptionID")));
 		s.setRailCardID(UUID.fromString(rs.getString("RailCardID")));
@@ -343,6 +344,21 @@ public class SubscriptionDAO extends BaseDAO
 		s.setValidFrom(rs.getString("ValidFrom"));
 		s.setValidUntil(rs.getString("ValidUntil"));
 		s.setLastUpdated(rs.getLong("SubscriptionLastUpdated"));
+
+		return s;
+	}
+	
+	private Subscription syncResultToModel(ResultSet rs) throws SQLException
+	{
+		Subscription s = new Subscription();
+
+		s.setSubscriptionID(UUID.fromString(rs.getString("SubscriptionID")));
+		s.setRailCardID(UUID.fromString(rs.getString("RailCardID")));
+		s.setRouteID(UUID.fromString(rs.getString("RouteID")));
+		s.setDiscountID(UUID.fromString(rs.getString("DiscountID")));
+		s.setValidFrom(rs.getString("ValidFrom"));
+		s.setValidUntil(rs.getString("ValidUntil"));
+		s.setLastUpdated(rs.getLong("LastUpdated"));
 
 		return s;
 	}

@@ -9,7 +9,7 @@ import model.TypeTicket;
 public abstract class Prijsberekening {
 
 	public enum TypeKeuze {
-		PASS, TICKET
+		PASS, TICKET, ABONNEMENT
 	}
 
 	public static double berekenAfstand(Station s1, Station s2) {
@@ -48,23 +48,39 @@ public abstract class Prijsberekening {
 			TypePassDAO handler = new TypePassDAO();
 			TypePass type = handler.selectOne(typeID);
 			price = type.getPrice();
+
+			zones = Math.floorDiv((int) distance, 15);
+			if (zones < 1)
+				zones = 1;
+			price = price + (zones*(price / 10));
 		}
 			break;
 		case TICKET: {
 			TypeTicketDAO handler = new TypeTicketDAO();
 			TypeTicket type = handler.selectOne(typeID);
 			price = type.getPrice();
+			
+			zones = Math.floorDiv((int) distance, 15);
+			if (zones < 1)
+				zones = 1;
+			price = price + (zones*(price / 10));
+		}
+		case ABONNEMENT: {
+			TypeTicketDAO handler = new TypeTicketDAO();
+			TypeTicket type = handler.selectOne(typeID);
+			price = type.getPrice();
+			
+			zones = Math.floorDiv((int) distance, 15);
+			if (zones < 1)
+				zones = 1;
+			
+			price = ((price + (zones*(price / 10)))*365)/12;
 		}
 			break;
 		default:
 			break;
 		}
-
-		zones = Math.floorDiv((int) distance, 15);
-		if (zones < 1)
-			zones = 1;
-		
-		return zones * price;
+		return price;
 	}
 
 	public static double degToRad(double deg) {

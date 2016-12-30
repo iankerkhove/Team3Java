@@ -61,7 +61,8 @@ public class CustomerDAO extends BaseDAO
 				params.put("addressID", c.getAddressID().toString());
 				params.put("firstName", c.getFirstName());
 				params.put("lastName", c.getLastName());
-				params.put("email", c.getBirthDate());
+				params.put("email", c.getEmail());
+				params.put("birthDate", c.getBirthDate());
 				params.put("lastUpdated", Long.toString(c.getLastUpdated()));
 			}
 
@@ -104,8 +105,8 @@ public class CustomerDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			ps.setString(1, c.getRailCard().getRailCardID().toString());
-			ps.setString(2, c.getAddress().getAddressID().toString());
+			ps.setString(1, c.getRailCardID().toString());
+			ps.setString(2, c.getAddressID().toString());
 			ps.setString(3, c.getFirstName());
 			ps.setString(4, c.getLastName());
 			ps.setString(5, c.getBirthDate().toString());
@@ -121,7 +122,8 @@ public class CustomerDAO extends BaseDAO
 				params.put("addressID", c.getAddressID().toString());
 				params.put("firstName", c.getFirstName());
 				params.put("lastName", c.getLastName());
-				params.put("email", c.getBirthDate());
+				params.put("email", c.getEmail());
+				params.put("birthDate", c.getBirthDate());
 				params.put("lastUpdated", Long.toString(c.getLastUpdated()));
 			}
 
@@ -154,11 +156,8 @@ public class CustomerDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
-				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
-				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
-				+ " FROM Customer c" + " INNER JOIN Address a ON a.AddressID = c.AddressID"
-				+ " INNER JOIN RailCard r ON r.CardID = c.RailCardID;";
+		String sql = "SELECT c.CustomerID, c.RailCardID, c.AddressID, c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
+				+ " FROM Customer c";
 
 		try {
 
@@ -171,7 +170,7 @@ public class CustomerDAO extends BaseDAO
 			list = new ArrayList<Customer>();
 
 			while (rs.next()) {
-				list.add(resultToModel(rs));
+				list.add(syncResultToModel(rs));
 			}
 
 			return list;
@@ -349,6 +348,21 @@ public class CustomerDAO extends BaseDAO
 		c.setCustomerID(UUID.fromString(rs.getString("CustomerID")));
 		c.setAddress(a);
 		c.setRailCard(r);
+		c.setFirstName(rs.getString("FirstName"));
+		c.setLastName(rs.getString("LastName"));
+		c.setBirthDate(rs.getString("BirthDate"));
+		c.setEmail(rs.getString("Email"));
+		c.setLastUpdated(rs.getLong("CustomerLastUpdated"));
+		return c;
+	}
+	
+	private Customer syncResultToModel(ResultSet rs) throws SQLException
+	{
+		Customer c = new Customer();
+
+		c.setCustomerID(UUID.fromString(rs.getString("CustomerID")));
+		c.setAddressID(UUID.fromString(rs.getString("AddressID")));
+		c.setRailCardID(UUID.fromString(rs.getString("RailCardID")));
 		c.setFirstName(rs.getString("FirstName"));
 		c.setLastName(rs.getString("LastName"));
 		c.setBirthDate(rs.getString("BirthDate"));

@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import controller.APIController;
+import controller.ConsoleLog;
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
 import dao.CustomerDAO;
@@ -23,7 +24,7 @@ public class SyncCustomerRunnable implements Runnable  {
 		public void run()
 		{
 			try {
-
+				ConsoleLog.setText("Syncing customers");
 				//check if has to update
 				HashMap<String, String> params = new HashMap<String, String>();
 				g3API = new APIController(APIUrl.G3, "customer/massUpdateStatus", RequestType.GET, params);
@@ -35,7 +36,7 @@ public class SyncCustomerRunnable implements Runnable  {
 				if (localStatus.get("Count").equals(mainStatus.getString("Count"))
 						&& localStatus.get("LastUpdated").equals(mainStatus.getString("LastUpdated"))) {
 					
-					System.out.println("Staff' up to date");
+					System.out.println("Customer up to date");
 					return;
 				}
 				
@@ -43,7 +44,7 @@ public class SyncCustomerRunnable implements Runnable  {
 				g3API.setUrl("customer");
 				JSONArray mainJsonList = g3API.getJsonResult();
 				
-				ArrayList<Customer> localList = cDAO.selectAll();
+				ArrayList<Customer> localList = cDAO.selectAllSync();
 				HashMap<UUID, Customer> mainMap = new HashMap<UUID, Customer>();
 				HashMap<UUID, Customer> localMap = new HashMap<UUID, Customer>();
 
@@ -103,14 +104,14 @@ public class SyncCustomerRunnable implements Runnable  {
 								biggerMap.remove(key);
 								smallerMap.remove(key);
 							}
-							else if (bItem.getLastUpdated() > sItem.getLastUpdated())
-							{
-								smallerMap.replace(key, bItem);
-							}
-							else
-							{
-								biggerMap.replace(key, sItem);
-							}
+						}
+						if (bItem.getLastUpdated() > sItem.getLastUpdated())
+						{
+							smallerMap.replace(key, bItem);
+						}
+						else
+						{
+							biggerMap.replace(key, sItem);
 						}
 					}
 				}

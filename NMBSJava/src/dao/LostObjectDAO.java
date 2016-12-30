@@ -152,9 +152,7 @@ public class LostObjectDAO extends BaseDAO
 		ResultSet rs = null;
 
 
-		String sql = "SELECT l.ObjectID, s.StationID, "
-				+ "s.Name, s.CoX,s.CoY," + "s.LastUpdated as StationLastUpdated, "
-				+ "l.Description,l.Date,l.TrainID,l.Found,l.LastUpdated as LostObjectLastUpdated " 
+		String sql = "SELECT l.ObjectID, l.Description, l.Date, l.TrainID, l.Found, l.LastUpdated as LostObjectLastUpdated " 
 				+ " FROM LostObject l ;";
 		try {
 
@@ -333,10 +331,10 @@ public class LostObjectDAO extends BaseDAO
 		s.setStationName(rs.getString("Name"));
 		s.setCoX(rs.getString("CoX"));
 		s.setCoY(rs.getString("CoY"));
-		s.setLastUpdated(rs.getLong("StationLasUpdated"));
+		s.setLastUpdated(rs.getLong("StationLastUpdated"));
 
 		l.setObjectID(UUID.fromString(rs.getString("ObjectID")));
-		l.setStationID(UUID.fromString(s.getStationID().toString()));
+		l.setStationID(s.getStationID());
 		l.setDescription(rs.getString("Description"));
 		l.setDate(rs.getString("Date"));
 		l.setTrainID(rs.getString("TrainID"));

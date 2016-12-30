@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
@@ -118,10 +117,14 @@ public class APIController
 		
 		String resultStr = "";
 		
+		if (result.toString().equals(""))
+			return null;
+			
 		if (!result.substring(0, 1).equals("["))
 			resultStr = "[" + result.toString() + "]";
 		else
 			resultStr = result.toString();
+	
 
 		System.out.println(url);
 		System.out.println(resultStr);
@@ -146,13 +149,6 @@ public class APIController
 
 	private HttpResponse getRequest() throws ClientProtocolException, IOException
 	{
-		HttpClient client = HttpClientBuilder.create().build();
-		HttpGet get = new HttpGet(this.base_url + url);
-
-		// add header
-		get.setHeader("User-Agent", USER_AGENT);
-		get.setHeader("Authorization", "Bearer " + this.settings.getApiToken());
-
 		if (this.base_url.equals(BASE_URL_IR)) {
 			this.params.putIfAbsent("format", "json");
 			this.params.putIfAbsent("timeSel", "depart");
@@ -161,15 +157,34 @@ public class APIController
 
 		boolean firstItt = true;
 
-		for (Map.Entry<String, String> entry : this.params.entrySet()) {
+		for (String key : params.keySet())
+		{
 			if (firstItt) {
-				url += "?" + entry.getKey() + "=" + entry.getValue();
+				url += "?" + key + "=" + params.get(key);
 				firstItt = false;
 			}
 			else {
-				url += "&" + entry.getKey() + "=" + entry.getValue();
+				url += "&" + key + "=" + params.get(key);
 			}
 		}
+		
+		String finalUrl = this.base_url + url;
+		if (this.base_url.equals(BASE_URL_TT))
+		{
+			finalUrl = finalUrl.replace(" ", "_");
+			finalUrl = finalUrl.replace("-", "_");
+		}
+		else if (this.base_url.equals(BASE_URL_IR))
+		{
+			finalUrl = finalUrl.replace(" ", "+");
+		}
+		
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpGet get = new HttpGet(finalUrl);
+
+		// add header
+		get.setHeader("User-Agent", USER_AGENT);
+		get.setHeader("Authorization", "Bearer " + this.settings.getApiToken());
 
 		return client.execute(get);
 	}
@@ -223,7 +238,7 @@ public class APIController
 
 		 put.setEntity(new UrlEncodedFormEntity(urlParameters));
 
-		return client.execute(put);
+		 return client.execute(put);
 	}
 	
 	private HttpResponse massPutRequest() throws ClientProtocolException, IOException
@@ -235,27 +250,26 @@ public class APIController
 		put.setHeader("User-Agent", USER_AGENT);
 		put.setHeader("Authorization", "Bearer " + this.settings.getApiToken());
 		put.setHeader("Content-Type", "application/json");
-
+		
 		JSONArray list = new JSONArray();
 		JSONObject urlParameters = new JSONObject();
 		
-		
-		for (Entry<String, String> entry : this.params.entrySet()) 
+		for (String key : params.keySet())
 		{
-			list = new JSONArray(entry.getValue());
+			list = new JSONArray(params.get(key));
+			
 			urlParameters = new JSONObject();
-			urlParameters.append(entry.getKey(),  list.get(0));
-			break;
+			urlParameters.put(key, list);
 		}
 		
-
-
-		System.out.println("  ");
-		System.out.println("urlparams");
-		System.out.println(urlParameters.toString());
-		System.out.println("  ");
+		String jsonString = urlParameters.toString();
 		
-		put.setEntity(new StringEntity(urlParameters.toString()));
+		jsonString = jsonString.replace(":false", ":0");
+		jsonString = jsonString.replace(":true", ":1");
+		
+		System.out.println(jsonString);
+		
+		put.setEntity(new StringEntity(jsonString));
 
 		return client.execute(put);
 	}

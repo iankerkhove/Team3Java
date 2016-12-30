@@ -149,12 +149,8 @@ public class ReservationDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql ="SELECT r.RouteID, r.DepartureStationID as DepartStation, r.ArrivalStationID as ArrivalStation, "
-				+ " s.Name, s.CoX,s.CoY, s.LastUpdated as StationLastUpdated, "
-				+ "r.LastUpdated as RouteLastUpdated, re.ReservationID, re.PassengerCount, re.TrainID, "
-				+ "re.Price, re.ReservationDate, re.LastUpdated as ReservationLastUpdated FROM Reservation re "
-				+ "INNER JOIN Route r ON r.RouteID = re.RouteID "
-				+ "INNER JOIN Station s ON s.StationID = r.DepartureStationID;";
+		String sql ="SELECT re.ReservationID, re.PassengerCount, re.TrainID, re.Price, re.ReservationDate, re.LastUpdated as ReservationLastUpdated "
+				+ "FROM Reservation re;";
 
 		try {
 
