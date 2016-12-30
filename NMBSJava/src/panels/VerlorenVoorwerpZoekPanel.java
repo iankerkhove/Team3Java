@@ -168,4 +168,10 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		return txtOmschrijving;
 	}
 
+	public JButton getBtnGevonden() {
+		return btnGevonden;
+	}
+	
+	
+
 }
