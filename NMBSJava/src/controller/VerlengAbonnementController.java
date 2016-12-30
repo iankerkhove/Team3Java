@@ -66,28 +66,31 @@ public class VerlengAbonnementController
 						abonnement.getBtnMeerInfo().setEnabled(true);
 
 						String subsbscriptionID = abonnement.getTxtAbonnementsNummer().getText();
-
+						
 						CustomerDAO customerHandler = new CustomerDAO();
-						Customer c = customerHandler.selectOneOnSubscriptionID(subsbscriptionID);
-
-						if (c != null) {
-							customerID = c.getCustomerID();
-							railCardID = c.getRailCard().getRailCardID().toString();
-
-							abonnement.getLblKLantenNummerResult().setText(c.getCustomerID().toString());
-
-							SubscriptionDAO subscriptionHandler = new SubscriptionDAO();
-							Subscription s = subscriptionHandler.selectOne(subsbscriptionID);
-
-							if (s != null) {
-								abonnement.getTxtStation1()
-										.setSelectedItem(s.getRoute().getArrivalStation().getStationName());
-								abonnement.getTxtStation2()
-										.setSelectedItem(s.getRoute().getDepartureStation().getStationName());
+						ArrayList<Customer> list = customerHandler.selectAll();
+						
+						for (int i = 0; i < list.size(); i++) {
+							if(list.get(i).getRailCard().getRailCardID().toString().equals(subsbscriptionID))
+							{
+								customerID = list.get(i).getCustomerID();
+								railCardID = list.get(i).getRailCard().getRailCardID().toString();
+								abonnement.getLblKLantenNummerResult().setText(customerID.toString());
+							
 							}
-
 						}
 
+							SubscriptionDAO subscriptionHandler = new SubscriptionDAO();
+							ArrayList<Subscription> sublist = subscriptionHandler.selectAll();
+							
+							for (int i = 0; i < sublist.size(); i++) {
+								if(sublist.get(i).getRailCardID().toString().equals(subsbscriptionID))
+								{
+									abonnement.getTxtStation1().setSelectedItem(sublist.get(i).getRoute().getDepartureStation().getStationName());
+									abonnement.getTxtStation2().setSelectedItem(sublist.get(i).getRoute().getArrivalStation().getStationName());
+								}
+							}
+					
 						abonnement.getBtnMeerInfo().setEnabled(true);
 					}
 				});
