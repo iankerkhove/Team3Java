@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.UUID;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,14 +14,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
+
 import dao.DiscountDAO;
-import gui.DiscountAutoCompletor;
 import gui.GUIDateFormat;
-import gui.PassTypesAutoCompletor;
-import gui.LangageHandler;
 import gui.StationsAutoCompletor;
 import model.Discount;
 
@@ -76,8 +76,6 @@ public class NieuwAbonnementPanel extends JPanel {
 	
 	private StationsAutoCompletor txtStation1;
 	private StationsAutoCompletor txtStation2;
-	private DiscountAutoCompletor cbxDiscount;
-	private PassTypesAutoCompletor cbxTreinkaart;
 
 	private JRadioButton rdbEersteKlasse;
 	private JRadioButton rdbTweedeKlasse;
@@ -86,9 +84,13 @@ public class NieuwAbonnementPanel extends JPanel {
 	private JDatePickerImpl dteGeboorteDatum;
 	private JDatePickerImpl dteStartDatum;
 
+	private JComboBox<String> cbxTreinkaart;
 	private JComboBox<String> cbxDuur;
+	private JComboBox<String> cbxDiscount;
 	
+	//@SuppressWarnings({ "rawtypes", "unchecked" })
 	public NieuwAbonnementPanel() {
+
 		discountMap = new HashMap<String, UUID>();
 		ArrayList<Discount> discountList = new DiscountDAO().selectAll();
 		
@@ -97,74 +99,55 @@ public class NieuwAbonnementPanel extends JPanel {
 			discountMap.put(discount.getName(), discount.getDiscountID());
 		}
 		
-		lblTitle = new JLabel();
-		LangageHandler.chooseLangageLbl(lblTitle, "nieuwAbo");
+		lblTitle = new JLabel("Nieuw Abonnement");
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
-		lblNaam = new JLabel();
-		LangageHandler.chooseLangageLbl(lblNaam, "naam");
+		lblNaam = new JLabel("Naam: ");
 		txtNaam = new JTextField();
 
-		lblVoornaam = new JLabel();
-		LangageHandler.chooseLangageLbl(lblVoornaam, "voornaam");
+		lblVoornaam = new JLabel("Voornaam: ");
 		txtVoornaam = new JTextField();
-		lblGeboortedatum = new JLabel();
-		LangageHandler.chooseLangageLbl(lblGeboortedatum, "geboortedatum");
-		lblEmail = new JLabel();
-		LangageHandler.chooseLangageLbl(lblEmail, "email");
+		lblGeboortedatum = new JLabel("Geboortedatum: ");
+		lblEmail = new JLabel("Email: ");
 		txtEmail = new JTextField();
-		lblGemeente = new JLabel();
-		LangageHandler.chooseLangageLbl(lblGemeente, "gemeente");
+		lblGemeente = new JLabel("Gemeente: ");
 		txtGemeente = new JTextField();
-		lblPostcode = new JLabel();
-		LangageHandler.chooseLangageLbl(lblPostcode, "postcode");
+		lblPostcode = new JLabel("Postcode: ");
 		txtPostcode = new JTextField();
-		lblStraatEnNummer = new JLabel();
-		LangageHandler.chooseLangageLbl(lblStraatEnNummer, "straatNr");
+		lblStraatEnNummer = new JLabel("Straat + nr: ");
 		txtStraat = new JTextField();
 		txtNummer = new JTextField();
-		lblStartDatum = new JLabel();
-		LangageHandler.chooseLangageLbl(lblStartDatum, "startdatum");
-		lblKlasse = new JLabel();
-		LangageHandler.chooseLangageLbl(lblKlasse, "klasse");
-		rdbEersteKlasse = new JRadioButton();
-		LangageHandler.chooseLangageRdb(rdbEersteKlasse, "1eKlasse");
-		rdbTweedeKlasse = new JRadioButton();
-		LangageHandler.chooseLangageRdb(rdbTweedeKlasse, "2eKlasse");
+		lblStartDatum = new JLabel("Startdatum: ");
+		lblKlasse = new JLabel("Klasse: ");
+		rdbEersteKlasse = new JRadioButton("1e Klas");
+		rdbEersteKlasse.setMnemonic(1);
+		rdbTweedeKlasse = new JRadioButton("2e Klas");
+		rdbTweedeKlasse.setMnemonic(2);
 		rdbTweedeKlasse.setSelected(true);
-		lblTreinkaart = new JLabel();
-		LangageHandler.chooseLangageLbl(lblTreinkaart, "type");
-		lblDiscount = new JLabel();
-		LangageHandler.chooseLangageLbl(lblDiscount, "korting");
-		lblDuur = new JLabel();
-		LangageHandler.chooseLangageLbl(lblDuur, "duur");
-		lblVervaldatum = new JLabel();
-		LangageHandler.chooseLangageLbl(lblVervaldatum, "vervaldatum");
-		lblBerekendeVervaldatum = new JLabel();
-		LangageHandler.chooseLangageLbl(lblBerekendeVervaldatum, "vervaldatum2");
-		lblCustomerID = new JLabel();
-		LangageHandler.chooseLangageLbl(lblCustomerID, "klantId");
+		lblTreinkaart = new JLabel("Type treinkaart: ");
+		lblDiscount = new JLabel("Korting: ");
+		lblDuur = new JLabel("Duur: ");
+		lblVervaldatum = new JLabel("Vervaldatum: ");
+		lblBerekendeVervaldatum = new JLabel("'Vervaldatum'");
+		lblCustomerID = new JLabel("Klant ID (Als klant al bestaat)");
 		txtCustomerID = new JTextField();
 		
 		lblStation1 = new JLabel("Station 1: ");
 		lblStation2 = new JLabel("Station 2: ");
 		txtStation1 = new StationsAutoCompletor();
 		txtStation2 = new StationsAutoCompletor();
-		btnVerzenden = new JButton();
-		LangageHandler.chooseLangageBtn(btnVerzenden, "verzenden");
+		btnVerzenden = new JButton("Verzenden");
 		lblFoutmelding = new JLabel("");
 		
 		grpKlasses = new ButtonGroup();
 		grpKlasses.add(rdbEersteKlasse);
 		grpKlasses.add(rdbTweedeKlasse);
 		
-		btnValideer = new JButton();
-		LangageHandler.chooseLangageBtn(btnValideer, "valideer");
+		btnValideer = new JButton("Valideer");
 		lblBedrag = new JLabel("0");
 		lblEuro = new JLabel("euro");
 		
-		btnCustomerID = new JButton();
-		LangageHandler.chooseLangageBtn(btnCustomerID, "zoek");
+		btnCustomerID = new JButton("Zoek");
 	
 
 		Properties properties = new Properties();
@@ -179,14 +162,15 @@ public class NieuwAbonnementPanel extends JPanel {
 		dteStartDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
 
 
-
-		cbxTreinkaart = new PassTypesAutoCompletor();
-
+		String[] soortKaart = { "Trajecttreinkaart", "Halftijdstreinkaart", "Nettreinkaart", "Schooltreinkaart" };
+		cbxTreinkaart = new JComboBox<String>(soortKaart);
+		
 		String[] aantalMaanden = { "1 maand", "3 maanden", "12 maanden"};
 		cbxDuur = new JComboBox<String>(aantalMaanden);
-    
-		cbxDiscount = new DiscountAutoCompletor();
-    
+		
+		String[] soortDiscount = discountMap.keySet().toArray(new String[discountMap.size()]);
+		cbxDiscount = new JComboBox<String>(soortDiscount);
+		
 		fullpanel();
 		
 	}
@@ -439,8 +423,16 @@ public class NieuwAbonnementPanel extends JPanel {
 		return dteStartDatum;
 	}
 
+	public JComboBox<String> getCbxTreinkaart() {
+		return cbxTreinkaart;
+	}
+
 	public JComboBox<String> getCbxDuur() {
 		return cbxDuur;
+	}
+
+	public JComboBox<String> getCbxDiscount() {
+		return cbxDiscount;
 	}
 	
 	public JLabel getLblCustomerID() {
@@ -493,14 +485,6 @@ public class NieuwAbonnementPanel extends JPanel {
 	public HashMap<String, UUID> getDiscounts()
 	{
 		return this.discountMap;
-	}
-	
-	public PassTypesAutoCompletor getCbxTreinkaart() {
-		return cbxTreinkaart;
-	}
-
-	public DiscountAutoCompletor getCbxDiscount() {
-		return cbxDiscount;
 	}
 	
 
