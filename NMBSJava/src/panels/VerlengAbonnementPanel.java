@@ -16,6 +16,7 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import gui.DiscountAutoCompletor;
 import gui.GUIDateFormat;
 import gui.StationsAutoCompletor;
 
@@ -97,11 +98,12 @@ public class VerlengAbonnementPanel extends JPanel {
 		lblVervaldatumResult = new JLabel(" ");
 		lblKlasse = new JLabel("Klasse: ");
 		rdbEersteKlasse = new JRadioButton("1e Klas");
+		rdbEersteKlasse.setMnemonic(1);
 		rdbTweedeKlasse = new JRadioButton("2e Klas");
+		rdbTweedeKlasse.setMnemonic(2);
 		rdbTweedeKlasse.setSelected(true);
 		lblDiscount=new JLabel("Korting: ");
-		String[] soortDiscount = {"Geen", "Student", "Gepensioneerd"};
-		cbxDiscount = new JComboBox(soortDiscount);
+		cbxDiscount = new DiscountAutoCompletor();
 		lblStation1 = new JLabel("Station 1: ");
 		txtStation1 = new StationsAutoCompletor();
 		lblStation2 = new JLabel("Station 2: ");
