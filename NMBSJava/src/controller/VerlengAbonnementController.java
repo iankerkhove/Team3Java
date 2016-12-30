@@ -66,6 +66,7 @@ public class VerlengAbonnementController {
 
 						CustomerDAO daoCustomer = new CustomerDAO();
 						ArrayList<Customer> list = daoCustomer.selectAll();
+            
 						//Geeft nog fout hierop, moet nog worden aangepast in subscriptionDAO
 						SubscriptionDAO subDao = new SubscriptionDAO();
 						ArrayList<Subscription> sublist = subDao.selectAll();
@@ -100,6 +101,7 @@ public class VerlengAbonnementController {
 
 							for (int i = 0; i < list.size(); i++) {
 								if (customerID.equals(list.get(i).getCustomerID().toString())) {
+                  
 									JFrame frame = new JFrame();
 									JOptionPane.showMessageDialog(frame, "Naam: " + list.get(i).getLastName() + "\n"
 											+ "Voornaam: " + list.get(i).getFirstName() + "\n" + "Geboortedatum: "

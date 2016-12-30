@@ -338,7 +338,7 @@ public class SubscriptionDAO extends BaseDAO
 		d = DiscountDAO.resultToModel(rs);
 
 		s.setSubscriptionID(UUID.fromString(rs.getString("SubscriptionID")));
-		s.setRailCardID(UUID.fromString(rs.getString("RailCardID")));
+		s.setRailCardID(UUID.fromString(rs.getString("CardID")));
 		s.setRoute(r);
 		s.setDiscount(d);
 		s.setValidFrom(rs.getString("ValidFrom"));
@@ -353,7 +353,7 @@ public class SubscriptionDAO extends BaseDAO
 		Subscription s = new Subscription();
 
 		s.setSubscriptionID(UUID.fromString(rs.getString("SubscriptionID")));
-		s.setRailCardID(UUID.fromString(rs.getString("RailCardID")));
+		s.setRailCardID(UUID.fromString(rs.getString("CardID")));
 		s.setRouteID(UUID.fromString(rs.getString("RouteID")));
 		s.setDiscountID(UUID.fromString(rs.getString("DiscountID")));
 		s.setValidFrom(rs.getString("ValidFrom"));
