@@ -295,7 +295,7 @@ public class SubscriptionDAO extends BaseDAO
 				+ "INNER JOIN Station s1 on s1.StationID = r.DepartureStationID "
 				+ "INNER JOIN Station s2 on s2.StationID = r.ArrivalStationID "
 				+ "INNER JOIN Discount d ON d.DiscountID = s.DiscountID "
-				+ "WHERE SubscriptionID = ?;";
+				+ "Where s.SubscriptionID =?;";
 		try {
 
 			if (getConnection().isClosed()) {
@@ -327,7 +327,7 @@ public class SubscriptionDAO extends BaseDAO
 			}
 		}
 	}
-
+	
 	private Subscription resultToModel(ResultSet rs) throws SQLException
 	{
 		Subscription s = new Subscription();
