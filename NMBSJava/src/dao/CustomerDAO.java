@@ -105,8 +105,8 @@ public class CustomerDAO extends BaseDAO
 			}
 			ps = getConnection().prepareStatement(sql);
 			
-			ps.setString(1, c.getRailCardID().toString());
-			ps.setString(2, c.getAddressID().toString());
+			ps.setString(1, c.getRailCard().getRailCardID().toString());
+			ps.setString(2, c.getAddress().getAddressID().toString());
 			ps.setString(3, c.getFirstName());
 			ps.setString(4, c.getLastName());
 			ps.setString(5, c.getBirthDate().toString());
@@ -118,8 +118,8 @@ public class CustomerDAO extends BaseDAO
 			{
 				params = new HashMap<String, String>();
 				params.put("customerID", c.getCustomerID().toString());
-				params.put("railCardID", c.getRailCardID().toString());
-				params.put("addressID", c.getAddressID().toString());
+				params.put("railCardID", c.getRailCard().getRailCardID().toString());
+				params.put("addressID", c.getAddress().getAddressID().toString());
 				params.put("firstName", c.getFirstName());
 				params.put("lastName", c.getLastName());
 				params.put("email", c.getEmail());
@@ -331,7 +331,9 @@ public class CustomerDAO extends BaseDAO
 		}
 	}
 	
+
 	public Customer selectOneOnSubscriptionID(String subscriptionID)
+
 	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -343,7 +345,7 @@ public class CustomerDAO extends BaseDAO
 				+ "INNER JOIN Customer c on c.RailCardID = s.RailCardID "
 				+ "INNER JOIN Address a ON a.AddressID = c.AddressID "
 				+ "WHERE s.SubscriptionID = ?";
-
+        
 		try {
 
 			if (getConnection().isClosed()) {
@@ -352,6 +354,7 @@ public class CustomerDAO extends BaseDAO
 			ps = getConnection().prepareStatement(sql);
 
 			ps.setString(1, subscriptionID);
+
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);
