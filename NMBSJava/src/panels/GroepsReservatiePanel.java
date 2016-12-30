@@ -41,15 +41,18 @@ public class GroepsReservatiePanel extends JPanel {
 		this.setLayout(new GridLayout(9, 2, 5, 5));
 
 		// title
-		lblTitle = new JLabel("Reservatie maken");
+		lblTitle = new JLabel();
+		LangageHandler.chooseLangageLbl(lblTitle, "reservatie");
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		// labelVan
-		lblVan = new JLabel("Van: ");
+		lblVan = new JLabel();
+		LangageHandler.chooseLangageLbl(lblVan, "van");
 		autVan = new StationsAutoCompletor();
 
 		// labelNaar
-		lblNaar = new JLabel("Naar: ");
+		lblNaar = new JLabel();
+		LangageHandler.chooseLangageLbl(lblNaar, "naar");
 		autNaar = new StationsAutoCompletor();
 
 		// datepicker properties
@@ -75,7 +78,8 @@ public class GroepsReservatiePanel extends JPanel {
 		aantPersonen = new JSpinner(model);
 
 		// print
-		btnPrint = new JButton("Print");
+		btnPrint = new JButton();
+		LangageHandler.chooseLangageBtn(btnPrint, "print");
 		// prijs
 		lblPrijs = new JLabel(" € 0 ");
 		lblPrijs.setHorizontalAlignment(SwingConstants.CENTER);

@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.commons.codec.language.bm.Lang;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +13,7 @@ import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
 import controller.DateTimeConverter;
 import gui.GUIDateFormat;
+import gui.LangageHandler;
 import services.APIThread;
 import services.ThreadListener;
 
@@ -32,7 +34,18 @@ public class RouteberekeningAPI {
 		params.put("time", GUIDateFormat.getRawTime());
 		params.put("timeSel", "depart");
 		params.put("format", "json");
-		params.put("lang", "NL");
+		if(LangageHandler.getTaal().equals("Nederlands"))
+		{
+			params.put("lang", "NL");
+		}
+		else if(LangageHandler.getTaal().equals("Français"))
+		{
+			params.put("lang", "FR");
+		}
+		else if(LangageHandler.getTaal().equals("English"))
+		{
+			params.put("lang", "EN");
+		}
 
 
 		APIThread irailsAPI = new APIThread(APIUrl.IRAILS, "connections", RequestType.GET, params);
@@ -142,12 +155,12 @@ public class RouteberekeningAPI {
 			ss += "\n";
 
 			// ROUTE EXTRA INFO
-			ss += this.getConnections().get(i).getDuration() + " minuten";
+			ss += this.getConnections().get(i).getDuration() + " " + LangageHandler.chooseLangage("minuten");
 			if (!this.getConnections().get(i).getNumberOfVias().equals("0")) {
-				ss += " - " + this.getConnections().get(i).getNumberOfVias() + " keer overstappen";
+				ss += " - " + this.getConnections().get(i).getNumberOfVias() + " " + LangageHandler.chooseLangage("overstappen");
 			}
 			if (!this.getConnections().get(i).getDeparture().getCancelled().equals("0")) {
-				ss += " - AFGELAST";
+				ss += " - " + LangageHandler.chooseLangage("afgelast");
 			}
 			ss += "\n\n";
 

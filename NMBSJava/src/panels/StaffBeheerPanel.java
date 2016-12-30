@@ -48,6 +48,7 @@ public class StaffBeheerPanel  extends JPanel{
 	private JPasswordField txtPassword;
 
 	private JButton btnVoegToe;
+	private JButton btnWijzig;
 
 	private StationsAutoCompletor txtStation;
 
@@ -176,9 +177,13 @@ public class StaffBeheerPanel  extends JPanel{
 		content.add(rdbNee);
 
 		/////////13
+		btnWijzig = new JButton();
+		LangageHandler.chooseLangageBtn(btnWijzig, "wijzigStaff");
+		
 		btnVoegToe = new JButton();
 		LangageHandler.chooseLangageBtn(btnVoegToe, "voegStaff");
-		content.add(new JLabel());
+		
+		content.add(btnWijzig);
 		content.add(btnVoegToe);
 
 
@@ -295,6 +300,10 @@ public class StaffBeheerPanel  extends JPanel{
 
 	public JTextField getTxtEmail() {
 		return txtEmail;
+	}
+
+	public JButton getBtnWijzig() {
+		return btnWijzig;
 	}
 
 	

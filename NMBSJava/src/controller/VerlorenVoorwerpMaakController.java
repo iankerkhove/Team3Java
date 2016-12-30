@@ -68,7 +68,7 @@ public class VerlorenVoorwerpMaakController {
 								try {
 									lostD.insert(lostObject);
 								}catch (NumberFormatException e1){
-									Popup.warningMessage("voorwerpWarningPopup", "voorwerpWarningPopupTitel");
+									Popup.errorMessage("voorwerpWarningPopup", "voorwerpWarningPopupTitel");
 									check = false;
 								} 
 							}

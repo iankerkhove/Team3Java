@@ -12,8 +12,11 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.JTextField;
 import java.util.Properties;
+
+import org.apache.commons.codec.language.bm.Lang;
 import org.jdatepicker.impl.*;
 import gui.GUIDateFormat;
+import gui.LangageHandler;
 import gui.StationsAutoCompletor;
 
 public class NieuwAbonnementPanel extends JPanel {
@@ -76,53 +79,74 @@ public class NieuwAbonnementPanel extends JPanel {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public NieuwAbonnementPanel() {
 
-		lblTitle = new JLabel("Nieuw Abonnement");
+		lblTitle = new JLabel();
+		LangageHandler.chooseLangageLbl(lblTitle, "nieuwAbo");
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
-		lblNaam = new JLabel("Naam: ");
+		lblNaam = new JLabel();
+		LangageHandler.chooseLangageLbl(lblNaam, "naam");
 		txtNaam = new JTextField();
 
-		lblVoornaam = new JLabel("Voornaam: ");
+		lblVoornaam = new JLabel();
+		LangageHandler.chooseLangageLbl(lblVoornaam, "voornaam");
 		txtVoornaam = new JTextField();
-		lblGeboortedatum = new JLabel("Geboortedatum: ");
-		lblEmail = new JLabel("Email: ");
+		lblGeboortedatum = new JLabel();
+		LangageHandler.chooseLangageLbl(lblGeboortedatum, "geboortedatum");
+		lblEmail = new JLabel();
+		LangageHandler.chooseLangageLbl(lblEmail, "email");
 		txtEmail = new JTextField();
-		lblGemeente = new JLabel("Gemeente: ");
+		lblGemeente = new JLabel();
+		LangageHandler.chooseLangageLbl(lblGemeente, "gemeente");
 		txtGemeente = new JTextField();
-		lblPostcode = new JLabel("Postcode: ");
+		lblPostcode = new JLabel();
+		LangageHandler.chooseLangageLbl(lblPostcode, "postcode");
 		txtPostcode = new JTextField();
-		lblStraatEnNummer = new JLabel("Straat + nr: ");
+		lblStraatEnNummer = new JLabel();
+		LangageHandler.chooseLangageLbl(lblStraatEnNummer, "straatNr");
 		txtStraat = new JTextField();
 		txtNummer = new JTextField();
-		lblStartDatum = new JLabel("Startdatum: ");
-		lblKlasse = new JLabel("Klasse: ");
-		rdbEersteKlasse = new JRadioButton("1e Klas");
-		rdbTweedeKlasse = new JRadioButton("2e Klas");
+		lblStartDatum = new JLabel();
+		LangageHandler.chooseLangageLbl(lblStartDatum, "startdatum");
+		lblKlasse = new JLabel();
+		LangageHandler.chooseLangageLbl(lblKlasse, "klasse");
+		rdbEersteKlasse = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbEersteKlasse, "1eKlasse");
+		rdbTweedeKlasse = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbTweedeKlasse, "2eKlasse");
 		rdbTweedeKlasse.setSelected(true);
-		lblTreinkaart = new JLabel("Type treinkaart: ");
-		lblDiscount = new JLabel("Korting: ");
-		lblDuur = new JLabel("Duur: ");
-		lblVervaldatum = new JLabel("Vervaldatum: ");
-		lblBerekendeVervaldatum = new JLabel("'Vervaldatum'");
-		lblCustomerID = new JLabel("Klant ID (Als klant al bestaat)");
+		lblTreinkaart = new JLabel();
+		LangageHandler.chooseLangageLbl(lblTreinkaart, "type");
+		lblDiscount = new JLabel();
+		LangageHandler.chooseLangageLbl(lblDiscount, "korting");
+		lblDuur = new JLabel();
+		LangageHandler.chooseLangageLbl(lblDuur, "duur");
+		lblVervaldatum = new JLabel();
+		LangageHandler.chooseLangageLbl(lblVervaldatum, "vervaldatum");
+		lblBerekendeVervaldatum = new JLabel();
+		LangageHandler.chooseLangageLbl(lblBerekendeVervaldatum, "vervaldatum2");
+		lblCustomerID = new JLabel();
+		LangageHandler.chooseLangageLbl(lblCustomerID, "klantId");
 		txtCustomerID = new JTextField();
 		
 		lblStation1 = new JLabel("Station 1: ");
 		lblStation2 = new JLabel("Station 2: ");
 		txtStation1 = new StationsAutoCompletor();
 		txtStation2 = new StationsAutoCompletor();
-		btnVerzenden = new JButton("Verzenden");
+		btnVerzenden = new JButton();
+		LangageHandler.chooseLangageBtn(btnVerzenden, "verzenden");
 		lblFoutmelding = new JLabel("");
 		
 		grpKlasses = new ButtonGroup();
 		grpKlasses.add(rdbEersteKlasse);
 		grpKlasses.add(rdbTweedeKlasse);
 		
-		btnValideer = new JButton("Valideer");
+		btnValideer = new JButton();
+		LangageHandler.chooseLangageBtn(btnValideer, "valideer");
 		lblBedrag = new JLabel("0");
 		lblEuro = new JLabel("euro");
 		
-		btnCustomerID = new JButton("Zoek");
+		btnCustomerID = new JButton();
+		LangageHandler.chooseLangageBtn(btnCustomerID, "zoek");
 	
 
 		Properties properties = new Properties();
@@ -137,13 +161,13 @@ public class NieuwAbonnementPanel extends JPanel {
 		dteStartDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
 
 
-		String[] soortKaart = { "Trajecttreinkaart", "Halftijdstreinkaart", "Nettreinkaart", "Schooltreinkaart" };
+		String[] soortKaart = { LangageHandler.chooseLangage("trajecttreinkaart"), LangageHandler.chooseLangage("halftijdstreinkaart"), LangageHandler.chooseLangage("nettreinkaart"), LangageHandler.chooseLangage("schooltreinkaart") };
 		cbxTreinkaart = new JComboBox(soortKaart);
 		
-		String[] aantalMaanden = { "1 maand", "3 maanden", "12 maanden"};
+		String[] aantalMaanden = { LangageHandler.chooseLangage("1maand"), LangageHandler.chooseLangage("3maand"), LangageHandler.chooseLangage("12maand")};
 		cbxDuur = new JComboBox(aantalMaanden);
 		
-		String[] soortDiscount = {"Geen", "Student", "Gepensioneerd"};
+		String[] soortDiscount = {LangageHandler.chooseLangage("geen"), LangageHandler.chooseLangage("student"), LangageHandler.chooseLangage("gepensioneerd")};
 		cbxDiscount = new JComboBox(soortDiscount);
 		
 		fullpanel();

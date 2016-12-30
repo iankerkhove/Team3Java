@@ -104,7 +104,7 @@ public class VerlorenVoorwerpZoekPanel extends JPanel {
 		search.add(btnGevonden);
 		
 		btnZoek = new JButton();
-		LangageHandler.chooseLangageBtn(btnZoek, "zoekTrein");
+		LangageHandler.chooseLangageBtn(btnZoek, "zoekVoorwerpTrein");
 		search.add(btnZoek);
 
 		

@@ -9,6 +9,7 @@ import org.json.JSONArray;
 
 import controller.APIController.APIUrl;
 import controller.APIController.RequestType;
+import gui.LangageHandler;
 import model.api.Stationboard;
 import panels.StationboardPanel;
 import services.APIThread;
@@ -48,7 +49,8 @@ public class StationsbordController
 									}
 									else
 									{
-										station.getLblResult().setText("Dit verzoek kon niet verwerkt worden.");
+										LangageHandler.chooseLangageLbl(station.getLblResult(),"verzoek");
+										//station.getLblResult().setText("Dit verzoek kon niet verwerkt worden.");
 									}
 								}
 								
@@ -58,7 +60,8 @@ public class StationsbordController
 							
 						}
 						else {
-							station.getLblResult().setText("Formulier werd niet correct ingevuld.");
+							LangageHandler.chooseLangageLbl(station.getLblResult(),"foutRes");
+							//station.getLblResult().setText("Formulier werd niet correct ingevuld.");
 						}
 
 					}
