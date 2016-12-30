@@ -24,8 +24,13 @@ import gui.GUIDateFormat;
 import gui.StationsAutoCompletor;
 import model.Discount;
 
-public class NieuwAbonnementPanel<discountMap> extends JPanel {
+public class NieuwAbonnementPanel extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4090414931591291748L;
+
 	private HashMap<String, UUID> discountMap;
 	
 	private JPanel pnlKlasse;
@@ -79,11 +84,11 @@ public class NieuwAbonnementPanel<discountMap> extends JPanel {
 	private JDatePickerImpl dteGeboorteDatum;
 	private JDatePickerImpl dteStartDatum;
 
-	private JComboBox cbxTreinkaart;
-	private JComboBox cbxDuur;
-	private JComboBox cbxDiscount;
+	private JComboBox<String> cbxTreinkaart;
+	private JComboBox<String> cbxDuur;
+	private JComboBox<String> cbxDiscount;
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	//@SuppressWarnings({ "rawtypes", "unchecked" })
 	public NieuwAbonnementPanel() {
 
 		discountMap = new HashMap<String, UUID>();
@@ -156,13 +161,13 @@ public class NieuwAbonnementPanel<discountMap> extends JPanel {
 
 
 		String[] soortKaart = { "Trajecttreinkaart", "Halftijdstreinkaart", "Nettreinkaart", "Schooltreinkaart" };
-		cbxTreinkaart = new JComboBox(soortKaart);
+		cbxTreinkaart = new JComboBox<String>(soortKaart);
 		
 		String[] aantalMaanden = { "1 maand", "3 maanden", "12 maanden"};
-		cbxDuur = new JComboBox(aantalMaanden);
+		cbxDuur = new JComboBox<String>(aantalMaanden);
 		
 		String[] soortDiscount = discountMap.keySet().toArray(new String[discountMap.size()]);
-		cbxDiscount = new JComboBox(soortDiscount);
+		cbxDiscount = new JComboBox<String>(soortDiscount);
 		
 		fullpanel();
 		
@@ -416,15 +421,15 @@ public class NieuwAbonnementPanel<discountMap> extends JPanel {
 		return dteStartDatum;
 	}
 
-	public JComboBox getCbxTreinkaart() {
+	public JComboBox<String> getCbxTreinkaart() {
 		return cbxTreinkaart;
 	}
 
-	public JComboBox getCbxDuur() {
+	public JComboBox<String> getCbxDuur() {
 		return cbxDuur;
 	}
 
-	public JComboBox getCbxDiscount() {
+	public JComboBox<String> getCbxDiscount() {
 		return cbxDiscount;
 	}
 	
