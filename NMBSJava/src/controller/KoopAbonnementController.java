@@ -12,16 +12,19 @@ import java.util.UUID;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import controller.Prijsberekening.TypeKeuze;
 import dao.AddressDAO;
 import dao.CustomerDAO;
 import dao.RailCardDAO;
 import dao.RouteDAO;
+import dao.StationDAO;
 import dao.SubscriptionDAO;
 import gui.GUIDateFormat;
 import model.Address;
 import model.Customer;
 import model.RailCard;
 import model.Route;
+import model.Station;
 import model.Subscription;
 import panels.NieuwAbonnementPanel;
 
@@ -237,8 +240,18 @@ public class KoopAbonnementController {
 
 					public void actionPerformed(ActionEvent ae) {
 						if (correctFormulier(abonnement)) {
-							// prijsberekening
-							abonnement.getLblPrint().setText("100");
+							String ticketTypeID = abonnement.getCbxTreinkaart().getSelectedDiscount().toString();
+							String station1ID = abonnement.getTxtStation1().getSelectedStation().toString();
+							String station2ID = abonnement.getTxtStation2().getSelectedStation().toString();
+
+							StationDAO handler = new StationDAO();
+							Station s1 = handler.selectOne(station1ID.toString());
+							Station s2 = handler.selectOne(station2ID.toString());
+
+							abonnement.getLblPrint().setText(Double.toString(
+									Prijsberekening.berekenPrijs(s1, s2, TypeKeuze.PASS, ticketTypeID)));
+							abonnement.getLblFoutmelding().setText("Het formulier is correct");
+							
 							abonnement.getBtnVerzenden().setEnabled(true);
 						} else {
 							abonnement.getLblPrint().setText("0");
@@ -376,7 +389,7 @@ public class KoopAbonnementController {
 		Route r = new Route(vanID, naarID);
 		RouteDAO daoRoute = new RouteDAO();
 		daoRoute.insert(r);
-
+		routeID = r.getRouteID();
 	}
 
 	public static void createAbonnement(NieuwAbonnementPanel abonnement) {

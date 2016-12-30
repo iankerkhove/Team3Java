@@ -17,7 +17,9 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 import dao.DiscountDAO;
+import gui.DiscountAutoCompletor;
 import gui.GUIDateFormat;
+import gui.PassTypesAutoCompletor;
 import gui.LangageHandler;
 import gui.StationsAutoCompletor;
 import model.Discount;
@@ -74,6 +76,8 @@ public class NieuwAbonnementPanel extends JPanel {
 	
 	private StationsAutoCompletor txtStation1;
 	private StationsAutoCompletor txtStation2;
+	private DiscountAutoCompletor cbxDiscount;
+	private PassTypesAutoCompletor cbxTreinkaart;
 
 	private JRadioButton rdbEersteKlasse;
 	private JRadioButton rdbTweedeKlasse;
@@ -82,9 +86,7 @@ public class NieuwAbonnementPanel extends JPanel {
 	private JDatePickerImpl dteGeboorteDatum;
 	private JDatePickerImpl dteStartDatum;
 
-	private JComboBox<String> cbxTreinkaart;
 	private JComboBox<String> cbxDuur;
-	private JComboBox<String> cbxDiscount;
 	
 	public NieuwAbonnementPanel() {
 		discountMap = new HashMap<String, UUID>();
@@ -175,14 +177,16 @@ public class NieuwAbonnementPanel extends JPanel {
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteStartDatum = new JDatePickerImpl(datePanel2, new GUIDateFormat());
 		dteStartDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
-		
-		
-		String[] soortKaart = { "Trajecttreinkaart", "Halftijdstreinkaart", "Nettreinkaart", "Schooltreinkaart" };
-		cbxTreinkaart = new JComboBox<String>(soortKaart);
+
+
+
+		cbxTreinkaart = new PassTypesAutoCompletor();
+
 		String[] aantalMaanden = { "1 maand", "3 maanden", "12 maanden"};
 		cbxDuur = new JComboBox<String>(aantalMaanden);
-		String[] soortDiscount = discountMap.keySet().toArray(new String[discountMap.size()]);
-		cbxDiscount = new JComboBox<String>(soortDiscount);
+    
+		cbxDiscount = new DiscountAutoCompletor();
+    
 		fullpanel();
 		
 	}
@@ -435,16 +439,8 @@ public class NieuwAbonnementPanel extends JPanel {
 		return dteStartDatum;
 	}
 
-	public JComboBox<String> getCbxTreinkaart() {
-		return cbxTreinkaart;
-	}
-
 	public JComboBox<String> getCbxDuur() {
 		return cbxDuur;
-	}
-
-	public JComboBox<String> getCbxDiscount() {
-		return cbxDiscount;
 	}
 	
 	public JLabel getLblCustomerID() {
@@ -497,6 +493,14 @@ public class NieuwAbonnementPanel extends JPanel {
 	public HashMap<String, UUID> getDiscounts()
 	{
 		return this.discountMap;
+	}
+	
+	public PassTypesAutoCompletor getCbxTreinkaart() {
+		return cbxTreinkaart;
+	}
+
+	public DiscountAutoCompletor getCbxDiscount() {
+		return cbxDiscount;
 	}
 	
 
