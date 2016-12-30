@@ -201,10 +201,11 @@ public class CustomerDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
+		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street, "
 				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
-				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
-				+ " FROM Customer c" + " INNER JOIN Address a ON a.AddressID = c.AddressID"
+				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated "
+				+ " FROM Customer c " 
+				+ " INNER JOIN Address a ON a.AddressID = c.AddressID "
 				+ " INNER JOIN RailCard r ON r.CardID = c.RailCardID;";
 
 		try {
@@ -290,11 +291,13 @@ public class CustomerDAO extends BaseDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,"
+		String sql = "SELECT c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street, "
 				+ " a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, "
-				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated"
-				+ " FROM Customer c" + " INNER JOIN Address a ON a.AddressID = c.AddressID"
-				+ " INNER JOIN RailCard r ON r.CardID = c.RailCardID" + " WHERE c.CustomerID = ?;";
+				+ "c.FirstName, c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated "
+				+ " FROM Customer c " 
+				+ " INNER JOIN Address a ON a.AddressID = c.AddressID "
+				+ " INNER JOIN RailCard r ON r.CardID = c.RailCardID " 
+				+ " WHERE c.CustomerID = ?;";
 
 		try {
 
@@ -304,6 +307,51 @@ public class CustomerDAO extends BaseDAO
 			ps = getConnection().prepareStatement(sql);
 
 			ps.setString(1, customerID);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return resultToModel(rs);
+			else
+				return null;
+		}
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (rs != null)
+					rs.close();
+			}
+			catch (SQLException e) {
+				System.out.println(e.getMessage());
+				throw new RuntimeException("error.unexpected");
+			}
+		}
+	}
+	
+	public Customer selectOneOnSubscriptionID(String subscriptionID)
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT  c.CustomerID, r.CardID, r.LastUpdated as CardLastUpdated, a.AddressID, a.Street,  a.Number, a.City, a.ZipCode, a.Coordinates, a.LastUpdated as AddressLastUpdated, c.FirstName, "
+				+ "c.LastName, c.BirthDate, c.Email, c.LastUpdated as CustomerLastUpdated "
+				+ "FROM Subscription s "
+				+ "INNER JOIN RailCard r on r.CardID = s.RailCardID "
+				+ "INNER JOIN Customer c on c.RailCardID = s.RailCardID "
+				+ "INNER JOIN Address a ON a.AddressID = c.AddressID "
+				+ "WHERE s.SubscriptionID = ?";
+
+		try {
+
+			if (getConnection().isClosed()) {
+				throw new IllegalStateException("error unexpected");
+			}
+			ps = getConnection().prepareStatement(sql);
+
+			ps.setString(1, subscriptionID);
 			rs = ps.executeQuery();
 			if (rs.next())
 				return resultToModel(rs);

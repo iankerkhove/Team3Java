@@ -21,23 +21,24 @@ import dao.DiscountDAO;
 import dao.RouteDAO;
 import dao.StationDAO;
 import dao.SubscriptionDAO;
-import dao.TypeTicketDAO;
 import gui.GUIDateFormat;
 import model.Customer;
 import model.Discount;
 import model.Route;
 import model.Station;
 import model.Subscription;
-import model.TypeTicket;
 import panels.VerlengAbonnementPanel;
 
-public class VerlengAbonnementController {
-	private static String customerID = "";
+public class VerlengAbonnementController
+{
+	private static UUID customerID;
 	private static String railCardID = "";
 
-	public static void startListening(VerlengAbonnementPanel abonnement) {
+	public static void startListening(VerlengAbonnementPanel abonnement)
+	{
 		EventQueue.invokeLater(new Runnable() {
-			public void run() {
+			public void run()
+			{
 				DiscountDAO discountHandler = new DiscountDAO();
 				ArrayList<Discount> discountList = discountHandler.selectAll();
 
@@ -53,39 +54,39 @@ public class VerlengAbonnementController {
 					c.add(Calendar.MONTH, 1);
 					startDatum = GUIDateFormat.objectToString(c);
 					abonnement.getLblVervaldatumResult().setText(startDatum);
-				} catch (ParseException pe) {
+				}
+				catch (ParseException pe) {
 					pe.printStackTrace();
 				}
 
 				abonnement.getBtnZoek().addActionListener(new ActionListener() {
 					@Override
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(ActionEvent e)
+					{
 						abonnement.getBtnMeerInfo().setEnabled(true);
 
-						String stringRailCardID = abonnement.getTxtAbonnementsNummer().getText();
+						String subsbscriptionID = abonnement.getTxtAbonnementsNummer().getText();
 
-						CustomerDAO daoCustomer = new CustomerDAO();
-						ArrayList<Customer> list = daoCustomer.selectAll();
-            
-						//Geeft nog fout hierop, moet nog worden aangepast in subscriptionDAO
-						SubscriptionDAO subDao = new SubscriptionDAO();
-						ArrayList<Subscription> sublist = subDao.selectAll();
+						CustomerDAO customerHandler = new CustomerDAO();
+						Customer c = customerHandler.selectOneOnSubscriptionID(subsbscriptionID);
 
-						for (int i = 0; i < list.size(); i++) {
-							if (stringRailCardID.equals(list.get(i).getRailCard().getRailCardID().toString())) {
-								customerID = list.get(i).getCustomerID().toString();
-								abonnement.getLblKLantenNummerResult().setText(list.get(i).getCustomerID().toString());
+						if (c != null) {
+							customerID = c.getCustomerID();
+							railCardID = c.getRailCard().getRailCardID().toString();
+
+							abonnement.getLblKLantenNummerResult().setText(c.getCustomerID().toString());
+
+							SubscriptionDAO subscriptionHandler = new SubscriptionDAO();
+							Subscription s = subscriptionHandler.selectOne(subsbscriptionID);
+
+							if (s != null) {
+								abonnement.getTxtStation1()
+										.setSelectedItem(s.getRoute().getArrivalStation().getStationName());
+								abonnement.getTxtStation2()
+										.setSelectedItem(s.getRoute().getDepartureStation().getStationName());
 							}
-						}
-						
-						for (int i = 0; i < sublist.size(); i++) {
-							if(stringRailCardID.equals(sublist.get(i).getRailCard().getRailCardID().toString())){
-								abonnement.getTxtStation1().setSelectedItem(sublist.get(i).getRoute().getArrivalStation().getStationName());
-								abonnement.getTxtStation2().setSelectedItem(sublist.get(i).getRoute().getArrivalStation().getStationName());
-							}
-						}
 
-					//	abonnement.getTxtStation1().setSelectedItem(list.get(i).getRailCardID());
+						}
 
 						abonnement.getBtnMeerInfo().setEnabled(true);
 					}
@@ -93,40 +94,41 @@ public class VerlengAbonnementController {
 
 				abonnement.getBtnMeerInfo().addActionListener(new ActionListener() {
 					@Override
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(ActionEvent e)
+					{
 						if (!abonnement.getLblKLantenNummerResult().getText().equals("")) {
 
 							CustomerDAO daoCustomer = new CustomerDAO();
-							ArrayList<Customer> list = daoCustomer.selectAll();
+							Customer c = daoCustomer.selectOne(customerID.toString());
 
-							for (int i = 0; i < list.size(); i++) {
-								if (customerID.equals(list.get(i).getCustomerID().toString())) {
-                  
-									JFrame frame = new JFrame();
-									JOptionPane.showMessageDialog(frame, "Naam: " + list.get(i).getLastName() + "\n"
-											+ "Voornaam: " + list.get(i).getFirstName() + "\n" + "Geboortedatum: "
-											+ list.get(i).getBirthDate() + "\n" + "E-mail: " + list.get(i).getEmail()
-											+ "\n" + "Straat + nr: " + list.get(i).getAddress().getStreet() + " "
-											+ list.get(i).getAddress().getNumber() + "\n" + "Postcode: "
-											+ list.get(i).getAddress().getZipCode() + "\n" + "Gemeente: "
-											+ list.get(i).getAddress().getCity() + "\n", "Meer info",
-											JOptionPane.PLAIN_MESSAGE);
-								}
+							if (c != null) {
+								JFrame frame = new JFrame();
+								JOptionPane.showMessageDialog(frame,
+										"Naam: " + c.getLastName() + "\n" + "Voornaam: " + c.getFirstName() + "\n"
+												+ "Geboortedatum: " + c.getBirthDate() + "\n" + "E-mail: "
+												+ c.getEmail() + "\n" + "Straat + nr: " + c.getAddress().getStreet()
+												+ " " + c.getAddress().getNumber() + "\n" + "Postcode: "
+												+ c.getAddress().getZipCode() + "\n" + "Gemeente: "
+												+ c.getAddress().getCity() + "\n",
+										"Meer info", JOptionPane.PLAIN_MESSAGE);
 							}
+
 						}
 					}
 				});
 
 				abonnement.getDteStartdatum().addActionListener(new ActionListener() {
 					@Override
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(ActionEvent e)
+					{
 						try {
 							String startDatum = abonnement.getDteStartdatum().getJFormattedTextField().getText();
 							Calendar c = GUIDateFormat.dateToCalendar((Date) GUIDateFormat.stringToObject(startDatum));
 							c.add(Calendar.MONTH, 1);
 							String vervalDatum = GUIDateFormat.objectToString(c);
 							abonnement.getLblVervaldatumResult().setText(vervalDatum);
-						} catch (ParseException pe) {
+						}
+						catch (ParseException pe) {
 							pe.printStackTrace();
 						}
 					}
@@ -134,7 +136,8 @@ public class VerlengAbonnementController {
 
 				abonnement.getCbxDuur().addActionListener(new ActionListener() {
 					@Override
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(ActionEvent e)
+					{
 						try {
 							String duur = abonnement.getCbxDuur().getSelectedItem().toString();
 							String startDatum = abonnement.getDteStartdatum().getJFormattedTextField().getText();
@@ -152,7 +155,8 @@ public class VerlengAbonnementController {
 							}
 							String vervalDatum = GUIDateFormat.objectToString(c);
 							abonnement.getLblVervaldatumResult().setText(vervalDatum);
-						} catch (ParseException pe) {
+						}
+						catch (ParseException pe) {
 							pe.printStackTrace();
 						}
 					}
@@ -161,42 +165,38 @@ public class VerlengAbonnementController {
 				abonnement.getBtnValideer().addActionListener(new ActionListener() {
 
 					@Override
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(ActionEvent e)
+					{
 						String abonnementsNummer = abonnement.getTxtAbonnementsNummer().getText();
-						String treinkaart = (String) abonnement.getCbxTreinkaart().getSelectedItem();
-						String korting = (String) abonnement.getCbxDiscount().getSelectedItem();
-						String duur = (String) abonnement.getCbxDuur().getSelectedItem();
+						String ticketTypeID = abonnement.getCbxTreinkaart().getSelectedDiscount().toString();
+						String kortingID = abonnement.getCbxDiscount().getSelectedDiscount().toString();
+						String duur = abonnement.getCbxDuur().getSelectedItem().toString();
 						String startdatum = abonnement.getDteStartdatum().getJFormattedTextField().getText();
-						String station1 = (String) abonnement.getTxtStation1().getSelectedItem();
-						String station2 = (String) abonnement.getTxtStation2().getSelectedItem();
+						String station1ID = abonnement.getTxtStation1().getSelectedStation().toString();
+						String station2ID = abonnement.getTxtStation2().getSelectedStation().toString();
 
-						if (!abonnementsNummer.equals("") && !duur.equals(null)
-								&& DateTimeConverter.checkDate(startdatum) && !station1.equals("")
-								&& !station2.equals("") && customerID.equals("")) {
+						if (!abonnementsNummer.equals("") 
+								&& !duur.equals(null)
+								&& !ticketTypeID.equals("")
+								&& !kortingID.equals("")
+								&& DateTimeConverter.checkDate(startdatum) 
+								&& !station1ID.equals("")
+								&& !station2ID.equals("")
+								&& customerID != null
+						) {
+
 
 							StationDAO handler = new StationDAO();
-							Station s1 = handler.selectOneOnName(station1);
-							Station s2 = handler.selectOneOnName(station2);
-							int klasse = abonnement.getGrpKlasses().getSelection().getMnemonic();
+							Station s1 = handler.selectOne(station1ID.toString());
+							Station s2 = handler.selectOne(station2ID.toString());
 
-							TypeTicketDAO handler2 = new TypeTicketDAO();
-							ArrayList<TypeTicket> list = handler2.selectAll();
-							String ticketTypeID = "";
-							for (int i = 0; i < list.size(); i++) {
-								if (list.get(i).getName().contains("Standaardticket")
-										&& list.get(i).getComfortClass() == klasse) {
-									ticketTypeID = list.get(i).getTypeTicketID().toString();
-								}
-							}
-							if (!ticketTypeID.equals("")) {
-								abonnement.getLblBedrag().setText(Double.toString(
-										Prijsberekening.berekenPrijs(s1, s2, TypeKeuze.TICKET, ticketTypeID)));
-								abonnement.getLblFoutmelding().setText("Het formulier is correct");
-								abonnement.getBtnVerzenden().setEnabled(true);
-							} else {
-								abonnement.getLblFoutmelding().setText("Niet gevonden");
-							}
-						} else {
+							abonnement.getLblBedrag().setText(Double.toString(
+									Prijsberekening.berekenPrijs(s1, s2, TypeKeuze.PASS, ticketTypeID)));
+							abonnement.getLblFoutmelding().setText("Het formulier is correct");
+							abonnement.getBtnVerzenden().setEnabled(true);
+
+						}
+						else {
 							abonnement.getLblFoutmelding().setText("Het formulier is niet volledig");
 						}
 					}
@@ -204,67 +204,62 @@ public class VerlengAbonnementController {
 
 				abonnement.getBtnVerzenden().addActionListener(new ActionListener() {
 					@Override
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(ActionEvent e)
+					{
 						String abonnementsNummer = abonnement.getTxtAbonnementsNummer().getText();
-						String treinkaart = (String) abonnement.getCbxTreinkaart().getSelectedItem();
-						String korting = (String) abonnement.getCbxDiscount().getSelectedItem();
-						String duur = (String) abonnement.getCbxDuur().getSelectedItem();
+						String ticketTypeID = abonnement.getCbxTreinkaart().getSelectedDiscount().toString();
+						String kortingID = abonnement.getCbxDiscount().getSelectedDiscount().toString();
+						String duur = abonnement.getCbxDuur().getSelectedItem().toString();
 						String startdatum = abonnement.getDteStartdatum().getJFormattedTextField().getText();
-						String station1 = (String) abonnement.getTxtStation1().getSelectedItem();
-						String station2 = (String) abonnement.getTxtStation2().getSelectedItem();
+						String station1ID = abonnement.getTxtStation1().getSelectedStation().toString();
+						String station2ID = abonnement.getTxtStation2().getSelectedStation().toString();
 						String eindDatum = abonnement.getLblVervaldatumResult().getText();
-						if (!abonnementsNummer.equals("") && !duur.equals(null)
-								&& DateTimeConverter.checkDate(startdatum) && !station1.equals("")
-								&& !station2.equals("") && customerID.equals("")) {
+						
+						if (!abonnementsNummer.equals("") 
+							&& !duur.equals(null)
+							&& !ticketTypeID.equals("")
+							&& !kortingID.equals("")
+							&& DateTimeConverter.checkDate(startdatum) 
+							&& !station1ID.equals("")
+							&& !station2ID.equals("") 
+							&& customerID != null
+						) {
 
 							StationDAO handler = new StationDAO();
-							Station s1 = handler.selectOneOnName(station1);
-							Station s2 = handler.selectOneOnName(station2);
-							int klasse = abonnement.getGrpKlasses().getSelection().getMnemonic();
 
-							TypeTicketDAO handler2 = new TypeTicketDAO();
-							ArrayList<TypeTicket> list = handler2.selectAll();
-							String ticketTypeID = "";
-							for (int i = 0; i < list.size(); i++) {
-								if (list.get(i).getName().contains("Standaardticket")
-										&& list.get(i).getComfortClass() == klasse) {
-									ticketTypeID = list.get(i).getTypeTicketID().toString();
-								}
-							}
+							Station s1 = handler.selectOne(station1ID);
+							Station s2 = handler.selectOne(station2ID);
 							
-							if (!ticketTypeID.equals("")) {
-								RouteDAO r = new RouteDAO();
-								Route route = r.selectOneOnRoute(station1, station2);
-								UUID routeID;
-								if (route != null) {
-									routeID = route.getRouteID();
-								} else {
-									System.out.println("Route bestaat niet");
-									route = new Route(s1.getStationID(), s2.getStationID());
-									routeID = route.getRouteID();
-									r.insert(route);
-								}
-								DiscountDAO handler4 = new DiscountDAO();
-								Discount d = handler4.selectOne(kortingMap.get(korting).toString());
-								abonnement.getLblBedrag().setText(Double.toString(
-										Prijsberekening.berekenPrijs(s1, s2, TypeKeuze.TICKET, ticketTypeID)));
-								abonnement.getLblFoutmelding().setText("Het formulier is correct");
-								abonnement.getBtnVerzenden().setEnabled(true);
-								
-
-								SubscriptionDAO handler3 = new SubscriptionDAO();
-								Subscription s = handler3.selectOne(UUID.fromString(abonnementsNummer).toString());
-								s.setRailCardID(UUID.fromString(railCardID));
-								s.setRouteID(routeID);
-								s.setDiscountID(d.getDiscountID());
-								s.setValidFrom(startdatum);
-								s.setValidUntil(eindDatum);
-								s.update();
-								handler3.insert(s);
-							} else {
-								abonnement.getLblFoutmelding().setText("Niet gevonden");
+							RouteDAO r = new RouteDAO();
+							Route route = r.selectOneOnRoute(station1ID, station2ID);
+							if (route == null) {
+								System.out.println("Route bestaat niet");
+								route = new Route(s1.getStationID(), s2.getStationID());
+								r.insert(route);
 							}
-						} else {
+
+							
+							DiscountDAO handler4 = new DiscountDAO();
+							Discount d = handler4.selectOne(kortingID);
+							
+							
+							abonnement.getLblBedrag().setText(Double.toString(
+									Prijsberekening.berekenPrijs(s1, s2, TypeKeuze.PASS, ticketTypeID)));
+							abonnement.getLblFoutmelding().setText("Het formulier is correct");
+							abonnement.getBtnVerzenden().setEnabled(true);
+
+							SubscriptionDAO handler3 = new SubscriptionDAO();
+							Subscription s = handler3.selectOne(UUID.fromString(abonnementsNummer).toString());
+							s.setRailCardID(UUID.fromString(railCardID));
+							s.setRouteID(route.getRouteID());
+							s.setDiscountID(d.getDiscountID());
+							s.setValidFrom(startdatum);
+							s.setValidUntil(eindDatum);
+							s.update();
+							handler3.update(s);
+
+						}
+						else {
 							abonnement.getLblFoutmelding().setText("Het formulier is niet volledig");
 						}
 
@@ -272,25 +267,28 @@ public class VerlengAbonnementController {
 				});
 
 				abonnement.getTxtAbonnementsNummer().getDocument().addDocumentListener(new DocumentListener() {
-					public void changedUpdate(DocumentEvent e) {
+					public void changedUpdate(DocumentEvent e)
+					{
 						abonnement.getBtnVerzenden().setEnabled(false);
 						abonnement.getLblKLantenNummerResult().setText("");
 						abonnement.getBtnMeerInfo().setEnabled(false);
-						customerID = "";
+						customerID = null;
 					}
 
-					public void removeUpdate(DocumentEvent e) {
+					public void removeUpdate(DocumentEvent e)
+					{
 						abonnement.getBtnVerzenden().setEnabled(false);
 						abonnement.getLblKLantenNummerResult().setText("");
 						abonnement.getBtnMeerInfo().setEnabled(false);
-						customerID = "";
+						customerID = null;
 					}
 
-					public void insertUpdate(DocumentEvent e) {
+					public void insertUpdate(DocumentEvent e)
+					{
 						abonnement.getBtnVerzenden().setEnabled(false);
 						abonnement.getLblKLantenNummerResult().setText("");
 						abonnement.getBtnMeerInfo().setEnabled(false);
-						customerID = "";
+						customerID = null;
 					}
 				});
 
