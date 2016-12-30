@@ -2,6 +2,7 @@ package panels;
 
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.security.auth.callback.LanguageCallback;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,6 +14,7 @@ import javax.swing.JTextField;
 import java.util.Properties;
 import org.jdatepicker.impl.*;
 import gui.GUIDateFormat;
+import gui.LangageHandler;
 import gui.StationsAutoCompletor;
 
 public class PassesEnKaartenPanel extends JPanel {
@@ -44,15 +46,21 @@ public class PassesEnKaartenPanel extends JPanel {
 		lblTitle = new JLabel("Passes en Kaarten");
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		
-		lblStartDatum = new JLabel("Startdatum: ");
-		lblKlasse = new JLabel("Klasse: ");
-		rdbEersteKlasse = new JRadioButton("1e Klas");
+		lblStartDatum = new JLabel();
+		LangageHandler.chooseLangageLbl(lblStartDatum, "startdatum");
+		lblKlasse = new JLabel();
+		LangageHandler.chooseLangageLbl(lblKlasse, "klasse");
+		rdbEersteKlasse = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbEersteKlasse, "1eKlasse");
 		rdbEersteKlasse.setMnemonic(1);
-		rdbTweedeKlasse = new JRadioButton("2e Klas");
+		rdbTweedeKlasse = new JRadioButton();
+		LangageHandler.chooseLangageRdb(rdbTweedeKlasse, "2eKlasse");
 		rdbTweedeKlasse.setMnemonic(2);
 		rdbTweedeKlasse.setSelected(true);
-		lblPassType = new JLabel("Type pass: ");
-		btnPrint = new JButton("PRINT");
+		lblPassType = new JLabel();
+		LangageHandler.chooseLangageLbl(lblPassType, "type");
+		btnPrint = new JButton();
+		LangageHandler.chooseLangageBtn(btnPrint, "print");
 		lblPrint = new JLabel("€0");
 		lblRes = new JLabel();
 		
@@ -68,7 +76,7 @@ public class PassesEnKaartenPanel extends JPanel {
 		dteStartDatum = new JDatePickerImpl(datePanel2, new GUIDateFormat());
 		dteStartDatum.getJFormattedTextField().setText(GUIDateFormat.getDate());
 		
-		String[] passType = {"Go Pass 10", "Key Card", "Rail Pass"};
+		String[] passType = {LangageHandler.chooseLangage("goPass"), LangageHandler.chooseLangage("keyCard"), LangageHandler.chooseLangage("railPass")};
 		cbxPassType = new JComboBox(passType);
 		
 		c.gridx = 0;

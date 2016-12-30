@@ -1,6 +1,7 @@
 package controller;
 
 import java.awt.BorderLayout;
+
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +19,7 @@ import panels.NieuwAbonnementPanel;
 import panels.PasPrijzenAanPanel;
 import panels.PassPanel;
 import panels.RouteberekeningPanel;
-import panels.StaffToevoegenPanel;
+import panels.StaffBeheerPanel;
 import panels.StartPanel;
 import panels.StationboardPanel;
 import panels.TreinopzoekingPanel;
@@ -46,7 +47,7 @@ public class GUIController {
 	private static VerlengAbonnementPanel verlengAbonnement;
 	private static VerlorenVoorwerpZoekPanel verlorenVoorwerpZoek;
 	private static VerlorenVoorwerpMaakPanel verlorenVoorwerpMaak;
-	private static StaffToevoegenPanel staff;
+	private static StaffBeheerPanel staff;
 	private static PasPrijzenAanPanel prijzenAanpassen;
 
 	private static SettingsSingleton settings;
@@ -124,7 +125,7 @@ public class GUIController {
 		
 		if (settings.getRights() == 0) {
 			nav.getBtnPrijzenAanpassen().setEnabled(false);
-			nav.getBtnVoegMedewerker().setEnabled(false);
+			nav.getBtnStaffBeheer().setEnabled(false);
 		}
 		// startpanel
 		start = new StartPanel();
@@ -213,9 +214,9 @@ public class GUIController {
 					}
 				});
 				
-				nav.getBtnVoegMedewerker().addActionListener(new ActionListener() {
+				nav.getBtnStaffBeheer().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						startVoegMedewerker();
+						startStaffBeheer();
 					}
 				});
 				nav.getBtnPrijzenAanpassen().addActionListener(new ActionListener() {
@@ -355,13 +356,13 @@ public class GUIController {
 		VerlorenVoorwerpMaakController.startListening(verlorenVoorwerpMaak);
 	}
 	
-	private static void startVoegMedewerker() {
-		staff = new StaffToevoegenPanel();
+	private static void startStaffBeheer() {
+		staff = new StaffBeheerPanel();
 		frame.setTitle("NMBSTeam - Voeg nieuwe medewerker");
 		frame.getContentPane().remove(frame.getContentPane().getComponentCount() - 1);
 		frame.getContentPane().add(staff);
 		frame.setContentPane(frame.getContentPane());
-		StaffToevoegenController.startListening(staff);
+		StaffBeheerController.startListening(staff);
 	}
 		
 	private static void startPrijzenAanpassen() {
