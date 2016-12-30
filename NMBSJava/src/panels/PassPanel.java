@@ -13,6 +13,7 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import gui.GUIDateFormat;
+import gui.LangageHandler;
 import gui.PassTypesAutoCompletor;
 
 public class PassPanel extends JPanel {
@@ -36,10 +37,12 @@ public class PassPanel extends JPanel {
 	private void initializeComponents() {
 		this.setLayout(new GridLayout(2, 1, 5, 5));
 		
-		lblTitel = new JLabel("Verkoop Pass");
+		lblTitel = new JLabel();
+		LangageHandler.chooseLangageLbl(lblTitel, "verkoopPass");
 		lblTitel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
-		lblKeuze = new JLabel("Keuze: ");
+		lblKeuze = new JLabel();
+		LangageHandler.chooseLangageLbl(lblKeuze, "keuze");
 
 		autPass = new PassTypesAutoCompletor();
 		
@@ -48,13 +51,16 @@ public class PassPanel extends JPanel {
 		properties.put("text.month", "Month");
 		properties.put("text.year", "Year");
 		
-		lblDate = new JLabel("Datum");
+		lblDate = new JLabel();
+		LangageHandler.chooseLangageLbl(lblDate, "datum");
 		
 		JDatePanelImpl datePane = new JDatePanelImpl(new UtilDateModel(), properties);
 		dteDate = new JDatePickerImpl(datePane,new GUIDateFormat());
 		dteDate.getJFormattedTextField().setText(GUIDateFormat.getDate());
 		
-		btnVerkoop = new JButton("Verkoop");
+		btnVerkoop = new JButton();
+		LangageHandler.chooseLangageBtn(btnVerkoop, "verkoop");
+
 	}
 
 	private void finalizePanel() {

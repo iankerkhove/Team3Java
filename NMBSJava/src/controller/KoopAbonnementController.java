@@ -20,6 +20,7 @@ import dao.RouteDAO;
 import dao.StationDAO;
 import dao.SubscriptionDAO;
 import gui.GUIDateFormat;
+import gui.LangageHandler;
 import model.Address;
 import model.Customer;
 import model.RailCard;
@@ -62,7 +63,7 @@ public class KoopAbonnementController {
 						if (customerIDString.matches("[0-9]+")) {
 							customerID = Integer.parseInt(customerIDString);
 						} else {
-							abonnement.getLblFoutmelding().setText("Fout in klant ID");
+							LangageHandler.chooseLangageLbl(abonnement.getLblFoutmelding(), "foutKlantId");
 						}
 
 						CustomerDAO daoCustomer = new CustomerDAO();
@@ -383,13 +384,16 @@ public class KoopAbonnementController {
 				&& !gemeente.equals("") && !treinkaart.equals(null) && DateTimeConverter.checkDate(startDatum)
 				&& !korting.equals(null) && !station1.equals("") && !station2.equals("")) {
 			if (!email.contains("@")) {
-				abonnement.getLblFoutmelding().setText("Geen geldig e-mailadres.");
+				//abonnement.getLblFoutmelding().setText("Geen geldig e-mailadres.");
+				LangageHandler.chooseLangageLbl(abonnement.getLblFoutmelding(), "emailFout");
 				return false;
 			}
-			abonnement.getLblFoutmelding().setText("Het formulier is correct");
+			LangageHandler.chooseLangageLbl(abonnement.getLblFoutmelding(), "form");
+			//abonnement.getLblFoutmelding().setText("Het formulier is correct");
 			return true;
 		} else {
-			abonnement.getLblFoutmelding().setText("Het formulier is niet volledig.");
+			LangageHandler.chooseLangageLbl(abonnement.getLblFoutmelding(), "formNc");
+			//abonnement.getLblFoutmelding().setText("Het formulier is niet volledig.");
 			return false;
 		}
 	}
@@ -495,7 +499,7 @@ public class KoopAbonnementController {
 		
 		if(goTroughNaar==false || goTroughVan==false)
 		{
-			System.err.println("Een van de stations werd niet gevonden.");
+			System.err.println(LangageHandler.chooseLangage("stationNv"));
 		}
 		
 		/*try {

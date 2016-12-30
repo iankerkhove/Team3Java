@@ -15,6 +15,7 @@ import javax.swing.event.DocumentListener;
 
 import dao.CustomerDAO;
 import gui.GUIDateFormat;
+import gui.LangageHandler;
 import model.Customer;
 import panels.VerlengAbonnementPanel;
 
@@ -190,10 +191,13 @@ private static int customerID=-1;
 						!korting.equals(null) && !duur.equals(null) && DateTimeConverter.checkDate(startdatum) &&
 						!station1.equals("") && !station2.equals("") && customerID!=-1){
 								abonnement.getLblBedrag().setText("100");
-								abonnement.getLblFoutmelding().setText("Het formulier is correct");
+								
+								LangageHandler.chooseLangageLbl(abonnement.getLblFoutmelding(), "form");
+								//abonnement.getLblFoutmelding().setText("Het formulier is correct");
 								abonnement.getBtnVerzenden().setEnabled(true);
 						}else{
-							abonnement.getLblFoutmelding().setText("Het formulier is niet volledig");
+							LangageHandler.chooseLangageLbl(abonnement.getLblFoutmelding(), "formNc");
+							//abonnement.getLblFoutmelding().setText("Het formulier is niet volledig");
 						}							
 					}
 				});
