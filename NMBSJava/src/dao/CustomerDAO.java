@@ -45,8 +45,8 @@ public class CustomerDAO extends BaseDAO
 			ps = getConnection().prepareStatement(sql);
 
 			ps.setString(1, c.getCustomerID().toString());
-			ps.setString(2, c.getRailCardID().toString());
-			ps.setString(3, c.getAddressID().toString());
+			ps.setString(2, c.getRailCard().getRailCardID().toString());
+			ps.setString(3, c.getAddress().getAddressID().toString());
 			ps.setString(4, c.getFirstName());
 			ps.setString(5, c.getLastName());
 			ps.setString(6, c.getBirthDate());
@@ -57,8 +57,8 @@ public class CustomerDAO extends BaseDAO
 			{
 				params = new HashMap<String, String>();
 				params.put("customerID", c.getCustomerID().toString());
-				params.put("railCardID", c.getRailCardID().toString());
-				params.put("addressID", c.getAddressID().toString());
+				params.put("railCardID", c.getRailCard().getRailCardID().toString());
+				params.put("addressID", c.getAddress().getAddressID().toString());
 				params.put("firstName", c.getFirstName());
 				params.put("lastName", c.getLastName());
 				params.put("email", c.getEmail());
