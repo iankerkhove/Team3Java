@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import panels.StaffBeheerPanel;
+import services.JBcryptVerifier;
 import model.Station;
 import model.Address;
 import model.Staff;
@@ -29,20 +30,15 @@ public class StaffBeheerController {
 						String gemeente = staff.getTxtGemeente().getText();
 						String station = (String) staff.getTxtStation().getSelectedItem();
 						String username = staff.getTxtUsername().getText();
-						char[] password = staff.getTxtPassword().getPassword();
-						String strPassword = String.copyValueOf(password);
+						String password = (String)staff.getTxtPassword().getText();
 
 						int rechten = 0;
-
-						System.out.println(strPassword);
 
 						if(voornaam.equals("") || achternaam.equals("") || email.equals("")|| 
 								straat.equals("") || staff.getTxtNummer().getText().equals("")|| staff.getTxtPostcode().getText().equals("")||gemeente.equals("") ||
 								staff.getTxtPostcode().toString().equals("") || username.equals("") || password.equals(""))
 						{
 							Popup.warningMessage("WarningPopup", "WarningPopupTitel");
-							System.out.println(password);
-							System.out.println("testestest");
 						}
 						else
 						{
@@ -76,35 +72,39 @@ public class StaffBeheerController {
 								rechten = 0;
 							}
 
-							Address adres = new Address(straat,nummer,gemeente,postcode,null);
-							AddressDAO adresD = new AddressDAO();
-							adresD.insert(adres);
-
-							Station stat= new Station();
-							StationDAO statD = new StationDAO();
-							ArrayList<Station> statList = new ArrayList<Station>();
-							statList = statD.selectAll();
-
-							for (int i = 0; i <statList.size() ;i++)
-							{
-								if(station.equals(statList.get(i).getStationName()))
-								{
-									stat = statList.get(i);
-								}
-							}
-
-
-
-							Staff staff = new Staff(adres,stat,voornaam,achternaam,username,strPassword,rechten,datum,email);
-							staff.setAddressID(adres.getAddressID());
-							staff.setStationID(stat.getStationID());
-
-							StaffDAO staffD = new StaffDAO();
+							
 
 							if (check == true)
 							{
 								try {
+									Address adres = new Address(straat,nummer,gemeente,postcode,null);
+									AddressDAO adresD = new AddressDAO();
+									adresD.insert(adres);
+
+									Station stat= new Station();
+									StationDAO statD = new StationDAO();
+									ArrayList<Station> statList = new ArrayList<Station>();
+									statList = statD.selectAll();
+
+									for (int i = 0; i <statList.size() ;i++)
+									{
+										if(station.equals(statList.get(i).getStationName()))
+										{
+											stat = statList.get(i);
+										}
+									}
+									System.out.println(password);
+									password = JBcryptVerifier.hashPassword(password);
+									System.out.println(password);
+									Staff staff = new Staff(adres,stat,voornaam,achternaam,username,password,rechten,datum,email);
+									staff.setAddressID(adres.getAddressID());
+									staff.setStationID(stat.getStationID());
+
+									StaffDAO staffD = new StaffDAO();
 									staffD.insert(staff);
+									
+									SyncController.SyncStaff();
+									
 								} catch(NullPointerException e1) {
 									Popup.errorMessage("voorwerpWarningPopup", "voorwerpWarningPopupTitel");
 								}

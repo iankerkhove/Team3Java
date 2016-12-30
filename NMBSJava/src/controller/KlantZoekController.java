@@ -36,7 +36,7 @@ public class KlantZoekController {
 
 						String kaartNr = klantZoek.getTxtKaartNr().getText();
 						CustomerDAO handler = new CustomerDAO();
-						Customer c = handler.selectOne2(kaartNr);
+						Customer c = handler.selectOneOnRailCardID(kaartNr);
 
 						klantZoek.getLblResultat().setText(c.getCustomerID() + " " + c.getFirstName() + " "
 								+ c.getLastName() + " " + c.getBirthDate() + " " + c.getEmail() + " " + c.getAddress());
@@ -50,7 +50,7 @@ public class KlantZoekController {
 
 						String klantAchterNaam = klantZoek.getTxtKlantNaam().getText();
 						CustomerDAO handler = new CustomerDAO();
-						Customer c = handler.selectOne3(klantAchterNaam);
+						Customer c = handler.selectOneOnLastName(klantAchterNaam);
 
 						klantZoek.getLblResultat().setText(c.getCustomerID() + " " + c.getFirstName() + " "
 								+ c.getLastName() + " " + c.getBirthDate() + " " + c.getEmail() + " " + c.getAddress());
@@ -64,7 +64,7 @@ public class KlantZoekController {
 
 						String klantVoorNaam = klantZoek.getTxtKlantVoorNaam().getText();
 						CustomerDAO handler = new CustomerDAO();
-						Customer c = handler.selectOne4(klantVoorNaam);
+						Customer c = handler.selectOneOnFirstName(klantVoorNaam);
 
 						klantZoek.getLblResultat().setText(c.getCustomerID() + " " + c.getFirstName() + " "
 								+ c.getLastName() + " " + c.getBirthDate() + " " + c.getEmail() + " " + c.getAddress());

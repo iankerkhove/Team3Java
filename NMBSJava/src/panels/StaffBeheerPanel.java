@@ -9,9 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-
-import org.apache.commons.codec.language.bm.Lang;
-import org.jdatepicker.JDatePicker;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
@@ -20,6 +17,7 @@ import gui.GUIDateFormat;
 import gui.LangageHandler;
 import gui.StationsAutoCompletor;
 
+@SuppressWarnings("serial")
 public class StaffBeheerPanel  extends JPanel{
 
 

@@ -16,6 +16,7 @@ import gui.GUIDateFormat;
 import gui.LangageHandler;
 import gui.PassTypesAutoCompletor;
 
+@SuppressWarnings("serial")
 public class PassPanel extends JPanel {
 
 	private JPanel buy;

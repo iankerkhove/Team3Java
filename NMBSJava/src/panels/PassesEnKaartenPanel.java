@@ -2,21 +2,18 @@ package panels;
 
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.security.auth.callback.LanguageCallback;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.*;
-import javax.swing.JTextField;
 import java.util.Properties;
 import org.jdatepicker.impl.*;
 import gui.GUIDateFormat;
 import gui.LangageHandler;
-import gui.StationsAutoCompletor;
 
+@SuppressWarnings({"serial", "rawtypes", "unchecked"})
 public class PassesEnKaartenPanel extends JPanel {
 
 	private JLabel lblTitle;
@@ -38,7 +35,6 @@ public class PassesEnKaartenPanel extends JPanel {
 	
 	private JComboBox cbxPassType;
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public PassesEnKaartenPanel() {
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();		

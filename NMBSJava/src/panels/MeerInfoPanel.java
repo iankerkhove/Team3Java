@@ -2,14 +2,13 @@ package panels;
 
 import java.awt.Font;
 import java.awt.GridLayout;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import gui.LangageHandler;
 
+@SuppressWarnings("serial")
 public class MeerInfoPanel extends JPanel {
+	
 private JLabel lblTitle;
 private JLabel lblNaam;
 private JLabel lblNaamResult;

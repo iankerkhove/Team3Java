@@ -3,7 +3,6 @@ package panels;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.Properties;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -11,12 +10,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-
-import org.apache.commons.codec.language.bm.Lang;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-
 import gui.DiscountAutoCompletor;
 import gui.GUIDateFormat;
 import gui.LangageHandler;

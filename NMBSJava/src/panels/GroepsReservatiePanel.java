@@ -1,28 +1,19 @@
 package panels;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.Properties;
-
 import javax.swing.*;
-
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-
 import com.github.lgooddatepicker.components.TimePicker;
-
 import gui.GUIDateFormat;
 import gui.LangageHandler;
 import gui.StationsAutoCompletor;
 
+@SuppressWarnings("serial")
 public class GroepsReservatiePanel extends JPanel {
-
-	/**
-	 * Create the panel.
-	 */
 
 	private StationsAutoCompletor autVan;
 	private JLabel lblVan;
