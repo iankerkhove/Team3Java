@@ -59,7 +59,7 @@ public class VerlorenVoorwerpZoekController {
 									gevonden = "Niet gevonden";
 								}
 								
-								String temp =  lostObjList.get(i).getTrainID() + " " + lostObjList.get(i).getDescription() + " " + lostObjList.get(i).getDate() + " " + gevonden;
+								String temp =  lostObjList.get(i).getTrainID() + "&nbsp;&nbsp;&nbsp;&nbsp;" + lostObjList.get(i).getDescription() + "&nbsp;&nbsp;&nbsp;&nbsp;" + lostObjList.get(i).getDate() + "&nbsp;&nbsp;&nbsp;&nbsp;" + gevonden;
 								strVoorwerp.add(temp);
 								check = true;
 								System.out.println("tetestestest");
@@ -132,7 +132,7 @@ public class VerlorenVoorwerpZoekController {
 										gevonden = "Niet gevonden";
 									}
 									
-									String temp =  lostObjList.get(i).getTrainID() +" " +  lostObjList.get(i).getDescription() +" " + lostObjList.get(i).getDate() +" " + gevonden;
+									String temp =  lostObjList.get(i).getTrainID() +"&nbsp;&nbsp;&nbsp;&nbsp;" +  lostObjList.get(i).getDescription() +"&nbsp;&nbsp;&nbsp;&nbsp;" + lostObjList.get(i).getDate() +"&nbsp;&nbsp;&nbsp;&nbsp;"+ gevonden;
 									strVoorwerp.add(temp);
 									check = true;
 								}
