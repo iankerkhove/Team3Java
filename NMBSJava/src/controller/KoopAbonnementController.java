@@ -240,17 +240,8 @@ public class KoopAbonnementController {
 
 					public void actionPerformed(ActionEvent ae) {
 						if (correctFormulier(abonnement)) {
-							String ticketTypeID = abonnement.getCbxTreinkaart().getSelectedDiscount().toString();
-							String station1ID = abonnement.getTxtStation1().getSelectedStation().toString();
-							String station2ID = abonnement.getTxtStation2().getSelectedStation().toString();
-
-							StationDAO handler = new StationDAO();
-							Station s1 = handler.selectOne(station1ID.toString());
-							Station s2 = handler.selectOne(station2ID.toString());
-
-							abonnement.getLblPrint().setText(Double.toString(
-									Prijsberekening.berekenPrijs(s1, s2, TypeKeuze.PASS, ticketTypeID)));
-							abonnement.getLblFoutmelding().setText("Het formulier is correct");
+							// prijsberekening
+							abonnement.getLblPrint().setText("100");
 							
 							abonnement.getBtnVerzenden().setEnabled(true);
 						} else {
